@@ -3,10 +3,11 @@
 
 from scripts.common.utils import get_fastq_files, get_now
 
+
 rule bwa_alignment:
     input:
-        [lambda wildcards: "trimmed/" + get_fastq_files(wildcards,samples,"fq1"),
-         lambda wildcards: "trimmed/" + get_fastq_files(wildcards,samples,"fq2")]
+        lambda wildcards: "trimmed/" + get_fastq_files(wildcards,samples,"fq1"),
+        lambda wildcards: "trimmed/" + get_fastq_files(wildcards,samples,"fq2")
     output:
         temp("mapped/{sample}-{unit}.unsorted.bam")
     log:
@@ -29,11 +30,23 @@ rule coordinate_sort_mapped_reads:
     wrapper:
         "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/sort/coordinate/wrapper.py"
 
+def get_units(wildcards,units):
+    return [wildcards.sample +"-" + unit for unit in units.loc[wildcards.sample].index]
+
+rule merge_bam_files:
+    input:
+        lambda wildcards: expand("mapped/{sample_units}.sorted.bam", sample_units=get_units(wildcards,units) )
+    output:
+        "mapped/{sample,[A-Za-z0-9-_]+}.sorted.bam"
+    threads: 8
+    wrapper:
+        "0.19.3/bio/samtools/merge"
+
 rule create_bam_index:
     input:
-        "mapped/{sample}-{unit}.sorted.bam"
+        "mapped/{sample}.sorted.bam"
     output:
-        "mapped/{sample}-{unit}.sorted.bam.bai"
+        "mapped/{sample,[A-Za-z0-9_-]+}.sorted.bam.bai"
     params:
         ""
     wrapper:
