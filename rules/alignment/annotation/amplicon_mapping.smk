@@ -3,38 +3,41 @@
 
 rule queryname_sort_reads:
   input:
-    "mapped/{sample}.bam"
+      "mapped/{sample}.sorted.bam"
   output:
-    bam = "amplicon_mapped/{sample}.queryname_sorted.bam"
+      bam = "mapped/{sample}.queryname_sorted.bam"
   wrapper:
-    "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/sort/queryname/wrapper.py"
+      "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/sort/queryname/wrapper.py"
 
 rule amplicon_mapping:
   input:
-    "amplicon_mapped/{sample}.queryname_sorted.bam"
+      "mapped/{sample}.queryname_sorted.bam"
   output:
-    bam = "amplicon_mapped/{sample}.amplicon_annotated.bam",
-    bed = "amplicon_mapped/{sample}.amplicon_annotated.bed"
+      bam = "mapped/{sample}.amplicon_annotated.bam",
+      bed = "amplicon_information/{sample}.amplicon_annotated.bed"
+  log:
+      "logs/amplicon_annotated/{sample}.amplicon_annotated.log"
   params:
-    path_gatk = "/GenomeAnalysisTKLite_molecules.jar",
-    genome_ref = "/hg19.with.mt.fasta",
-    design_file = "/DiagnosticPanel_Lung_20160222.selection.bed"
+      path_gatk = config.get('path_gatk',"gatk.jar"),
+      genome_ref = config['reference_genome'],
+      design_file = "/DiagnosticPanel_Lung_20160222.selection.bed"
   wrapper:
-    "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/amplicon_mapping/wrapper.py"
+      "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/fix-logging/bio/amplicon_mapping/wrapper.py"
 
 rule coordinate_sort_amplicon_mapped_reads:
     input:
-        "amplicon_mapped/{sample}.amplicon_annotated.bam"
+        "mapped/{sample}.amplicon_annotated.bam"
     output:
-        bam = "amplicon_mapped/{sample}.sorted.bam"
+        bam = "mapped/{sample}.amplicon_annotated.sorted.bam"
+    threads: 3
     wrapper:
-        "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/sort/coordinate/wrapper.py"
+        "0.19.3/bio/samtools/sort"
 
 rule create_bam_index_for_amplicon_mapped_bam:
     input:
-        "amplicon_mapped/{sample}.sored.bam"
+        "mapped/{sample}.amplicon_annotated.sorted.bam"
     output:
-        "amplicon_mapped/{sample}.sorted.bam.bai"
+        "mapped/{sample}.amplicon_annotated.sorted.bam.bai"
     params:
         ""
     wrapper:

@@ -1,5 +1,7 @@
 ---
 
+pindel_exclude_regions: ../exclude.chr.txt
+
 samples: samples.tsv
 
 units: units.tsv

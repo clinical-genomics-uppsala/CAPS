@@ -1,5 +1,9 @@
 ---
 
+pindel_exclude_regions: ../exclude.chr.txt
+
+path_gatk: "/GenomeAnalysisTKLite_molecules.jar"
+
 samples: samples.tsv
 
 units: units.tsv

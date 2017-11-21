@@ -19,6 +19,7 @@ scripts/.snakemake*
 !rules/alignment/*
 !rules/alignment/annotation/*
 !rules/trimming/*
+!rules/calling/*
 !.gitignore
 !.gitattributes
 !.gitmodules
