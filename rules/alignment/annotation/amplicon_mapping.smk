@@ -3,32 +3,33 @@
 
 rule queryname_sort_reads:
   input:
-    "mapped/{sample}.sorted.bam"
+      "mapped/{sample}.sorted.bam"
   output:
-    bam = "mapped/{sample}.queryname_sorted.bam"
+      bam = "mapped/{sample}.queryname_sorted.bam"
   wrapper:
-    "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/sort/queryname/wrapper.py"
+      "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/sort/queryname/wrapper.py"
 
 rule amplicon_mapping:
   input:
-    "mapped/{sample}.queryname_sorted.bam"
+      "mapped/{sample}.queryname_sorted.bam"
   output:
-    bam = "mapped/{sample}.amplicon_annotated.bam",
-    bed = "amplicon_information/{sample}.amplicon_annotated.bed"
+      bam = "mapped/{sample}.amplicon_annotated.bam",
+      bed = "amplicon_information/{sample}.amplicon_annotated.bed"
   params:
-    path_gatk = config.get('path_gatk',"gatk.jar"),
-    genome_ref = config['reference_genome'],
-    design_file = "/DiagnosticPanel_Lung_20160222.selection.bed"
+      path_gatk = config.get('path_gatk',"gatk.jar"),
+      genome_ref = config['reference_genome'],
+      design_file = "/DiagnosticPanel_Lung_20160222.selection.bed"
   wrapper:
-    "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/amplicon_mapping/wrapper.py"
+      "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/amplicon_mapping/wrapper.py"
 
 rule coordinate_sort_amplicon_mapped_reads:
     input:
         "mapped/{sample}.amplicon_annotated.bam"
     output:
         bam = "mapped/{sample}.amplicon_annotated.sorted.bam"
+    threads: 3
     wrapper:
-        "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/sort/coordinate/wrapper.py"
+        "0.19.3/bio/samtools/sort"
 
 rule create_bam_index_for_amplicon_mapped_bam:
     input:

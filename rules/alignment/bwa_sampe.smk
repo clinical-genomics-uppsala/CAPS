@@ -27,8 +27,9 @@ rule coordinate_sort_mapped_reads:
         "mapped/{sample}-{unit}.unsorted.bam"
     output:
         bam = "mapped/{sample}-{unit}.sorted.bam"
+    threads: 3
     wrapper:
-        "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/sort/coordinate/wrapper.py"
+        "0.19.3/bio/samtools/sort"
 
 def get_units(wildcards,units):
     return [wildcards.sample +"-" + unit for unit in units.loc[wildcards.sample].index]
