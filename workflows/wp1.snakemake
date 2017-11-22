@@ -1,5 +1,7 @@
 
-accel_amplicon_prefix="https://raw.githubusercontent.com/clinical-genomics-uppsala/accel_amplicon_trimming/implement-comments-from-johanneskoester"
+accel_amplicon_prefix="https://raw.githubusercontent.com/clinical-genomics-uppsala/accel_amplicon_trimming/master"
+
+include: "../rules/qc/fastqc.smk"
 
 include: accel_amplicon_prefix + "/rules/accel_amplicon.smk"
 
