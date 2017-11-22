@@ -13,8 +13,9 @@ units.index = units.index.set_levels([i.astype(str) for i in units.index.levels]
 #file_endings={"Swift": [".R1.trimmomatic_cutadapt.fastq.gz", ".R2.trimmomatic_cutadapt.fastq.gz", "_001.trimmomatic_cutadapt.qc.txt"],
 #              "HaloPlex": [".cutadapt.fastq.gz", "_R2_001.cutadapt.fastq.gz", "_001.cutadapt.qc.txt"]}
 
-file_endings = ["_D"]
+#file_endings = [".variations", ".deletions", ".insertions"]
 #file_endings = [".cutadapt.fastq.gz", "_R2_001.cutadapt.fastq.gz", "_001.cutadapt.qc.txt"]
+file_endings = ["_D"]
 def generate_file_output():
     return [os.path.join("pindel", str(row.Index) + ending) for row in samples.itertuples() for ending in file_endings]
 

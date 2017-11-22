@@ -26,7 +26,7 @@ rule coordinate_sort_mapped_reads:
     input:
         "mapped/{sample}-{unit}.unsorted.bam"
     output:
-        bam = "mapped/{sample}-{unit}.sorted.bam"
+        bam = temp("mapped/{sample}-{unit}.sorted.bam")
     threads: 3
     wrapper:
         "0.19.3/bio/samtools/sort"
