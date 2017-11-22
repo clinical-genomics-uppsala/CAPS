@@ -15,14 +15,20 @@ units.index = units.index.set_levels([i.astype(str) for i in units.index.levels]
 
 #file_endings = [".variations", ".deletions", ".insertions"]
 #file_endings = [".cutadapt.fastq.gz", "_R2_001.cutadapt.fastq.gz", "_001.cutadapt.qc.txt"]
-file_endings = ["_D"]
-def generate_file_output():
-    return [os.path.join("pindel", str(row.Index) + ending) for row in samples.itertuples() for ending in file_endings]
+pindel_file_endings = ["_D"]
 
+def generate_file_output_pindel():
+    return [os.path.join("pindel", str(row.Index) + ending) for row in samples.itertuples() for ending in pindel_file_endings]
+
+qc_files = [("fastqc", ".html"),("fastqc" ,".zip")]
+def generate_file_output_qc():
+    return [f[0] + "/" + str(row.Index[0]) + "-" + str(row.Index[1]) + f[1]
+        for row in units.itertuples()
+            for f in qc_files]
 
 rule all:
     input:
-        generate_file_output()
+        generate_file_output_pindel() + generate_file_output_qc()
 
-print(generate_file_output())
+print(generate_file_output_pindel() + generate_file_output_qc())
 include: "workflows/wp1.snakemake"
