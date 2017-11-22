@@ -1,3 +1,6 @@
+# vim: syntax=python tabstop=4 expandtab
+# coding: utf-8
+
 #pindel_types = ["D", "BP", "INV", "TD", "LI", "SI", "RP"]
 pindel_types = ["D"]
 
@@ -20,9 +23,9 @@ rule pindel:
     output:
         expand("pindel/{{sample}}_{type}", type=pindel_types)
     params:
-        # prefix must be consistent with output files
         prefix="pindel/{sample}",
-        extra= " -J " + config['pindel_exclude_regions'] + " -m 20 -v 0.01 "  # optional parameters (except -i, -f, -o)
+        extra= lambda wildcards: " -J " + config['pindel_exclude_regions'] + \
+            " " + config["pindel_flags"][samples["panel_type"][wildcards.sample]]
     log:
         "logs/pindel/{sample}.log"
     threads: 4

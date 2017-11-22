@@ -2,6 +2,9 @@
 
 pindel_exclude_regions: ../exclude.chr.txt
 
+path_jsnpmania : "/jSNPmania-0.0.7-SNAPSHOT-amplicons_v4/JSNPmania.sh"
+path_jsnpmania_header: "../Convert2SNPManiaHeader.sam"
+
 samples: samples.tsv
 
 units: units.tsv
@@ -17,3 +20,13 @@ accel_panels:
   panel2:
     5p_primer_file: 5p_primers.fa
     3p_primer_file: 3p_primers.fa
+
+pindel_flags:
+  swift: "-m 20 -v 0.001"
+  haloplex: "-m 20 -v 0.01"
+
+jsnpmania_flags: "-a 5 -q 20 -e 0 -am"
+
+mutations_flags:
+  swift: "-minRD 30,300 -minVaf 0.001"
+  haloplex: "-minRD 30,300 -minVaf 0.01"

@@ -1,0 +1,4 @@
+@HD	VN:1.0	SO:unsorted
+@SQ	SN:chr21#NC_000021.8#1#48129895#-1	LN:48129895	M5:720F8716257C796615028FD85D47273C
+@RG	ID:Converted2SNPmania	SM:unknown	PL:illumina
+@PG	ID:bwa	PN:bwa	VN:unknown	CL:bwa mem
