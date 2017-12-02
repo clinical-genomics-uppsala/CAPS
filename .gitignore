@@ -1,8 +1,10 @@
 *
 !scripts
 !scripts/*
-!scripts/common
-!scripts/common/*
+!scripts/lib/*
+!scripts/lib/common/*
+!scripts/lib/common/data/*
+!scripts/lib/common/data/parser/*
 scripts/.snakemake*
 !Snakefile
 !config.yaml
