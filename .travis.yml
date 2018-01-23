@@ -35,4 +35,5 @@ script:
   - source activate snakemake
   - pip install biopython
   - snakemake --use-conda --directory .test/swift
+  - python -m scripts.tests.common.data.parser.test_jspmania
   #- snakemake --use-conda --directory .test/haloplex # container are missing some dependencies, should be run locally.

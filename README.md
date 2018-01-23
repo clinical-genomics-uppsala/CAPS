@@ -46,3 +46,7 @@ See the [Snakemake documentation](https://snakemake.readthedocs.io) for further 
 ## Testing
 
 Tests cases are in the subfolder `.test`. They should be executed via continuous integration with Travis CI.
+
+## Local Testing
+
+docker run -v /Users/patsm159/auctornotitia_workspace/caps-snakemake:/snakemake-workflows -it snakemake bash

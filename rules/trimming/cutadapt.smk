@@ -30,7 +30,7 @@ sample1    adapters_1   sample1.R1.fastq   sample1.R2.fastq
 sample2    adapters_1   sample2.R1.fastq   sample2.R2.fastq
 ...............................................................................
 """
-from scripts.common.utils import get_fastq, sample_id, reverse_complement
+from scripts.lib.common.utils import get_fastq, sample_id, reverse_complement
 
 rule cutadapt:
    input:

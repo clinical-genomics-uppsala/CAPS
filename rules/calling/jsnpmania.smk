@@ -1,7 +1,7 @@
 # vim: syntax=python tabstop=4 expandtab
 # coding: utf-8
 
-from scripts.common.utils import get_bam_file
+from scripts.lib.common.utils import get_bam_file
 
 rule run_jsnpmania:
     input:

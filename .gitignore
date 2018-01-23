@@ -5,6 +5,10 @@
 !scripts/lib/common/*
 !scripts/lib/common/data/*
 !scripts/lib/common/data/parser/*
+!scripts/tests/*
+!scripts/tests/common/*
+!scripts/tests/common/data/*
+!scripts/tests/common/data/parser/*
 scripts/.snakemake*
 !Snakefile
 !config.yaml
