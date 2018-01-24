@@ -4,7 +4,7 @@
 from os import path
 from Bio.Seq import Seq
 import pandas as pd
-import scripts.common.constants as constants
+import scripts.lib.common.constants as constants
 from datetime import datetime
 
 def sample_id(wildcards):

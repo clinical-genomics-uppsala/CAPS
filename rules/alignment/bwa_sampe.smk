@@ -1,7 +1,7 @@
 # vim: syntax=python tabstop=4 expandtab
 # coding: utf-8
 
-from scripts.common.utils import get_fastq_files, get_now
+from scripts.lib.common.utils import get_fastq_files, get_now
 
 
 rule bwa_alignment:

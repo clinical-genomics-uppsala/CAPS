@@ -4,7 +4,7 @@
 #pindel_types = ["D", "BP", "INV", "TD", "LI", "SI", "RP"]
 pindel_types = ["D"]
 
-from scripts.common.utils import get_bam_file
+from scripts.lib.common.utils import get_bam_file
 
 rule create_pindel_config:
     input:
@@ -31,3 +31,18 @@ rule pindel:
     threads: 4
     wrapper:
         "0.19.3/bio/pindel/call"
+
+rule pindel_to_vcf:
+    input:
+        ref=config['reference_genome'],
+        pindel="pindel/{sample}_D"
+    output:
+        "pindel/{sample}_D.vcf"
+    params:
+        refname=config['reference_genome_name'],
+        refdate=['reference_genome_date'],
+        extra="--min_size 3"
+    log:
+        "logs/pindel/pindel2vcf.D.log"
+    wrapper:
+        "0.19.3/bio/pindel/pindel2vcf"
