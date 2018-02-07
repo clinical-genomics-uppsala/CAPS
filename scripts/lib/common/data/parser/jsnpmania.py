@@ -6,7 +6,6 @@ import re
 
 logger = logging.getLogger(__name__).addHandler(logging.NullHandler())
 
-
 # Dictionaries used to extract the correct column in a jSNPmania file
 _column_converter_snv = {
     'depth': 0,
@@ -33,6 +32,14 @@ _column_converter_indel = {
 # Order of bases in a jSNPmania file.
 _ref_position = {'A': 0, 'G': 1, 'C': 2, 'T': 3}
 
+def convert_jsnpmania_to_annvovar_output(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, path_nc_to_chr, min_allele_ratio, min_read_depth, amplicon_min_depth):
+    chr_to_nc = dict()
+    with open(path_nc_to_chr,'r') as nc_to_chr_file:
+        for line in nc_to_chr_file:
+            if not line.startswith("#"):
+                columns = line.split("\t")
+                chr_to_nc[columns[0]] = columns[1]
+    process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, chr_to_nc, min_allele_ratio, min_read_depth, amplicon_min_depth)
 
 def process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, nc_to_chr, min_allele_ratio, min_read_depth, amplicon_min_depth):
     """
@@ -124,7 +131,7 @@ def process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_i
             for line in j_deletions:
                 line = line.rstrip()
                 if not line.startswith("#") and not line.startswith("\n") != 0:
-                    alleles = extract_deletions(sample_name, reference, line, nc_to_chr, min_allele_ratio, min_read_depth, amplicon_min_depth, deletions_filter)
+                    alleles = extract_deletions(sample_name, reference, line, nc_to_chr, deletions_filter)
                     for key, info in alleles.items():
                         (nc, start, stop, ref, var) = key.split("#")
                         try:
@@ -366,7 +373,7 @@ def _extract_allele_counts_snv(columns):
     return [int(allele_d) for allele_d in columns[_column_converter_snv['alleles_depth']].split("|")]
 
 
-def extract_deletions(sample, ref, line, nc_to_chr, amplicon_min_depth=0, deletion_filter=None): #min_allele_ratio, min_read_depth, amplicon_min_depth=0, filter=None):
+def extract_deletions(sample, ref, line, nc_to_chr, amplicon_min_depth=0, deletion_filter=None):
     """
         Extract deletions information from a JSNPmania deletion line.
 

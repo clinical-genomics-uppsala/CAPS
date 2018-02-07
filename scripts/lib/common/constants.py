@@ -14,3 +14,9 @@ bam_file_ending= {
     'swift': "sorted.bam",
     'default': "sorted.bam"
 }
+
+annovar_input_ending= {
+    'haloplex': "ampliconmapped.annovarInput",
+    'swift': "annovarInput",
+    'default': "annovarInput"
+}

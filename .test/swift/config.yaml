@@ -1,5 +1,7 @@
 ---
 
+nc_to_chr_file: ../reference.hg19.info
+
 pindel_exclude_regions: ../exclude.chr.txt
 
 path_jsnpmania : "/jSNPmania-0.0.7-SNAPSHOT-amplicons_v4/JSNPmania.sh"
