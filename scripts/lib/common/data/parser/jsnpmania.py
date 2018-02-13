@@ -131,7 +131,7 @@ def process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_i
             for line in j_deletions:
                 line = line.rstrip()
                 if not line.startswith("#") and not line.startswith("\n") != 0:
-                    alleles = extract_deletions(sample_name, reference, line, nc_to_chr, deletions_filter)
+                    alleles = extract_deletions(sample_name, reference, line, nc_to_chr, amplicon_min_depth, deletions_filter)
                     for key, info in alleles.items():
                         (nc, start, stop, ref, var) = key.split("#")
                         try:
@@ -261,7 +261,7 @@ def extract_major_snv_allele(sample, ref, line, nc_to_chr, amplicon_min_depth=0,
     return alleles
 
 
-def _get_major_vaf(variants_at_position, sep=r"\s|=", allele_ratio_column=9):
+def _get_major_vaf(variants_at_position, sep=r"\s|=", allele_ratio_column=10):
     """
         Extracts the major allele from a dict containing multiple variants.
 
@@ -275,7 +275,7 @@ def _get_major_vaf(variants_at_position, sep=r"\s|=", allele_ratio_column=9):
     variant_iterator = iter(variants_at_position.keys())
     key = next(variant_iterator)
     import re
-    vaf = float(re.split(sep,variants_at_position[key])[allele_ratio_column])
+    vaf = float(re.split(sep,variants_at_position[key])[allele_ratio_column] + "\n")
     #ToDo write a test case that goes through this for loop.
     for next_key in variant_iterator:
         next_vaf = float(re.split(r"\s|=",variants_at_position[next_key])[allele_ratio_column])

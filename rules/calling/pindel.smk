@@ -2,7 +2,7 @@
 # coding: utf-8
 
 #pindel_types = ["D", "BP", "INV", "TD", "LI", "SI", "RP"]
-pindel_types = ["D"]
+pindel_types = ["D", "SI"]
 
 from scripts.lib.common.utils import get_bam_file
 
@@ -21,23 +21,29 @@ rule pindel:
         config="pindel/{sample}.config.txt",
         index=lambda wildcards: "mapped/" + get_bam_file(wildcards, samples) + ".bai"
     output:
-        expand("pindel/{{sample}}_{type}", type=pindel_types)
+        expand("pindel/{{sample}}.indels_{type}", type=pindel_types)
     params:
-        prefix="pindel/{sample}",
+        prefix= "pindel/{sample}.indels",# lambda wildcards: "pindel/" + wildcards.sample + ".indels",
         extra= lambda wildcards: " -J " + config['pindel_exclude_regions'] + \
-            " " + config["pindel_flags"][samples["panel_type"][wildcards.sample]]
+            " -m " + str(config["pindel_flags"][samples["panel_type"][wildcards.sample]]['min_read_depth']) +  \
+            " -v " + str(config["pindel_flags"][samples["panel_type"][wildcards.sample]]['min_allele_ratio']) +  \
+            " --report_long_insertions False " +  \
+            " --report_close_mapped_reads False" +  \
+            " --report_breakpoints False" +  \
+            " --report_inversions False" +  \
+            " --report_duplications False"
     log:
         "logs/pindel/{sample}.log"
     threads: 4
     wrapper:
         "0.19.3/bio/pindel/call"
 
-rule pindel_to_vcf:
+rule pindel_to_vcf_D:
     input:
         ref=config['reference_genome'],
-        pindel="pindel/{sample}_D"
+        pindel="pindel/{sample}.indels_D"
     output:
-        "pindel/{sample}_D.vcf"
+        "pindel/{sample}.indels_D.vcf"
     params:
         refname=config['reference_genome_name'],
         refdate=['reference_genome_date'],
@@ -46,3 +52,28 @@ rule pindel_to_vcf:
         "logs/pindel/pindel2vcf.D.log"
     wrapper:
         "0.19.3/bio/pindel/pindel2vcf"
+
+rule pindel_to_vcf_SI:
+    input:
+        ref=config['reference_genome'],
+        pindel="pindel/{sample}.indels_SI"
+    output:
+        "pindel/{sample}.indels_SI.vcf"
+    params:
+        refname=config['reference_genome_name'],
+        refdate=['reference_genome_date'],
+        extra="--min_size 3"
+    log:
+        "logs/pindel/pindel2vcf.SI.log"
+    wrapper:
+        "0.19.3/bio/pindel/pindel2vcf"
+
+rule merge_pindel_vcf_files:
+    input:
+        calls=["pindel/{sample}.indels_D.vcf","pindel/{sample}.indels_SI.vcf"]
+    output:
+        "pindel/{sample}.merged.vcf"
+    log:
+        "logs/pindel/bcftools.merge.log"
+    wrapper:
+        "0.19.3/bio/bcftools/concat"

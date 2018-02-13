@@ -26,6 +26,7 @@ def _extract_deletion(line, amplicon_min_depth=0, filter=None):
 def parse_pindel_line(line,report_min_depth=False):
     """
         Function used to parse lines from pindel output.
+
     >>> line_del = \
             '0\\tD 4\\tNT 0 ""\\tChrID chr1\\tBP 67443969\\t67443974\\t' + \
             'BP_range 67443969\\t67443980\\tSupports 5\\t1\\t+ 5\\t1\\t- 0\\t0\\t' + \
@@ -85,6 +86,56 @@ def parse_pindel_line(line,report_min_depth=False):
                 'fwd_u': allternate_allele_uniq_reads_fwd,
                 'rve': allternate_allele_reads_rve,
                 'rve_u': allternate_allele_uniq_reads_rve}
+
+
+def convert_to_annovar_input(sample, vcf_file, pindel_deletions_file, pindel_insertions_file, minimum_read_depth = 1, min_vaf = 0, read_method = "min"):
+    if not read_method in ["min", "max"]:
+        raise InputError(read_method, "Expeced input \"min\" or \"max\"")
+    def create_key(chr,start,stop,var): return chr + "#" + start + "#" + stop + "#" + var
+    deletions = {}
+    with open(deletions_file) as deletion_lines:
+        for line in deletions_line:
+            if "Chr" in line:
+                data = parse_pindel_line(line,report_min_depth == "min")
+                deletions[create_key(data['chr'],data['start'],data['stop'], data["indel"])] = data
+    insertions = {}
+    with open(insertions_file) as insertion_lines:
+        for line in deletions_line:
+            if "Chr" in line:
+                data = parse_pindel_line(line,report_min_depth == "min")
+                insertions[create_key(data['chr'],data['start'],data['stop'], data["indel"])] = data
+    with open(vcf_file, 'r') as vcf_file_input:
+        vcf_reader =  vcf.Reader(input_vcf_file)
+        for record in vcf_reader:
+            key = create_key(record.CHROM, record.POS, record.info['END'], record.info['ALT'])
+            if record.info['SVTYPE'] in ["DEL", "RPL"]:
+                if key in deletions:
+                        strand_info = "Tumor_Del=+" + deletions[key]['fwd'] + "|-" + deletions[key]['rve']
+                        var_reads = int(deletions[key]['fwd']) +  int(deletions[key]['rve'])
+                        ref_reads = int(deletions[key]['fwd']) +  int(deletions[key]['rve'])
+                else:
+                    print(key +": not found")
+            if record.info["SVTYPE"] == "INS":
+                if key in insertions:
+                    strand_info = "Tumor_Del=+" + insertions[key]['fwd'] + "|-" + insertions[key]['rve']
+                    var_reads = int(insertions[key]['fwd']) +  int(insertions[key]['rve'])
+                    ref_reads = int(insertions[key]['fwd']) +  int(insertions[key]['rve'])
+                else:
+                    print(key +": not found")
+            read_depth = var_reads + ref_reads
+            if var_reads / read_depth >= min_allele_ratio and read_depth >= min_read_depth:
+                print(record.CHROM +"\t" +
+                      record.POS + "\t" +
+                      record.info['END'] + "\t" +
+                      record.REF + "\t" +
+                      record.ALT + "\t"
+                      "comments: sample=" + sample + " " +
+                      "variantAlleleRatio=" + str(var_reads / (var_reads + ref_reads)) + " " +
+                      "alleleFreq=" + str(ref_reads) + "," + str(var_reads) + " " +
+                      "readDepth=" + str(ref_reads) + " " +
+                      strand_info + " " +
+                      "Tumor_var_plusAmplicons=- Tumor_var_minusAmplicons=- Tumor_ref_plusAmplicons=- Tumor_ref_minusAmplicons=-")
+
 
 if __name__ == "__main__":
     import doctest

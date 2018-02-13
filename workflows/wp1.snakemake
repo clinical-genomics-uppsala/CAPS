@@ -16,3 +16,5 @@ include: "../rules/calling/pindel.smk"
 include: "../rules/calling/jsnpmania.smk"
 
 include: "../rules/calling/convert/jsnpmania_to_annovar_input.smk"
+
+include: "../rules/calling/convert/pindel_to_annovar_input.smk"
