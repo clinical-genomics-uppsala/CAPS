@@ -16,7 +16,7 @@ units.index = units.index.set_levels([i.astype(str) for i in units.index.levels]
 #file_endings = [".variations", ".deletions", ".insertions"]
 #file_endings = [".cutadapt.fastq.gz", "_R2_001.cutadapt.fastq.gz", "_001.cutadapt.qc.txt"]
 #pindel_file_endings = [".indels_D",".indels_SI"]
-pindel_file_endings = [".merged.vcf"]
+pindel_file_endings = [".vcf"]
 def generate_file_output_pindel():
     return [os.path.join("pindel", str(row.Index) + ending) for row in samples.itertuples() for ending in pindel_file_endings]
 
@@ -40,7 +40,7 @@ rule all:
     input:
         #generate_file_output_pindel()
         #generate_file_output_jsnpmania_input()
-        #generate_pindel_file_output_annovar_input()
+        generate_pindel_file_output_annovar_input()
         #generate_file_output_annovar_input()
         #generate_pindel_file_output_annovar_input() + generate_file_output_annovar_input()
 

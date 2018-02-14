@@ -4,6 +4,8 @@
 #def convert_to_annovar_input(sample_name, output, deletions_file, insertions_file, nc_to_chr, min_allele_ratio, min_read_depth):
 #    with open(deletions) as deletions:
 
+import vcf
+
 _column_converter_pindel = {'indel_info': 2 ,'chr': 3, 'start': 4, 'stop': 5, 'read_info': 19}
 _pindel_read_info_column = {'sample_name': 0,
                             'left_breakpoint_read_depth': 1,
@@ -16,12 +18,12 @@ def __extract_value(info):
     return info.split()[-1]
 
 def _extract_deletion(line, amplicon_min_depth=0, filter=None):
-    columns = re.split("\s", line.rstrip())
+    columns = re.split(r'\s', line.rstrip())
     pindel_data = lambda field: columns[_column_converter_indel[field]]
-    chr = pindel_data('chr').split(" ")[1]
-    start = int(pindel_data('start').split(" ")[1])
+    chr = pindel_data('chr').split(r'\s')[1]
+    start = int(pindel_data('start').split(r'\s')[1])
     end = start - 1
-    insert_info = pindel_data('insert_info').split(" ")
+    insert_info = pindel_data('insert_info').split(r'\s')
 
 def parse_pindel_line(line,report_min_depth=False):
     """
@@ -87,55 +89,95 @@ def parse_pindel_line(line,report_min_depth=False):
                 'rve': allternate_allele_reads_rve,
                 'rve_u': allternate_allele_uniq_reads_rve}
 
+def _get_start_pos(pos,type):
+    if type == "INS":
+        return pos
+    elif type in ["DEL", "RPL"]:
+        return pos + 1
+    else:
+        raise Exception("Unhandled indel: " + str(type))
 
-def convert_to_annovar_input(sample, vcf_file, pindel_deletions_file, pindel_insertions_file, minimum_read_depth = 1, min_vaf = 0, read_method = "min"):
+def _extract_alt_allele_from_vcf(alt,type):
+    if type == "SNV":
+        return str(alt)
+    elif type == "DEL":
+        return "-"
+    elif type in ["RPL", "INS"]:
+        return str(alt)[1:]
+    else:
+        raise Exception("Unhandled indel: " + str(type) + " " + str(alt))
+
+def _extract_ref_allele_from_vcf(alt,type):
+    if type == "SNV":
+        return str(alt)
+    elif type == "INS":
+        return "-"
+    elif type in ["RPL", "DEL"]:
+        return str(alt)[1:]
+    else:
+        raise Exception("Unhandled indel: " + str(type) + " " + str(alt))
+
+# ToDO need to rename read_method
+def convert_to_annovar_input(sample, output_file, input_vcf_file, pindel_deletions_file, pindel_insertions_file, min_read_depth = 1, min_vaf = 0, read_method = "min"):
     if not read_method in ["min", "max"]:
-        raise InputError(read_method, "Expeced input \"min\" or \"max\"")
-    def create_key(chr,start,stop,var): return chr + "#" + start + "#" + stop + "#" + var
+        raise Exception(read_method, "Expeced input \"min\" or \"max\"")
+    def create_key(chr,start,stop,var): return chr + "#" + str(start) + "#" + str(stop) + "#" + var
     deletions = {}
-    with open(deletions_file) as deletion_lines:
-        for line in deletions_line:
-            if "Chr" in line:
-                data = parse_pindel_line(line,report_min_depth == "min")
-                deletions[create_key(data['chr'],data['start'],data['stop'], data["indel"])] = data
-    insertions = {}
-    with open(insertions_file) as insertion_lines:
-        for line in deletions_line:
-            if "Chr" in line:
-                data = parse_pindel_line(line,report_min_depth == "min")
-                insertions[create_key(data['chr'],data['start'],data['stop'], data["indel"])] = data
-    with open(vcf_file, 'r') as vcf_file_input:
-        vcf_reader =  vcf.Reader(input_vcf_file)
-        for record in vcf_reader:
-            key = create_key(record.CHROM, record.POS, record.info['END'], record.info['ALT'])
-            if record.info['SVTYPE'] in ["DEL", "RPL"]:
-                if key in deletions:
-                        strand_info = "Tumor_Del=+" + deletions[key]['fwd'] + "|-" + deletions[key]['rve']
-                        var_reads = int(deletions[key]['fwd']) +  int(deletions[key]['rve'])
-                        ref_reads = int(deletions[key]['fwd']) +  int(deletions[key]['rve'])
-                else:
-                    print(key +": not found")
-            if record.info["SVTYPE"] == "INS":
-                if key in insertions:
-                    strand_info = "Tumor_Del=+" + insertions[key]['fwd'] + "|-" + insertions[key]['rve']
-                    var_reads = int(insertions[key]['fwd']) +  int(insertions[key]['rve'])
-                    ref_reads = int(insertions[key]['fwd']) +  int(insertions[key]['rve'])
-                else:
-                    print(key +": not found")
-            read_depth = var_reads + ref_reads
-            if var_reads / read_depth >= min_allele_ratio and read_depth >= min_read_depth:
-                print(record.CHROM +"\t" +
-                      record.POS + "\t" +
-                      record.info['END'] + "\t" +
-                      record.REF + "\t" +
-                      record.ALT + "\t"
-                      "comments: sample=" + sample + " " +
-                      "variantAlleleRatio=" + str(var_reads / (var_reads + ref_reads)) + " " +
-                      "alleleFreq=" + str(ref_reads) + "," + str(var_reads) + " " +
-                      "readDepth=" + str(ref_reads) + " " +
-                      strand_info + " " +
-                      "Tumor_var_plusAmplicons=- Tumor_var_minusAmplicons=- Tumor_ref_plusAmplicons=- Tumor_ref_minusAmplicons=-")
+    with open(output_file, 'w') as output:
+        with open(pindel_deletions_file) as deletion_lines:
+            for line in deletion_lines:
+                if "Chr" in line:
+                    data = parse_pindel_line(line,read_method == "min")
+                    deletions[create_key(data['chr'],data['start'],data['stop'], data["indel"])] = data
+        insertions = {}
+        with open(pindel_insertions_file) as insertion_lines:
+            for line in insertion_lines:
+                if "Chr" in line:
+                    data = parse_pindel_line(line, read_method == "min")
+                    insertions[create_key(data['chr'],data['start'],data['stop'], data["indel"])] = data
+        with open(input_vcf_file, 'r') as vcf_file:
+            vcf_reader =  vcf.Reader(vcf_file)
+            for record in vcf_reader:
+                for alt in record.ALT:
+                    key = create_key(record.CHROM, record.POS, record.INFO['END'] + 1, _extract_alt_allele_from_vcf(alt,record.INFO['SVTYPE']))
+                    var_reads, ref_reads = 0, 0
+                    strand_info = ""
+                    if record.INFO['SVTYPE'] in ["DEL", "RPL"]:
+                        if key in deletions:
+                                strand_info = "Tumor_Del=+" + str(deletions[key]['fwd']) + "|-" + str(deletions[key]['rve'])
+                                var_reads = int(deletions[key]['fwd']) +  int(deletions[key]['rve'])
+                                ref_reads = int(deletions[key]['depth'])
+                        else:
+                            continue
+                    elif record.INFO["SVTYPE"] == "INS":
+                        if key in insertions:
+                            strand_info = "Tumor_Ins=+" + str(insertions[key]['fwd']) + "|-" + str(insertions[key]['rve'])
+                            var_reads = int(insertions[key]['fwd']) +  int(insertions[key]['rve'])
+                            ref_reads = int(insertions[key]['depth'])
+                        else:
+                            print(key +": not found")
+                            continue
+                    else:
+                        print("Unhandled type: "  + str(record.INFO["SVTYPE"]) + " " +   + str(record))
+                        continue
+                    read_depth = var_reads + ref_reads
+                    if var_reads / read_depth >= min_vaf and read_depth >= min_read_depth:
+                        output.write(_generate_output(record, sample, alt, ref_reads, var_reads, strand_info) + "\n")
 
+
+def _generate_output(record, sample, alt, ref_reads, var_reads, strand_info):
+    return "\t".join([
+        record.CHROM.replace("chr",""),
+        str(_get_start_pos(record.POS,record.INFO['SVTYPE'])),
+        str(record.INFO['END']),
+        _extract_ref_allele_from_vcf(record.REF,record.INFO['SVTYPE']),
+        _extract_alt_allele_from_vcf(alt,record.INFO['SVTYPE']),
+        " ".join(["comments: sample=" + sample,
+            "variantAlleleRatio=" + str(var_reads / (var_reads + ref_reads)),
+            "alleleFreq=" + str(ref_reads) + "," + str(var_reads),
+            "readDepth=" + str(ref_reads + var_reads),
+            strand_info,
+            "Tumor_var_plusAmplicons=- Tumor_var_minusAmplicons=- Tumor_ref_plusAmplicons=- Tumor_ref_minusAmplicons=-"])])
 
 if __name__ == "__main__":
     import doctest

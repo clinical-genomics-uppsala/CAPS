@@ -38,7 +38,7 @@ pindel_flags:
     min_allele_ratio: 0.001
     read_method: min
   haloplex:
-    min_read_depth: 20
+    min_read_depth: 5
     min_allele_ratio: 0.01
     read_method: min
 

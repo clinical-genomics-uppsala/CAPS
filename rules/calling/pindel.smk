@@ -43,7 +43,7 @@ rule pindel_to_vcf_D:
         ref=config['reference_genome'],
         pindel="pindel/{sample}.indels_D"
     output:
-        "pindel/{sample}.indels_D.vcf"
+        temp("pindel/{sample}.indels_D.temp.vcf")
     params:
         refname=config['reference_genome_name'],
         refdate=['reference_genome_date'],
@@ -53,27 +53,26 @@ rule pindel_to_vcf_D:
     wrapper:
         "0.19.3/bio/pindel/pindel2vcf"
 
-rule pindel_to_vcf_SI:
+rule check_vcf_D_for_samplename:
+    input:
+        "pindel/{sample}.indels_D.temp.vcf"
+    output:
+        "pindel/{sample}.indels_D.vcf"
+    shell:
+        "sed 's/^#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO$/#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\t{wildcards.sample}/' {input} > {output}"
+
+rule pindel_to_vcf:
     input:
         ref=config['reference_genome'],
-        pindel="pindel/{sample}.indels_SI"
+        pindel="pindel/{sample}.indels_D"
     output:
-        "pindel/{sample}.indels_SI.vcf"
+        "pindel/{sample}.vcf"
     params:
         refname=config['reference_genome_name'],
         refdate=['reference_genome_date'],
-        extra="--min_size 3"
+        extra="--min_size 3",
+        prefix="pindel/{sample}.indels"
     log:
         "logs/pindel/pindel2vcf.SI.log"
     wrapper:
-        "0.19.3/bio/pindel/pindel2vcf"
-
-rule merge_pindel_vcf_files:
-    input:
-        calls=["pindel/{sample}.indels_D.vcf","pindel/{sample}.indels_SI.vcf"]
-    output:
-        "pindel/{sample}.merged.vcf"
-    log:
-        "logs/pindel/bcftools.merge.log"
-    wrapper:
-        "0.19.3/bio/bcftools/concat"
+        "https://bitbucket.org/Smeds/snakemake-wrappers/raw/a2341cdc21018dd43a2078aa542119fcdb89bb7c/bio/pindel/pindel2vcf/wrapper.py"
