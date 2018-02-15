@@ -50,3 +50,8 @@ Tests cases are in the subfolder `.test`. They should be executed via continuous
 ## Local Testing
 
 docker run -v /Users/patsm159/auctornotitia_workspace/caps-snakemake:/snakemake-workflows -it snakemake bash
+
+'''
+apt update
+apt install ttf-dejavu
+'''

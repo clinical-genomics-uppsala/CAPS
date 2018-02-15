@@ -261,7 +261,7 @@ def extract_major_snv_allele(sample, ref, line, nc_to_chr, amplicon_min_depth=0,
     return alleles
 
 
-def _get_major_vaf(variants_at_position, sep=r"\s|=", allele_ratio_column=10):
+def _get_major_vaf(variants_at_position, sep=r"\s|=", allele_ratio_column=9):
     """
         Extracts the major allele from a dict containing multiple variants.
 
@@ -275,7 +275,7 @@ def _get_major_vaf(variants_at_position, sep=r"\s|=", allele_ratio_column=10):
     variant_iterator = iter(variants_at_position.keys())
     key = next(variant_iterator)
     import re
-    vaf = float(re.split(sep,variants_at_position[key])[allele_ratio_column] + "\n")
+    vaf = float(re.split(sep,variants_at_position[key])[allele_ratio_column])
     #ToDo write a test case that goes through this for loop.
     for next_key in variant_iterator:
         next_vaf = float(re.split(r"\s|=",variants_at_position[next_key])[allele_ratio_column])

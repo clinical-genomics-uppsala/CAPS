@@ -5,11 +5,11 @@ from scripts.lib.common.data.parser.jsnpmania import convert_jsnpmania_to_annvov
 
 rule jsnpmania_to_annovar_input:
     input:
-        jsnpmania_variants="JSNPmania/{sample}.variations",
-        jsnpmania_insertions="JSNPmania/{sample}.insertions",
-        jsnpmania_deletions="JSNPmania/{sample}.deletions"
+        jsnpmania_variants="jsnpmania/{sample}.variations",
+        jsnpmania_insertions="jsnpmania/{sample}.insertions",
+        jsnpmania_deletions="jsnpmania/{sample}.deletions"
     output:
-        "Annovar/{sample}.annovarInput"
+        "annovar/{sample}.annovarInput"
     params:
         nc_to_chr_file = config['nc_to_chr_file'],
         min_allele_ratio = lambda wildcards: config["filter_settings"][samples["panel_type"][wildcards.sample]]['min_allele_ratio'],

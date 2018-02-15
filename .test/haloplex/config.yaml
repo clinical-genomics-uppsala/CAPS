@@ -14,7 +14,7 @@ units: units.tsv
 
 illuminaclip_file: ../illumina.fa
 
-reference_genome: ../data2/ref/chr21.fa
+reference_genome: ../data/ref/chr21.fa
 reference_genome_name: hg19.chr21.fa
 reference_genome_date: 200902
 

@@ -61,6 +61,7 @@ rule check_vcf_D_for_samplename:
     shell:
         "sed 's/^#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO$/#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\t{wildcards.sample}/' {input} > {output}"
 
+#ToDo Remember update wrapper after pull-request has been approved
 rule pindel_to_vcf:
     input:
         ref=config['reference_genome'],

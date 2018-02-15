@@ -9,13 +9,13 @@ rule pindel_to_annovar_input:
         pindel_insertions="pindel/{sample}.indels_SI",
         vcf="pindel/{sample}.vcf"
     output:
-        "PindelAnnovar/{sample}.pindel.filtered.annovarInput"
+        "pindel_annovar/{sample}.pindel.filtered.annovarInput"
     params:
         min_read_depth = lambda wildcards: config["pindel_flags"][samples["panel_type"][wildcards.sample]]['min_read_depth'],
         min_allele_ratio = lambda wildcards: config["pindel_flags"][samples["panel_type"][wildcards.sample]]['min_allele_ratio'],
         read_method = lambda wildcards: config["pindel_flags"][samples["panel_type"][wildcards.sample]]['read_method']
     log:
-        "logs/jsnpmania/{sample}.jsnpmania_to_annovar.log"
+        "logs/pindel/{sample}.pindel_to_annovar.log"
     run:
         convert_to_annovar_input(
             wildcards.sample,

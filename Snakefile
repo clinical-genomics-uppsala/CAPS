@@ -27,22 +27,18 @@ def generate_file_output_qc():
             for f in qc_files]
 
 def generate_file_output_jsnpmania_input():
-    return [os.path.join("JSNPmania", str(row.Index) + ending) for row in samples.itertuples() for ending in ['.variations','.insertions','.deletions']]
+    return [os.path.join("jsnpmania", str(row.Index) + ending) for row in samples.itertuples() for ending in ['.variations','.insertions','.deletions']]
 
 def generate_file_output_annovar_input():
-    return [os.path.join("Annovar", str(row.Index) + ".annovarInput") for row in samples.itertuples()]
+    return [os.path.join("annovar", str(row.Index) + ".annovarInput") for row in samples.itertuples()]
 
 def generate_pindel_file_output_annovar_input():
-    return [os.path.join("PindelAnnovar", str(row.Index) + ".pindel.filtered.annovarInput") for row in samples.itertuples()]
+    return [os.path.join("pindel_annovar", str(row.Index) + ".pindel.filtered.annovarInput") for row in samples.itertuples()]
 
 
 rule all:
     input:
-        #generate_file_output_pindel()
-        #generate_file_output_jsnpmania_input()
-        generate_pindel_file_output_annovar_input()
-        #generate_file_output_annovar_input()
-        #generate_pindel_file_output_annovar_input() + generate_file_output_annovar_input()
+        generate_pindel_file_output_annovar_input() + generate_file_output_qc()
 
 print(generate_file_output_pindel())
 include: "workflows/wp1.snakemake"
