@@ -1,9 +1,12 @@
 ---
 
+nc_to_chr_file: ../reference.hg19.info
+
 pindel_exclude_regions: ../exclude.chr.txt
 
-path_jsnpmania : "/jSNPmania-0.0.7-SNAPSHOT-amplicons_v4/JSNPmania.sh"
-path_jsnpmania_header: "../Convert2SNPManiaHeader.sam"
+path_gatk: /snakemake-workflows/resources/GenomeAnalysisTKLite_molecules.jar
+path_jsnpmania: /snakemake-workflows/resources/jSNPmania-0.0.7-SNAPSHOT-amplicons_v4/JSNPmania.sh
+path_jsnpmania_header: ../Convert2SNPManiaHeader.sam
 
 samples: samples.tsv
 
@@ -11,9 +14,10 @@ units: units.tsv
 
 illuminaclip_file: ../illumina.fa
 
-reference_genome: ../data/ref/genome.chr21.fa
+reference_genome: ../data/ref/chr21.fa
 reference_genome_name: hg19.chr21.fa
 reference_genome_date: 200902
+
 
 accel_panels:
   panel1:
@@ -23,12 +27,30 @@ accel_panels:
     5p_primer_file: 5p_primers.fa
     3p_primer_file: 3p_primers.fa
 
-pindel_flags:
-  swift: "-m 20 -v 0.001"
-  haloplex: "-m 20 -v 0.01"
+cutadapt:
+  adapters_1:
+    first_pair_adapter: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
+    second_pair_adapter: AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT
 
-jsnpmania_flags: "-a 5 -q 20 -e 0 -am"
+pindel_flags:
+  swift:
+    min_read_depth: 20
+    min_allele_ratio: 0.001
+    read_method: min
+  haloplex:
+    min_read_depth: 5
+    min_allele_ratio: 0.01
+    read_method: min
+
+#jsnpmania_flags: "-a 5 -q 20 -e 0 -am"
+jsnpmania_flags: "-a 1 -q 0 -e 0 -am"
 
 mutations_flags:
   swift: "-minRD 30,300 -minVaf 0.001"
   haloplex: "-minRD 30,300 -minVaf 0.01"
+
+filter_settings:
+  haloplex:
+    min_allele_ratio: 0.01
+    min_read_depth: 20
+    amplicon_min_depth: 5

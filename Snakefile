@@ -15,8 +15,8 @@ units.index = units.index.set_levels([i.astype(str) for i in units.index.levels]
 
 #file_endings = [".variations", ".deletions", ".insertions"]
 #file_endings = [".cutadapt.fastq.gz", "_R2_001.cutadapt.fastq.gz", "_001.cutadapt.qc.txt"]
-pindel_file_endings = ["_D.vcf"]
-
+#pindel_file_endings = [".indels_D",".indels_SI"]
+pindel_file_endings = [".vcf"]
 def generate_file_output_pindel():
     return [os.path.join("pindel", str(row.Index) + ending) for row in samples.itertuples() for ending in pindel_file_endings]
 
@@ -26,9 +26,19 @@ def generate_file_output_qc():
         for row in units.itertuples()
             for f in qc_files]
 
+def generate_file_output_jsnpmania_input():
+    return [os.path.join("jsnpmania", str(row.Index) + ending) for row in samples.itertuples() for ending in ['.variations','.insertions','.deletions']]
+
+def generate_file_output_annovar_input():
+    return [os.path.join("annovar", str(row.Index) + ".annovarInput") for row in samples.itertuples()]
+
+def generate_pindel_file_output_annovar_input():
+    return [os.path.join("pindel_annovar", str(row.Index) + ".pindel.filtered.annovarInput") for row in samples.itertuples()]
+
+
 rule all:
     input:
-        generate_file_output_pindel() + generate_file_output_qc()
+        generate_pindel_file_output_annovar_input() + generate_file_output_qc()
 
-print(generate_file_output_pindel() + generate_file_output_qc())
+print(generate_file_output_pindel())
 include: "workflows/wp1.snakemake"

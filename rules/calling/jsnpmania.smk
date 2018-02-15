@@ -7,15 +7,15 @@ rule run_jsnpmania:
     input:
         lambda wildcards: "mapped/" + get_bam_file(wildcards, samples)
     output:
-        variations="JSNPmania/{sample}.variations",
-        insertions="JSNPmania/{sample}.insertions",
-        deletions="JSNPmania/{sample}.deletions"
+        variations = "jsnpmania/{sample}.variations",
+        insertions = "jsnpmania/{sample}.insertions",
+        deletions = "jsnpmania/{sample}.deletions"
     params:
         path_jsnpmania = config.get('path_jsnpmania',"jsnpmania.jar"),
         path_jsnpmania_header = config['path_jsnpmania_header'],
-        ref_file=lambda wildcards: samples['snpseq_file'][wildcards.sample],
-        flags= lambda wildcards: config["jsnpmania_flags"]
+        ref_file = lambda wildcards: samples['snpseq_file'][wildcards.sample],
+        flags = config["jsnpmania_flags"]
     log:
         "logs/jsnpmania/{sample}.jsnpmania.log"
     wrapper:
-        "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/add-java-dep/bio/jsnpmania/wrapper.py"
+        "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/jsnpmania/wrapper.py"
