@@ -37,6 +37,7 @@ def convert_jsnpmania_to_annvovar_output(sample_name, output, jsnpmania_variants
     with open(path_nc_to_chr,'r') as nc_to_chr_file:
         for line in nc_to_chr_file:
             if not line.startswith("#"):
+                line = line.rstrip()
                 columns = line.split("\t")
                 chr_to_nc[columns[0]] = columns[1]
     process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, chr_to_nc, min_allele_ratio, min_read_depth, amplicon_min_depth)
@@ -261,7 +262,7 @@ def extract_major_snv_allele(sample, ref, line, nc_to_chr, amplicon_min_depth=0,
     return alleles
 
 
-def _get_major_vaf(variants_at_position, sep=r"\s|=", allele_ratio_column=9):
+def _get_major_vaf(variants_at_position, sep=r'\t|\s|=', allele_ratio_column=9):
     """
         Extracts the major allele from a dict containing multiple variants.
 
@@ -278,7 +279,7 @@ def _get_major_vaf(variants_at_position, sep=r"\s|=", allele_ratio_column=9):
     vaf = float(re.split(sep,variants_at_position[key])[allele_ratio_column])
     #ToDo write a test case that goes through this for loop.
     for next_key in variant_iterator:
-        next_vaf = float(re.split(r"\s|=",variants_at_position[next_key])[allele_ratio_column])
+        next_vaf = float(re.split(sep,variants_at_position[next_key])[allele_ratio_column])
         if vaf < next_vaf:
             vaf = next_vaf
             key = next_key

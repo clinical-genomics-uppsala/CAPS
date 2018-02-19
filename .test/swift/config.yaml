@@ -8,6 +8,33 @@ path_gatk: /snakemake-workflows/resources/GenomeAnalysisTKLite_molecules.jar
 path_jsnpmania: /snakemake-workflows/resources/jSNPmania-0.0.7-SNAPSHOT-amplicons_v4/JSNPmania.sh
 path_jsnpmania_header: ../Convert2SNPManiaHeader.sam
 
+annovar:
+  build_version: hg19
+  bin: /snakemake-workflows/resources/2015Mar22/bin/table_annovar.pl
+  database: /snakemake-workflows/resources/2015Mar22_20160706/annovar_humandb
+  protocols:
+    refGene:
+      argument: "'-splicing_threshold 5'"
+      operation: g
+    1000g2015aug_eur:
+      argument: ""
+      operation: f
+    snp138:
+      argument: ""
+      operation: f
+    snp138NonFlagged:
+      argument: ""
+      operation: f
+    esp6500siv2_ea:
+      argument: ""
+      operation: f
+    cosmic70:
+      argument: ""
+      operation: f
+    clinvar_20150629:
+      argument: ""
+      operation: f
+
 samples: samples.tsv
 
 units: units.tsv

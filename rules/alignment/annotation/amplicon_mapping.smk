@@ -18,7 +18,7 @@ rule amplicon_mapping:
   params:
       path_gatk = config.get('path_gatk',"gatk.jar"),
       genome_ref = config['reference_genome'],
-      design_file =lambda wildcards: samples['design_file'][wildcards.sample]
+      design_file =lambda wildcards: samples['amplicon_file'][wildcards.sample]
   wrapper:
       "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/amplicon_mapping/wrapper.py"
 
