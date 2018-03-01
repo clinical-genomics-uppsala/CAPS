@@ -55,4 +55,5 @@ docker run -v /Users/patsm159/auctornotitia_workspace/caps-snakemake:/snakemake-
 apt update
 apt install ttf-dejavu
 apt-get install build-essential
+apt install libpod-plainer-perl
 '''
