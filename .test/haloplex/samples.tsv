@@ -1,3 +1,3 @@
-sample	panel_type	trimming	adapters	amplicon_file	snpseq_file
-sample1	haloplex	cutadapt	adapters_1	design.selection.bed	design.ampregion.SNPseq
-sample2	haloplex	cutadapt	adapters_1	design.selection.bed	design.ampregion.SNPseq
+sample	panel_type	trimming	adapters	amplicon_file	snpseq_file	hotspot	type
+sample1	haloplex	cutadapt	adapters_1	design.selection.bed	design.ampregion.SNPseq	../hotspot.tsv	colon
+sample2	haloplex	cutadapt	adapters_1	design.selection.bed	design.ampregion.SNPseq	../hotspot.tsv	colon

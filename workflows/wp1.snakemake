@@ -20,3 +20,7 @@ include: "../rules/calling/convert/jsnpmania_to_annovar_input.smk"
 include: "../rules/calling/convert/pindel_to_annovar_input.smk"
 
 include: "../rules/annotate/annovar.smk"
+
+include: "../rules/reports/wp1/filter_mutations.smk"
+
+include: "../rules/reports/wp1/msi_extraction.smk"

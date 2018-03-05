@@ -1,6 +1,7 @@
 ---
 
 nc_to_chr_file: ../reference.hg19.info
+chr_to_nc_file: ../reference.chr_to_nc.hg19.info
 
 pindel_exclude_regions: ../exclude.chr.txt
 
@@ -68,6 +69,13 @@ pindel_flags:
     min_read_depth: 5
     min_allele_ratio: 0.01
     read_method: min
+files:
+  transcripts_mappers: ../transcripts.tsv
+  multibp_variants_mappers: ../multibp.tsv
+  swift:
+    blacklist: ../blacklist.tsv
+  haloplex:
+    blacklist: ../blacklist.tsv
 
 #jsnpmania_flags: "-a 5 -q 20 -e 0 -am"
 jsnpmania_flags: "-a 1 -q 0 -e 0 -am"
@@ -81,3 +89,4 @@ filter_settings:
     min_allele_ratio: 0.01
     min_read_depth: 20
     amplicon_min_depth: 5
+    max_1000genome_ratio: 0.02
