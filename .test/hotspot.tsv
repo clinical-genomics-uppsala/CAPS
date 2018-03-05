@@ -1,0 +1,15 @@
+#Chr	Start_hg19	End_hg19	Gene	CDS_mut_syntax	AA_mut_synta	Report	comment	Exon	Accession_number
+NC_000002.11	29432682	29432682	ALK	c.G3806	p.G1269	region_all	resistance_mutation	exon25	NM_004304
+NC_000002.11	29443613	29443613	ALK	c.G3604	p.G1202	region_all	resistance_mutation	exon23	NM_004304
+NC_000002.11	29443631	29443631	ALK	c.C3586	p.L1196	region_all	resistance_mutation	exon23	NM_004304
+NC_000002.11	29443695	29443695	ALK	c.C3522	p.F1174	region_all	resistance_mutation	exon23	NM_004304
+NC_000002.11	29443696	29443696	ALK	c.T3521	p.F1174	region_all	resistance_mutation	exon23	NM_004304
+NC_000002.11	29443697	29443697	ALK	c.T3520	p.F1174	region_all	resistance_mutation	exon23	NM_004304
+NC_000002.11	29445213	29445213	ALK	c.T3512	p.I1171	region_all	resistance_mutation	exon22	NM_004304
+NC_000002.11	29445258	29445258	ALK	c.G3467	p.C1156	region_all	resistance_mutation	exon22	NM_004304
+NC_000002.11	29445269	29445269	ALK	c.G3456	p.L1152	region_all	resistance_mutation	exon22	NM_004304
+NC_000002.11	29445270	29445270	ALK	c.T3455	p.L1152	region_all	resistance_mutation	exon22	NM_004304
+NC_000002.11	29445271	29445271	ALK	c.C3454	p.L1152	region_all	resistance_mutation	exon22	NM_004304
+NC_000002.11	29445272	29445272	ALK	c.G3453	p.T1151	region_all	resistance_mutation	exon22	NM_004304
+NC_000002.11	29445273	29445273	ALK	c.C3452	p.T1151	region_all	resistance_mutation	exon22	NM_004304
+NC_000002.11	29445274	29445274	ALK	c.A3451	p.T1151	region_all	resistance_mutation	exon22	NM_004304

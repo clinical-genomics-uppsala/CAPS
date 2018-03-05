@@ -52,8 +52,10 @@ Tests cases are in the subfolder `.test`. They should be executed via continuous
 docker run -v /Users/patsm159/auctornotitia_workspace/caps-snakemake:/snakemake-workflows -it snakemake bash
 
 '''
+pip install pyvcf
+pip install biopython
 apt update
-apt install ttf-dejavu
-apt-get install build-essential
-apt install libpod-plainer-perl
+apt install -y ttf-dejavu
+apt install -y build-essential
+apt install -y libpod-plainer-perl
 '''

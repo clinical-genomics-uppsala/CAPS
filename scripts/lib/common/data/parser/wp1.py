@@ -138,7 +138,7 @@ def read_hotspot_file(input_file):  #ToDo make chromosom conversion
     intronic_data = RejectingDict()
     def hotspot_updater(key, value):
         if key[0] in hotspot_data:
-            hotspot_data[key[0]][key[1:]] = value
+                hotspot_data[key[0]][key[1:]] = value
         else:
             hotspot_data[key[0]] = {key[1:]: value}
     def indel_updater(key, value):
@@ -227,8 +227,8 @@ def no_variant_found(sample, info, key, read_levels, annovar_mapper, mutation_ty
     (entry_chr, entry_start, entry_end) = key
     for position in range(0, int(entry_end) - int(entry_start) + 1):
         found = level = read_depth = "NA"
-        if isinstance(info['read_depth'], list):
-            depth = info['read_depth'][position]
+        if isinstance(info['rd'], list):
+            depth = info['rd'][position]
             try:
                 if depth == "-":
                     found = "not in design"
@@ -296,8 +296,6 @@ def extract_hotspot_snv_info(info, read_levels, annovar_mapper, transcripts, amp
         if info['bwa'] is not None:
             variants = []
             for variant in info['bwa']:
-                ##if variant[annovar_mapper['Start']] == '55242480' and variant[annovar_mapper['End']] == '55242502':
-                ##    print(str(variant))
                 if not bwa_and_pindel_overlap(variant, info, annovar_mapper):
                     (aa, cds, acc_num, exon, exonic_type, comment) = get_transcript_info(variant, annovar_mapper, transcripts)
                     (found, level) = get_read_level(read_levels, info['read_depth'][0])
@@ -313,8 +311,6 @@ def extract_hotspot_snv_info(info, read_levels, annovar_mapper, transcripts, amp
                     if mutation_type is None:
                         mutation_type = get_mutation_type(variant[annovar_mapper['Reference_base']],variant[annovar_mapper['Variant_base']],
                                         variant[annovar_mapper['Strands_Ins']],variant[annovar_mapper['Strands_Del']],mutation_type)
-                    if variant[annovar_mapper['Start']] == '55242480' and variant[annovar_mapper['End']] == '55242502':
-                        print(variant[annovar_mapper['Reference_base']] + " " + variant[annovar_mapper['Variant_base']] + " " + variant[annovar_mapper['Strands_Ins']] + " " + variant[annovar_mapper['Strands_Del']] + " " + mutation_type)
 
                     comment = merge_comment(info['comment'],comment)
 
@@ -375,7 +371,6 @@ def extract_hotspot_pindel_info(info, read_levels, annovar_mapper, transcripts, 
             variants = []
             for variant in info['pindel']:
                 (aa, cds, acc_num, exon, exonic_type, comment) = get_transcript_info(variant, annovar_mapper, transcripts)
-                print(str(info))
                 (found, level) = get_read_level(read_levels, info['read_depth'][0])
                 ref_plus, ref_minus, var_plus, var_minus, ref_all, var_all = get_amplicon_info(variant,annovar_mapper, amplicon_mapped)
 

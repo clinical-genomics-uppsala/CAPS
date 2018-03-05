@@ -82,8 +82,10 @@ def generate_headermap(line,startswith="Chr", sep="\t"):
         {'Chr': 0, 'Start': 1, 'End': 2, 'Ref': 3, 'Alt': 4, 'Func.refGene': 5, 'Gene.refGene': 6, 'GeneDetail.refGene': 7, 'ExonicFunc.refGene': 8, 'AAChange.refGene': 9, 'snp138': 10, 'snp138NonFlagged': 11, 'esp6500siv2_ea': 12, 'cosmic70': 13, 'clinvar_20150629': 14, 'Otherinfo': 15}
     """
     if not line.startswith(startswith):
-        raise Exception("Header line should start with \"{}\"".format(startswith))
+        raise Exception("Header line should start with \"{0}\"".format(startswith))
     else:
+        if line.startswith("#"):
+            line = line[1:]
         return dict([(v, i) for i,v in enumerate(line.rstrip().split(sep))])
 
 def process_clinvar_field(data):
