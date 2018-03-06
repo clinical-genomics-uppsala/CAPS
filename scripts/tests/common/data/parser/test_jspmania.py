@@ -22,6 +22,9 @@ class TestJSNPManiaMethods(unittest.TestCase):
             variations.write("1148\t795\t0.6925087108013938\tNC_000010.10\t123256345\tT\t353|0|0|795\tT\tA\t0.6925087108013938\t0|182|171|0\t0|0|0|0\t0|0|0|0\t23|374|374|24\t0|0|0|chr10:123256234-123256344:+:1#chr10:123256234-123256346:-:587\n")
             variations.write("670\t567\t0.8462686567164179\tNC_000010.10\t123256346\tA\t567|0|0|103\tA\tT\t0.8462686567164179\t1|292|274|0\t0|0|0|0\t0|0|0|0\t0|57|45|1\tchr10:123256234-123256346:-:564|0|0|chr10:123256234-123256346:-:3\n")
             variations.write("1412\t700\t0.5042492917847026\tNC_000010.10\t123239112\tG\t712|700|0|0\tG\tA\t0.5042492917847026\t170|83|19|428\t213|72|25|402\t0|0|0|0\t0|0|0|0\tchr10:123239059-123239249:-:36#chr10:123239055-123239245:+:340#chr10:123238910-123239122:+:258#chr10:123238910-123239121:-:64|chr10:123239059-123239249:-:40#chr10:123239055-123239245:+:406#chr10:123238910-123239122:+:192#chr10:123238910-123239121:-:47|0|0\n")
+            variations.write("5230\t5228\t0.9996175908221797\tNC_000007.13\t55249071\tC\t0|0|5228|2\tC\tT\t0.9996175908221797\t0|0|0|0\t0|0|0|0\t1592|1023|1055|1558\t1|0|0|1\t0|0|chr7:55249060-55249159:+:2889#chr7:55249060-55249159:-:1943#chr7:55248927-55249335:-:4#chr7:55248931-55249339:+:1|chr7:55249060-55249159:+:2\n")
+            variations.write("5652\t5650\t0.9996461429582448\tNC_000007.13\t55241707\tG\t2|5650|0|0\tG\tA\t0.9996461429582448\t0|1|1|0\t1330|1378|1281|1661\t0|0|0|0\t0|0|0|0\tchr7:55241578-55241856:-:2|chr7:55241578-55241856:-:580#chr7:55241656-55241765:-:1352#chr7:55241656-55241815:+:687#chr7:55241656-55241815:-:653#chr7:55241540-55241768:+:47#chr7:55241575-55241853:+:639#chr7:55241448-55241726:-:40#chr7:55241444-55241727:+:191#chr7:55241657-55241766:+:1264#chr7:55241305-55241811:-:12#chr7:55241305-55241811:+:40|0|0\n")
+            variations.write("3841\t3840\t0.9997396511325176\tNC_000007.13\t55241708\tG\t0|3840|1|0\tG\tC\t0.9997396511325176\t0|0|0|0\t910|1009|962|959\t1|0|0|0\t0|0|0|0\t0|chr7:55241657-55241766:+:1311#chr7:55241578-55241856:-:79#chr7:55241656-55241765:-:1511#chr7:55241656-55241815:+:391#chr7:55241656-55241815:-:304#chr7:55241540-55241768:+:6#chr7:55241575-55241853:+:77#chr7:55241444-55241727:+:22#chr7:55241448-55241726:-:2|chr7:55241656-55241815:+:1|0\n")
             variations.write("91\t89\t0.978021978021978\tNC_000007.13\t140499713\tA\t89|0|0|0\tA\tC/G/T\t1.0\t50|0|33|6\t0|0|0|0\t0|0|0|0\t0|0|0|0\tchr7:140499687-140500177:-:33#chr7:140499687-140500177:+:44|0|0|0\n")
             variations.write("227\t216\t0.9515418502202643\tNC_000007.13\t140508149\tT\t4|2|0|216\tT\tA\t0.9818181818181818\t0|4|0|0\t0|2|0|0\t0|0|0|0\t36|21|159|0\tchr7:140508026-140508255:-:4|chr7:140508026-140508255:-:2|0|chr7:140508000-140508412:+:36#chr7:140508001-140508412:-:19#chr7:140508026-140508255:-:155\n")
             variations.write("232\t225\t0.9698275862068966\tNC_000007.13\t140508150\tC\t0|0|225|0\tC\tA/G/T\t1.0\t0|0|0|0\t0|0|0|0\t34|43|148|0\t0|0|0|0\t0|0|chr7:140508000-140508412:+:34#chr7:140508001-140508412:-:18#chr7:140508026-140508255:-:166|0\n")
@@ -114,7 +117,10 @@ class TestJSNPManiaMethods(unittest.TestCase):
                              '1809128': {'reference': 'G', 'depth': 126},
                              '1809129': {'reference': 'T', 'depth': 21},
                              '55968053': {'reference': 'A', 'depth': 1711}},
-            'NC_000007.13': {'140499713': {'reference': 'A', 'depth': 89},
+            'NC_000007.13': {'55241707': {'reference': 'G', 'depth': 5650},
+                             '55241708': {'reference': 'G', 'depth': 3840},
+                             '55249071': {'reference': 'C', 'depth': 5228},
+                             '140499713': {'reference': 'A', 'depth': 89},
                              '140508149': {'reference': 'T', 'depth': 216},
                              '140508150': {'reference': 'C', 'depth': 225},
                              '140508151': {'reference': 'C', 'depth': 221},
@@ -191,7 +197,13 @@ class TestJSNPManiaMethods(unittest.TestCase):
                                 'amp+': 2, 'amp-': 1, 'ampInfo': 'chr4:1809007-1809187:+:7#chr4:1809071-1809315:+:4#chr4:1809006-1809186:-:9'},
                             '55968053': {'reference': 'A', 'depth': 1711,
                                 'amp+': 3, 'amp-': 3, 'ampInfo': 'chr4:55968023-55968093:+:384#chr4:55967974-55968185:+:243#chr4:55967975-55968186:-:188#chr4:55967939-55968092:+:232#chr4:55967938-55968091:-:314#chr4:55968027-55968093:-:333'}},
-            'NC_000007.13': {'140499713': {'reference': 'A', 'depth': 89,
+            'NC_000007.13': {'55241707': {'reference': 'G', 'depth': 5650,
+                                'amp+': 6, 'amp-': 5, 'ampInfo': "chr7:55241578-55241856:-:580#chr7:55241656-55241765:-:1352#chr7:55241656-55241815:+:687#chr7:55241656-55241815:-:653#chr7:55241540-55241768:+:47#chr7:55241575-55241853:+:639#chr7:55241448-55241726:-:40#chr7:55241444-55241727:+:191#chr7:55241657-55241766:+:1264#chr7:55241305-55241811:-:12#chr7:55241305-55241811:+:40"},
+                             '55241708': {'reference': 'G', 'depth': 3840,
+                                'amp+': 5, 'amp-': 4, 'ampInfo': "chr7:55241657-55241766:+:1311#chr7:55241578-55241856:-:79#chr7:55241656-55241765:-:1511#chr7:55241656-55241815:+:391#chr7:55241656-55241815:-:304#chr7:55241540-55241768:+:6#chr7:55241575-55241853:+:77#chr7:55241444-55241727:+:22#chr7:55241448-55241726:-:2"},
+                             '55249071': {'reference': 'C', 'depth': 5228,
+                                'amp+': 2, 'amp-': 2, 'ampInfo': "chr7:55249060-55249159:+:2889#chr7:55249060-55249159:-:1943#chr7:55248927-55249335:-:4#chr7:55248931-55249339:+:1"},
+                             '140499713': {'reference': 'A', 'depth': 89,
                                 'amp+': 1, 'amp-': 1, 'ampInfo': 'chr7:140499687-140500177:-:33#chr7:140499687-140500177:+:44'},
                              '140508149': {'reference': 'T', 'depth': 216,
                                 'amp+': 1, 'amp-': 2, 'ampInfo': 'chr7:140508000-140508412:+:36#chr7:140508001-140508412:-:19#chr7:140508026-140508255:-:155'},
@@ -416,6 +428,31 @@ class TestJSNPManiaMethods(unittest.TestCase):
         self.assertEqual("10\t123256344\t123256345\tTT\tAA\tcomments: sample=sample1 variantAlleleRatio=0.0609613130128957 alleleFreq=1601,104 readDepth=1706 Tumor_A=- Tumor_G=- Tumor_C=- Tumor_T=- Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=0 Tumor_ref_ampliconInfo=chr10:123256234-123256344:+:416#chr10:123256234-123256346:-:588",info["NC_000010.10#123256344#123256345#TT#AA"])
         self.assertEqual("10\t123256344\t123256346\tTTA\tAAT\tcomments: sample=sample1 variantAlleleRatio=0.0609613130128957 alleleFreq=1601,104 readDepth=1706 Tumor_A=- Tumor_G=- Tumor_C=- Tumor_T=- Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=0 Tumor_ref_ampliconInfo=chr10:123256234-123256344:+:416#chr10:123256234-123256346:-:588",info["NC_000010.10#123256344#123256346#TTA#AAT"])
         self.assertEqual("10\t123256345\t123256346\tTA\tAT\tcomments: sample=sample1 variantAlleleRatio=0.1537313432835821 alleleFreq=567,103 readDepth=670 Tumor_A=- Tumor_G=- Tumor_C=- Tumor_T=- Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=0 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=0 Tumor_ref_ampliconInfo=chr10:123256234-123256344:+:1#chr10:123256234-123256346:-:587",info["NC_000010.10#123256345#123256346#TA#AT"])
+
+    def test_extract_egfr(self):
+        from scripts.lib.common.data.parser.jsnpmania import extract_egfr, g719_filter, t790m_filter
+        extract_egfr(os.path.join(self.tempdir, 'variations'), os.path.join(self.tempdir, 'G719'),5,"sample1","lung","test1",g719_filter)
+
+        g719_lines = []
+        with open(os.path.join(self.tempdir, 'G719')) as lines:
+            for line in lines:
+                if not line.startswith("#"):
+                    g719_lines.append(line.rstrip("\n").rstrip("\r"))
+        self.assertEqual(len(g719_lines),4)
+        self.assertIn("test1\tsample1\tlung\t0.00035385704175513094\t5650\t2\t5652\t11\t0\tNC_000007.13\t55241707\tG\tA\tc.2155G>A\tp.G719\tchr7:55241578-55241856:-:580#chr7:55241656-55241765:-:1352#chr7:55241656-55241815:+:687#chr7:55241656-55241815:-:653#chr7:55241540-55241768:+:47#chr7:55241575-55241853:+:639#chr7:55241448-55241726:-:40#chr7:55241444-55241727:+:191#chr7:55241657-55241766:+:1264#chr7:55241305-55241811:-:12#chr7:55241305-55241811:+:40\tchr7:55241578-55241856:-:2", g719_lines)
+        self.assertIn("test1\tsample1\tlung\t0.0\t5650\t0\t5650\t11\t0\tNC_000007.13\t55241707\tG\tT\tc.2155G>T\tp.G719\tchr7:55241578-55241856:-:580#chr7:55241656-55241765:-:1352#chr7:55241656-55241815:+:687#chr7:55241656-55241815:-:653#chr7:55241540-55241768:+:47#chr7:55241575-55241853:+:639#chr7:55241448-55241726:-:40#chr7:55241444-55241727:+:191#chr7:55241657-55241766:+:1264#chr7:55241305-55241811:-:12#chr7:55241305-55241811:+:40\t0", g719_lines)
+        self.assertIn("test1\tsample1\tlung\t0.0\t3840\t0\t3840\t8\t0\tNC_000007.13\t55241708\tG\tA\tc.2156G>A\tp.G719\tchr7:55241657-55241766:+:1311#chr7:55241578-55241856:-:79#chr7:55241656-55241765:-:1511#chr7:55241656-55241815:+:391#chr7:55241656-55241815:-:304#chr7:55241540-55241768:+:6#chr7:55241575-55241853:+:77#chr7:55241444-55241727:+:22#chr7:55241448-55241726:-:2\t0", g719_lines)
+        self.assertIn("test1\tsample1\tlung\t0.0002603488674824265\t3840\t1\t3841\t8\t0\tNC_000007.13\t55241708\tG\tC\tc.2156G>C\tp.G719\tchr7:55241657-55241766:+:1311#chr7:55241578-55241856:-:79#chr7:55241656-55241765:-:1511#chr7:55241656-55241815:+:391#chr7:55241656-55241815:-:304#chr7:55241540-55241768:+:6#chr7:55241575-55241853:+:77#chr7:55241444-55241727:+:22#chr7:55241448-55241726:-:2\tchr7:55241656-55241815:+:1", g719_lines)
+
+        extract_egfr(os.path.join(self.tempdir, 'variations'), os.path.join(self.tempdir, 'T790M'),5,"sample1","lung","test1",t790m_filter)
+
+        t790m_lines = []
+        with open(os.path.join(self.tempdir, 'T790M')) as lines:
+            for line in lines:
+                if not line.startswith("#"):
+                    t790m_lines.append(line.rstrip("\n").rstrip("\r"))
+        self.assertEqual(len(t790m_lines),1)
+        self.assertIn("test1\tsample1\tlung\t0.0003824091778202677\t5228\t2\t5230\t2\t0\tNC_000007.13\t55249071\tC\tT\tc.2369C>T\tp.T790M\tchr7:55249060-55249159:+:2889#chr7:55249060-55249159:-:1943#chr7:55248927-55249335:-:4#chr7:55248931-55249339:+:1\tchr7:55249060-55249159:+:2", t790m_lines)
 
 if __name__ == '__main__':
     import logging

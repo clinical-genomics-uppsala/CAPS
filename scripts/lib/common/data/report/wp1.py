@@ -214,13 +214,14 @@ def generate_filtered_mutations(sample, output_file, hotspot_file, snpmania_vari
                     columns = line.rstrip("\n").rstrip("\r").split("\t")
                     nc_chr, position = columns[_column_converter_snv['nc_number']], columns[_column_converter_snv['position']]
                     for report in ['indel', 'region', 'region_all', 'hotspot']:
-                        for (report_nc, report_start, report_end ) in hotspot_data[report]:
-                            if nc_chr == report_nc and int(report_start) <= int(position) <= int(report_end):
-                                try:
-                                    hotspot_data[report][(report_nc, report_start, report_end)]['read_depth'][(int(position) - int(report_start))] = int(columns[_column_converter_snv['depth']])
-                                except KeyError:
-                                    hotspot_data[report][(report_nc, report_start, report_end)]['read_depth'] = ["-"] * (int(report_end) - int(report_start) + 1)
-                                    hotspot_data[report][(report_nc, report_start, report_end)]['read_depth'][(int(position) - int(report_start))] = int(columns[_column_converter_snv['depth']])
+                        if report in hotspot_data:
+                            for (report_nc, report_start, report_end ) in hotspot_data[report]:
+                                if nc_chr == report_nc and int(report_start) <= int(position) <= int(report_end):
+                                    try:
+                                        hotspot_data[report][(report_nc, report_start, report_end)]['read_depth'][(int(position) - int(report_start))] = int(columns[_column_converter_snv['depth']])
+                                    except KeyError:
+                                        hotspot_data[report][(report_nc, report_start, report_end)]['read_depth'] = ["-"] * (int(report_end) - int(report_start) + 1)
+                                        hotspot_data[report][(report_nc, report_start, report_end)]['read_depth'][(int(position) - int(report_start))] = int(columns[_column_converter_snv['depth']])
 
         try:
             for key, info in hotspot_data['hotspot'].items():
@@ -239,7 +240,7 @@ def generate_filtered_mutations(sample, output_file, hotspot_file, snpmania_vari
                     for variant in variants:
                         output.write("\n" + "\t".join(variant))
         except KeyError as e:
-            if str(e) != 'hotspot':
+            if not e.args[0] == 'hotspot':
                 raise e
             print("No hotspot data found")
         try:
@@ -255,7 +256,7 @@ def generate_filtered_mutations(sample, output_file, hotspot_file, snpmania_vari
                         output.write("\n" + "\t".join(variant))
 
         except KeyError as e:
-            if str(e) != 'region':
+            if not e.args[0] == 'region':
                 raise e
             print("No region data found")
         try:
@@ -271,7 +272,7 @@ def generate_filtered_mutations(sample, output_file, hotspot_file, snpmania_vari
                         output.write("\n" + "\t".join(variant))
 
         except KeyError as e:
-            if str(e) != 'indel':
+            if not e.args[0] == 'indel':
                 raise e
             print("No indel data found")
         try:
@@ -291,12 +292,8 @@ def generate_filtered_mutations(sample, output_file, hotspot_file, snpmania_vari
                     for variant in variants:
                         output.write("\n" + "\t".join(variant))
         except KeyError as e:
-            if str(e) != 'region_all':
+            if note.args[0] == 'region_all':
                 raise e
-
-
-
-
 
 if __name__ == "__main__":
     import doctest
