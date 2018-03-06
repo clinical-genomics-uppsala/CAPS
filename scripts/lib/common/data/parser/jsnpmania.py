@@ -32,6 +32,54 @@ _column_converter_indel = {
 # Order of bases in a jSNPmania file.
 _ref_position = {'A': 0, 'G': 1, 'C': 2, 'T': 3}
 
+g719_filter =  {'55241707': {'var': {'A': "c.2155G>A",'T': "c.2155G>T"}, 'aa': 'p.G719', 'ref':'G'},
+                '55241708': {'var': {'C': "c.2156G>C",'A': "c.2156G>A"}, 'aa': 'p.G719', 'ref':'G'}}
+t790m_filter = {'55249071': {'var': {'T': "c.2369C>T"}, 'aa': 'p.T790M', 'ref':'C', }}
+
+def extract_egfr(input_file,output_file,min_depth,sample,tissue,experiment,filter):
+    keys = filter.keys()
+    with open(output_file, 'w') as output:
+        with open(input_file, 'r') as lines:
+            output.write("#Run\tSample\tTumour\tVaf\tRef_RD\tVar_RD\tTot_RD\t#Ref_amp\t#Var_amp\tChr\tPos\tRef\tVar\tCDS_change\tAA_change\tRef_amp\tVar_amp")
+            for line in lines:
+                if not line.startswith("#"):
+                    columns = line.rstrip("\n").rstrip("\r").split("\t")
+                    if columns[_column_converter_snv['position']] in keys:
+                        position = columns[_column_converter_snv['position']]
+                        allele_depth = columns[_column_converter_snv['alleles_depth']].split("|")
+                        ref_base = filter[position]['ref']
+                        amplicons = columns[_column_converter_snv['amplicon_information']].split("|")
+                        ref_amplicons = 0
+                        for ref in amplicons[_ref_position[ref_base]].split("#"):
+                            info = ref.split(":")
+                            if int(info[-1]) >= min_depth:
+                                ref_amplicons+=1
+                        for var_base in filter[position]['var']:
+                            var_amplicons = 0
+                            for var in amplicons[_ref_position[var_base]].split("#"):
+                                info = var.split(":")
+                                if int(info[-1]) >= min_depth:
+                                    var_amplicons+=1
+                            output.write("\n" + "\t".join([experiment,
+                                sample,
+                                tissue,
+                                str(int(allele_depth[_ref_position[var_base]])/(int(allele_depth[_ref_position[var_base]])+int(allele_depth[_ref_position[ref_base]]))),
+                                allele_depth[_ref_position[ref_base]],
+                                allele_depth[_ref_position[var_base]],
+                                str(int(allele_depth[_ref_position[ref_base]]) + int(allele_depth[_ref_position[var_base]])),
+                                str(ref_amplicons),
+                                str(var_amplicons),
+                                columns[_column_converter_snv['nc_number']],
+                                columns[_column_converter_snv['position']],
+                                ref_base,
+                                var_base,
+                                filter[position]['var'][var_base],
+                                filter[position]['aa'],
+                                amplicons[_ref_position[ref_base]],
+                                amplicons[_ref_position[var_base]]
+                                ]))
+
+
 def convert_jsnpmania_to_annvovar_output(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, path_nc_to_chr, min_allele_ratio, min_read_depth, amplicon_min_depth):
     chr_to_nc = dict()
     with open(path_nc_to_chr,'r') as nc_to_chr_file:
@@ -39,6 +87,7 @@ def convert_jsnpmania_to_annvovar_output(sample_name, output, jsnpmania_variants
             if not line.startswith("#"):
                 line = line.rstrip()
                 columns = line.split("\t")
+                print(str(columns))
                 chr_to_nc[columns[0]] = columns[1]
     process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, chr_to_nc, min_allele_ratio, min_read_depth, amplicon_min_depth)
 

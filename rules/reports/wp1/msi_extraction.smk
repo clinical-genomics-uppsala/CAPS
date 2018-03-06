@@ -27,7 +27,7 @@ rule extract_msi_markers:
 def extract_colon_samples():
     sample_list = []
     for row in samples.itertuples():
-        target_type = samples.get("type",{}).get(row.Index)
+        target_type = samples.get("tissue",{}).get(row.Index)
         if target_type == "colon":
             sample_list.append(row.Index)
     return sample_list
