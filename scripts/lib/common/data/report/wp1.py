@@ -292,7 +292,7 @@ def generate_filtered_mutations(sample, output_file, hotspot_file, snpmania_vari
                     for variant in variants:
                         output.write("\n" + "\t".join(variant))
         except KeyError as e:
-            if note.args[0] == 'region_all':
+            if not e.args[0] == 'region_all':
                 raise e
 
 if __name__ == "__main__":

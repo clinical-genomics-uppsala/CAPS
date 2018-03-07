@@ -34,9 +34,7 @@ def extract_colon_samples():
 
 rule combine_msi_markers:
     input:
-        #sample_input=lambda wildcards: ["reports/extracted_sample_info/{sample}.msiMarkers.tsv".format(sample=sample) for sample in extract_colon_samples()]
         expand("reports/extracted_sample_info/{sample}.msiMarkers.tsv", sample=extract_colon_samples())
-#         "reports/extracted_sample_info/sample2.msiMarkers.tsv"
     output:
         "reports/all.msiMarkers.tsv"
     run:
