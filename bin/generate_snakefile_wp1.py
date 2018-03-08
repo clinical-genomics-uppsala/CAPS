@@ -2,25 +2,24 @@
 # coding: utf-8
 
 import pandas as pd
-from sets import Set
 
-samples = pd.read_table(config["samples"], index_col="sample")
+samples = pd.read_table("samples.tsv", index_col="sample")
 
 result_files = {'common': {"fastqc/{0}.html","fastqc/{0}.zip", "reports/{0}.filteredMutations.tsv"},
-                'haloplex': {
-                    "colon": {"reports/extracted_sample_info/{0}.msiMarkers.tsv"},
-                    "lung": {"reports/EGFR_T790M.allSamples.ampliconmapped.txt", "reports/EGFR_G719.allSamples.ampliconmapped.txt"},
-                    "gist": None,
-                    "melanom": None}
-               {'swift': {
-                    "lung": {"reports/EGFR_T790M.allSamples.ampliconmapped.txt", "reports/EGFR_G719.allSamples.ampliconmapped.txt"},
-                    "ovarial": None
-               }}
+    'haloplex': {
+        "colon": {"reports/extracted_sample_info/{0}.msiMarkers.tsv"},
+        "lung": {"reports/EGFR_T790M.allSamples.ampliconmapped.txt", "reports/EGFR_G719.allSamples.ampliconmapped.txt"},
+        "gist": None,
+        "melanom": None},
+    'swift': {
+        "lung": {"reports/EGFR_T790M.allSamples.ampliconmapped.txt", "reports/EGFR_G719.allSamples.ampliconmapped.txt"},
+        "ovarial": None
+    }
 }
 
 expected_result_files = []
 
- for row in samples.itertuples()
+for row in samples.itertuples:
     for expected_file in result_files['common']:
         expected_result_files.append(expected_file % str(row.Index))
     if row['panel_type'] in result_files:
@@ -28,7 +27,7 @@ expected_result_files = []
             for expected_file in result_files[row['panel_type']]:
                 expected_result_files.append(expected_file % str(row.Index))
 
-expected_result_files = Set(expected_result_files)
+expected_result_files = set(expected_result_files)
 
 with open("Snakefile", 'w') as run_file:
     run_file.write("import pandas as pd")
