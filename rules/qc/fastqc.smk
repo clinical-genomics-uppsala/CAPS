@@ -10,5 +10,6 @@ rule fastqc:
         zip="fastqc/{sample}-{unit}.zip"
     log:
         "logs/fastqc/{sample}-{unit}.log"
+    threads: 1
     wrapper:
         "0.19.3/bio/fastqc"

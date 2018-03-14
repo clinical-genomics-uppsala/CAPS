@@ -19,13 +19,13 @@ result_files = {'common': {"fastqc/{0}.html","fastqc/{0}.zip", "reports/{0}.filt
 
 expected_result_files = []
 
-for row in samples.itertuples:
+for row in samples.itertuples():
     for expected_file in result_files['common']:
-        expected_result_files.append(expected_file % str(row.Index))
-    if row['panel_type'] in result_files:
+        expected_result_files.append(expected_file.format(row.Index,))
+    if row['panel_type'][row.Index] in result_files:
         if result_files[row['panel_type']] is not None:
             for expected_file in result_files[row['panel_type']]:
-                expected_result_files.append(expected_file % str(row.Index))
+                expected_result_files.append((expected_file.format((row.Index,))))
 
 expected_result_files = set(expected_result_files)
 
@@ -37,5 +37,5 @@ with open("Snakefile", 'w') as run_file:
     run_file.write("\nunits.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index")
     run_file.write("\n\nrule all:")
     run_file.write("\n\tinput:")
-    run_file.write("\n\t\t" + ", ".join(expected_result_files))
+    run_file.write("\n\t\t\"" + "\", \"".join(expected_result_files) + "\"")
     run_file.write("\n\ninclude: \"workflows/wp1.snakemake\"")

@@ -9,9 +9,9 @@ rule bwa_alignment:
         lambda wildcards: "trimmed/" + get_fastq_files(wildcards,samples,"fq1"),
         lambda wildcards: "trimmed/" + get_fastq_files(wildcards,samples,"fq2")
     output:
-        temp("mapped/{sample}-{unit}.unsorted.bam")
+        temp("mapped/{sample}.{unit}.unsorted.bam")
     log:
-        "logs/bwa_mem/{sample}-{unit}.log"
+        "logs/bwa_mem/{sample}.{unit}.log"
     threads: 8
     params:
         index=config['reference_genome'],
@@ -24,9 +24,9 @@ rule bwa_alignment:
 
 rule coordinate_sort_mapped_reads:
     input:
-        "mapped/{sample}-{unit}.unsorted.bam"
+        "mapped/{sample}.{unit}.unsorted.bam"
     output:
-        bam = temp("mapped/{sample}-{unit}.sorted.bam")
+        bam = temp("mapped/{sample}.{unit}.sorted.bam")
     threads: 3
     wrapper:
         "0.19.3/bio/samtools/sort"
