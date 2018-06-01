@@ -1,6 +1,8 @@
 # vim: syntax=python tabstop=4 expandtab
 # coding: utf-8
 
+from scripts.lib.common.utils import get_fastq
+
 rule fastqc:
     input:
         lambda wildcards: get_fastq(wildcards,units,'fq1'),

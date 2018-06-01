@@ -97,11 +97,11 @@ def extract_msi_markers(input_file, output_file, tgfbr2_1bp = 0.01,tgfbr2_2bp = 
                     output.write("\n" + line)
 
 
-def generate_filtered_mutations(sample, output_file, hotspot_file, snpmania_variants_file, annovar_file, multibp_file, chr_to_nc_file, min_read_depth, min_vaf, read_depth_classes, genome1000_vaf, ampliconmapped, blacklist_file, transcript_file):
+def generate_filtered_mutations(sample, output_file, hotspot_file, snpmania_variants_file, annovar_files, multibp_file, chr_to_nc_file, min_read_depth, min_vaf, read_depth_classes, genome1000_vaf, ampliconmapped, blacklist_file, transcript_file):
     """
         >>> hotspot = '/snakemake-workflows/resources/Mutations_Lung_20171219.csv'
         >>> snpmania = '/snakemake-workflows/resources/18-215.ampliconmapped.variations'
-        >>> pindel = '/snakemake-workflows/resources/annovarOutput'
+        >>> annovar_files = ['/snakemake-workflows/resources/annovarOutput']
         >>> multibp = '/snakemake-workflows/resources/MultipleBp_variations.csv'
         >>> min_read_depth = 30
         >>> min_vaf = 0.01
@@ -120,93 +120,94 @@ def generate_filtered_mutations(sample, output_file, hotspot_file, snpmania_vari
     annovar_header_mapper = None
     with open(output_file, 'w') as output:
         output.write("#" + create_filtered_mutations_header())
-        with open(annovar_file,'r') as annovar_lines:
-            annovar_header_mapper = generate_headermap(annovar_lines.readline(),"#Sample")
-            for line in annovar_lines:
-                columns = line.rstrip("\n").rstrip("\r").split("\t")
-                columns[annovar_header_mapper['Chr']] = chr_to_nc[columns[annovar_header_mapper['Chr']]]
-                key = (chrom, start, stop) = (columns[annovar_header_mapper['Chr']], columns[annovar_header_mapper['Start']], columns[annovar_header_mapper['End']])
-                blacklist_key = (columns[annovar_header_mapper['Chr']], columns[annovar_header_mapper['Start']], columns[annovar_header_mapper['End']], columns[annovar_header_mapper['Reference_base']], columns[annovar_header_mapper['Variant_base']])
+        for annovar_file in annovar_files:
+            with open(annovar_file,'r') as annovar_lines:
+                annovar_header_mapper = generate_headermap(annovar_lines.readline(),"#Sample")
+                for line in annovar_lines:
+                    columns = line.rstrip("\n").rstrip("\r").split("\t")
+                    columns[annovar_header_mapper['Chr']] = chr_to_nc[columns[annovar_header_mapper['Chr']]]
+                    key = (chrom, start, stop) = (columns[annovar_header_mapper['Chr']], columns[annovar_header_mapper['Start']], columns[annovar_header_mapper['End']])
+                    blacklist_key = (columns[annovar_header_mapper['Chr']], columns[annovar_header_mapper['Start']], columns[annovar_header_mapper['End']], columns[annovar_header_mapper['Reference_base']], columns[annovar_header_mapper['Variant_base']])
 
-                if filter_annovar_variant(intronic_data, columns, annovar_header_mapper, blacklist_data, chr, start, stop, blacklist_key, min_read_depth, min_vaf,genome1000_vaf):
-                    added = False
-                    data_source = 'bwa'
+                    if filter_annovar_variant(intronic_data, columns, annovar_header_mapper, blacklist_data, chr, start, stop, blacklist_key, min_read_depth, min_vaf,genome1000_vaf):
+                        added = False
+                        data_source = 'bwa'
 
-                    if is_pindel_line(columns, annovar_header_mapper):
-                        data_source = 'pindel'
-                    for (amplicon_validator, reports) in [(valid_amplicon_hotspot, ('hotspot',)), (valid_amplicon_nonhotspot ,('region',))]:
+                        if is_pindel_line(columns, annovar_header_mapper):
+                            data_source = 'pindel'
+                        for (amplicon_validator, reports) in [(valid_amplicon_hotspot, ('hotspot',)), (valid_amplicon_nonhotspot ,('region',))]:
+                            if not added:
+                                if data_source == 'pindel' or contains_valid_amplicons(amplicon_validator,columns, annovar_header_mapper):
+                                    for report in reports:
+                                        if not added:
+                                            if key in hotspot_data[report]:
+                                                try:
+                                                    hotspot_data[report][key].get(data_source).append(columns)
+                                                except KeyError as e:
+                                                    hotspot_data[report][key][data_source] = [columns]
+                                                added = True
+                                                break
+                                            else:
+                                                (chrom, start, end) = (columns[annovar_header_mapper['Chr']], columns[annovar_header_mapper['Start']], columns[annovar_header_mapper['End']])
+                                                for entry_key in hotspot_data[report]:
+                                                    (entry_chrom, entry_start, entry_end) = entry_key
+                                                    if entry_chrom == chrom and \
+                                                        start <= entry_end and end > entry_start:
+                                                        try:
+                                                            hotspot_data[report][entry_key].get(data_source).append(columns)
+                                                        except:
+                                                            hotspot_data[report][entry_key][data_source] = [columns]
+                                                        added = True
+                                                        break
                         if not added:
-                            if data_source == 'pindel' or contains_valid_amplicons(amplicon_validator,columns, annovar_header_mapper):
-                                for report in reports:
-                                    if not added:
-                                        if key in hotspot_data[report]:
-                                            try:
-                                                hotspot_data[report][key].get(data_source).append(columns)
-                                            except KeyError as e:
-                                                hotspot_data[report][key][data_source] = [columns]
-                                            added = True
-                                            break
-                                        else:
-                                            (chrom, start, end) = (columns[annovar_header_mapper['Chr']], columns[annovar_header_mapper['Start']], columns[annovar_header_mapper['End']])
-                                            for entry_key in hotspot_data[report]:
-                                                (entry_chrom, entry_start, entry_end) = entry_key
-                                                if entry_chrom == chrom and \
-                                                    start <= entry_end and end > entry_start:
-                                                    try:
-                                                        hotspot_data[report][entry_key].get(data_source).append(columns)
-                                                    except:
-                                                        hotspot_data[report][entry_key][data_source] = [columns]
-                                                    added = True
-                                                    break
-                    if not added:
-                        (ref_plus, ref_minus, var_plus, var_minus, ref_all, var_all) = get_amplicon_info(columns, annovar_header_mapper, ampliconmapped)
+                            (ref_plus, ref_minus, var_plus, var_minus, ref_all, var_all) = get_amplicon_info(columns, annovar_header_mapper, ampliconmapped)
 
-                        if data_source == 'pindel' or (contains_valid_amplicons(valid_amplicon_nonhotspot, columns, annovar_header_mapper) and ampliconmapped):
-                            (found, level) = get_read_level(read_depth_classes, columns[annovar_header_mapper['Read_depth']])
-                            (aa, cds, acc_num, exon, exonic_type, comment) =  get_transcript_info(columns, annovar_header_mapper, transcript_data)
-                            comment = merge_comment(comment,None)
-                            output.write("\n" + "\t".join([
-                                columns[annovar_header_mapper['Sample']],
-                                columns[annovar_header_mapper['Gene']],
-                                exonic_type,
-                                exon,
-                                aa,
-                                cds,
-                                acc_num,
-                                comment,
-                                "4-other",
-                                level,
-                                found,
-                                columns[annovar_header_mapper['Read_depth']],
-                                columns[annovar_header_mapper['#reference_alleles']],
-                                columns[annovar_header_mapper['#_variant_alleles']],
-                                columns[annovar_header_mapper['Variant_allele_ratio']],
-                                columns[annovar_header_mapper['dbSNP_id']],
-                                columns[annovar_header_mapper['Ratio_in_1000Genome']],
-                                columns[annovar_header_mapper['ESP_6500']],
-                                columns[annovar_header_mapper['Clinically_flagged_dbSNP']],
-                                columns[annovar_header_mapper['Cosmic']],
-                                columns[annovar_header_mapper['ClinVar_CLNDBN']],
-                                columns[annovar_header_mapper['ClinVar_CLINSIG']],
-                                ref_plus,
-                                ref_minus,
-                                var_plus,
-                                var_minus,
-                                columns[annovar_header_mapper['Strands_A']],
-                                columns[annovar_header_mapper['Strands_G']],
-                                columns[annovar_header_mapper['Strands_C']],
-                                columns[annovar_header_mapper['Strands_T']],
-                                columns[annovar_header_mapper['Strands_Ins']],
-                                columns[annovar_header_mapper['Strands_Del']],
-                                ref_all,
-                                var_all,
-                                columns[annovar_header_mapper['Chr']],
-                                columns[annovar_header_mapper['Start']],
-                                columns[annovar_header_mapper['End']],
-                                columns[annovar_header_mapper['Reference_base']],
-                                columns[annovar_header_mapper['Variant_base']],
-                                columns[annovar_header_mapper['Transcripts']]
-                                ]))
+                            if data_source == 'pindel' or (contains_valid_amplicons(valid_amplicon_nonhotspot, columns, annovar_header_mapper) and ampliconmapped):
+                                (found, level) = get_read_level(read_depth_classes, columns[annovar_header_mapper['Read_depth']])
+                                (aa, cds, acc_num, exon, exonic_type, comment) =  get_transcript_info(columns, annovar_header_mapper, transcript_data)
+                                comment = merge_comment(comment,None)
+                                output.write("\n" + "\t".join([
+                                    columns[annovar_header_mapper['Sample']],
+                                    columns[annovar_header_mapper['Gene']],
+                                    exonic_type,
+                                    exon,
+                                    aa,
+                                    cds,
+                                    acc_num,
+                                    comment,
+                                    "4-other",
+                                    level,
+                                    found,
+                                    columns[annovar_header_mapper['Read_depth']],
+                                    columns[annovar_header_mapper['#reference_alleles']],
+                                    columns[annovar_header_mapper['#_variant_alleles']],
+                                    columns[annovar_header_mapper['Variant_allele_ratio']],
+                                    columns[annovar_header_mapper['dbSNP_id']],
+                                    columns[annovar_header_mapper['Ratio_in_1000Genome']],
+                                    columns[annovar_header_mapper['ESP_6500']],
+                                    columns[annovar_header_mapper['Clinically_flagged_dbSNP']],
+                                    columns[annovar_header_mapper['Cosmic']],
+                                    columns[annovar_header_mapper['ClinVar_CLNDBN']],
+                                    columns[annovar_header_mapper['ClinVar_CLINSIG']],
+                                    ref_plus,
+                                    ref_minus,
+                                    var_plus,
+                                    var_minus,
+                                    columns[annovar_header_mapper['Strands_A']],
+                                    columns[annovar_header_mapper['Strands_G']],
+                                    columns[annovar_header_mapper['Strands_C']],
+                                    columns[annovar_header_mapper['Strands_T']],
+                                    columns[annovar_header_mapper['Strands_Ins']],
+                                    columns[annovar_header_mapper['Strands_Del']],
+                                    ref_all,
+                                    var_all,
+                                    columns[annovar_header_mapper['Chr']],
+                                    columns[annovar_header_mapper['Start']],
+                                    columns[annovar_header_mapper['End']],
+                                    columns[annovar_header_mapper['Reference_base']],
+                                    columns[annovar_header_mapper['Variant_base']],
+                                    columns[annovar_header_mapper['Transcripts']]
+                                    ]))
         intronic_data = {}
         with open(snpmania_variants_file, 'r') as variants:
             for line in variants:

@@ -18,4 +18,4 @@ rule run_jsnpmania:
     log:
         "logs/jsnpmania/{sample}.jsnpmania.log"
     wrapper:
-        "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/jsnpmania/wrapper.py"
+        "master/bio/jsnpmania"

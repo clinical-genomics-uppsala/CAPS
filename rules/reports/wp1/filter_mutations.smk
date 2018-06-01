@@ -3,21 +3,32 @@
 
 from scripts.lib.common.data.report.wp1 import generate_filtered_mutations
 
-
-def get_sample_value(field, sample, converter, default):
-    if field in samples and sample in sample[field]:
-        return converter(sample[field][sample])
+def get_sample_value(field, sample, default = False, converter = None):
+    if field in samples and sample in samples[field]:
+        value = samples[field][sample]
+        if converter is None:
+            return value
+        else:
+            return converter(value)
     else:
         return default
+
+def converter(value):
+    if value == "yes":
+        return True
+    elif value == "no":
+        return False
+    else:
+        raise Exception("Unexpected value: " + str(value) + ", should have been yes or no.")
 
 rule filter_mutations:
     input:
         snpmania = 'jsnpmania/{sample}.variations',
-        pindel = 'annovar_output/{sample}.singleSample.annovarOutput'
+        annovar = ['pindel_annovar_output/{sample}.pindel.singleSample.annovarOutput', 'annovar_output/{sample}.singleSample.annovarOutput']
     output:
         "reports/{sample}.filteredMutations.tsv"
     params:
-        amplicon_mapped = lambda wildcards: get_sample_value('amplicon_mapped', wildcards.sample, lambda value: True, False),
+        amplicon_mapped = lambda wildcards: get_sample_value('amplicon_mapped', wildcards.sample, converter=converter),
         blacklist = lambda wildcards: config["files"][samples['panel_type'][wildcards.sample]]['blacklist'],
         chr_to_nc = config["chr_to_nc_file"],
         hotspot = lambda wildcards: samples["hotspot"][wildcards.sample],
@@ -35,7 +46,7 @@ rule filter_mutations:
             output[0],
             params.hotspot,
             input.snpmania,
-            input.pindel,
+            input.annovar,
             params.multibp,
             params.chr_to_nc,
             params.min_read_depth,

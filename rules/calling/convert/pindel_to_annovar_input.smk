@@ -11,9 +11,9 @@ rule pindel_to_annovar_input:
     output:
         "pindel_annovar/{sample}.pindel.filtered.annovarInput"
     params:
-        min_read_depth = lambda wildcards: config["pindel_flags"][samples["panel_type"][wildcards.sample]]['min_read_depth'],
-        min_allele_ratio = lambda wildcards: config["pindel_flags"][samples["panel_type"][wildcards.sample]]['min_allele_ratio'],
-        read_method = lambda wildcards: config["pindel_flags"][samples["panel_type"][wildcards.sample]]['read_method']
+        min_read_depth = lambda wildcards: config["annovar_pindel_flags"][samples["panel_type"][wildcards.sample]]['min_read_depth'],
+        min_allele_ratio = lambda wildcards: config["annovar_pindel_flags"][samples["panel_type"][wildcards.sample]]['min_allele_ratio'],
+        read_method = lambda wildcards: config["annovar_pindel_flags"][samples["panel_type"][wildcards.sample]]['read_method']
     log:
         "logs/pindel/{sample}.pindel_to_annovar.log"
     run:

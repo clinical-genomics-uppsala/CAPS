@@ -37,12 +37,12 @@ rule cutadapt:
        [lambda wildcards: get_fastq(wildcards,units,'fq1'),
         lambda wildcards: get_fastq(wildcards,units,'fq2')]
    output:
-       fastq1="trimmed/{sample}-{unit}.R1.cutadapt.fastq.gz",
-       fastq2="trimmed/{sample}-{unit}.R2.cutadapt.fastq.gz",
-       qc = "logs/trimmed/{sample}-{unit}.cutadapt.qc.txt"
+       fastq1="trimmed/{sample}.{unit}.R1.cutadapt.fastq.gz",
+       fastq2="trimmed/{sample}.{unit}.R2.cutadapt.fastq.gz",
+       qc = "logs/trimmed/{sample}.{unit}.cutadapt.qc.txt"
    params:
        " --minimum-length 1",
        lambda wildcards: " -a " + config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["first_pair_adapter"],
-       lambda wildcards: " -A " + reverse_complement(config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["first_pair_adapter"])
+       lambda wildcards: " -A " + reverse_complement(config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["second_pair_adapter"])
    wrapper:
        "0.17.4/bio/cutadapt/pe"
