@@ -87,7 +87,6 @@ def convert_jsnpmania_to_annvovar_output(sample_name, output, jsnpmania_variants
             if not line.startswith("#"):
                 line = line.rstrip()
                 columns = line.split("\t")
-                print(str(columns))
                 chr_to_nc[columns[0]] = columns[1]
     process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, chr_to_nc, min_allele_ratio, min_read_depth, amplicon_min_depth)
 
@@ -508,7 +507,7 @@ def _update_deletion_data(variants, deletions):
         if key in variants:
             existing_variant_info = extract_info(variants[key])
             new_variant_info = extract_info(info)
-            if float(new_variant_info['variantAlleleRatio']) > float(existing_variant_info['variantAlleleRatio']):
+            if float(new_variant_info['variantAlleleRatio']) >= float(existing_variant_info['variantAlleleRatio']):
                 variants[key] = info
         else:
             variants[key] = info

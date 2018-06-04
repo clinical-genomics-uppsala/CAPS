@@ -25,4 +25,4 @@ rule pindel_to_annovar_input:
             input.pindel_insertions,
             params.min_read_depth,
             params.min_allele_ratio,
-            "min")
+            params.read_method)

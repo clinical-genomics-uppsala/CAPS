@@ -23,23 +23,11 @@ rule run_annovar_table:
 
 from scripts.lib.common.data.parser.annovar import process_annovar_multianno_file
 
-def get_sample_value(field, sample, default = False, converter = None):
-    if field in samples and sample in samples[field]:
-        value = samples[field][sample]
-        if converter is None:
-            return value
-        else:
-            return converter(value)
+def get_sample_value(field, sample, converter, default):
+    if field in samples and sample in sample[field]:
+        return converter(samples[field][sample])
     else:
         return default
-
-def converter(value):
-    if value == "yes":
-        return True
-    elif value == "no":
-        return False
-    else:
-        raise Exception("Unexpected value: " + str(value) + ", should have been yes or no.")
 
 rule create_annovar_output:
     input:
@@ -47,8 +35,8 @@ rule create_annovar_output:
     output:
         "annovar_output/{sample}.singleSample.annovarOutput"
     params:
-        tumor_normal = lambda wildcards: get_sample_value('tumor_normal', wildcards.sample, converter=converter),
-        amplicon_mapped = lambda wildcards: get_sample_value('amplicon_mapped', wildcards.sample, converter=converter)
+        tumor_normal = lambda wildcards: get_sample_value('tumor_normal', wildcards.sample, lambda value: True, False),
+        amplicon_mapped = lambda wildcards: get_sample_value('amplicon_mapped', wildcards.sample, lambda value: True, False)
     log:
         "logs/annovar/{sample}.table_annovar.log"
     run:
@@ -84,8 +72,8 @@ rule create_pindel_annovar_output:
     output:
         "pindel_annovar_output/{sample}.pindel.singleSample.annovarOutput"
     params:
-        tumor_normal = lambda wildcards: get_sample_value('tumor_normal', wildcards.sample, converter=converter),
-        amplicon_mapped = lambda wildcards: get_sample_value('amplicon_mapped', wildcards.sample, converter=converter)
+        tumor_normal = lambda wildcards: get_sample_value('tumor_normal', wildcards.sample, lambda value: True, False),
+        amplicon_mapped = lambda wildcards: get_sample_value('amplicon_mapped', wildcards.sample, lambda value: True, False)
     log:
         "logs/pindel_annovar/{sample}.table_annovar.log"
     run:
