@@ -150,14 +150,10 @@ def process_annovar_multianno_file(output_file, multianno_file, tumor_vs_normal 
         with open(output_file, 'w') as output:
             header_line = multianno_lines.readline()
             headermap = generate_headermap(header_line)
-            #print(str(headermap) + "\n\n")
             output.write("#"+ "\t".join(generate_header(tumor_vs_normal)))
             for line in multianno_lines:
                 (line, gene, transcript, info) = parse_multianno_line(line,headermap)
-                #print(line[headermap['Start']] + "\t" + line[headermap['End']] +"\n" +str(line) + "\n\t" + str(gene) + "\n\t\t" + str(transcript) + "\n\t\t\t" + str(info) )
                 clinvar_data = process_clinvar_field(line[headermap['clinvar_20150629']])
-                print("Tran.script" + str(transcript))
-		#print(line[headermap['Otherinfo']] + "\t" + str(clinvar_data) + "\n")
                 allele_freq = info.get('alleleFreq','-,').split(",")
                 data = [info.get('sample','-'),
                 line[headermap['Chr']],
@@ -174,7 +170,7 @@ def process_annovar_multianno_file(output_file, multianno_file, tumor_vs_normal 
                 info.get('readDepth','-,'),
                 line[headermap['1000g2015aug_eur']],
                 line[headermap['snp138']],
-                "Yes" if line[headermap['snp138']].startswith("rs") and "-" in line[headermap['snp138NonFlagged']] else "No", 
+                "Yes" if line[headermap['snp138']].startswith("rs") and "-" in line[headermap['snp138NonFlagged']] else "No",
                 line[headermap['esp6500siv2_ea']],
                 line[headermap['cosmic70']],
                 clinvar_data.get('CLNDBN','-'),
@@ -192,22 +188,23 @@ def process_annovar_multianno_file(output_file, multianno_file, tumor_vs_normal 
                         info.get('Normal_C','-'),
                         info.get('Normal_T','-')
                     ]
-                if amplicon_mapped:
+                #if amplicon_mapped:
+                data += [
+                    info.get('Tumor_var_plusAmplicons','-'),
+                    info.get('Tumor_var_minusAmplicons','-'),
+                    info.get('Tumor_ref_plusAmplicons','-'),
+                    info.get('Tumor_ref_minusAmplicons','-')]
+                if tumor_vs_normal:
                     data += [
-                        info.get('Tumor_var_plusAmplicons','-'),
-                        info.get('Tumor_var_minusAmplicons','-'),
-                        info.get('Tumor_ref_plusAmplicons','-'),
-                        info.get('Tumor_ref_minusAmplicons','-')]
-                    if tumor_vs_normal:
-                        data += [
-                            info.get('Normal_ref_plusAmplicons','-'),
-                            info.get('Normal_ref_minusAmplicons','-')]
-                    data += [
-                        info.get('Tumor_var_ampliconInfo','-'),
-                        info.get('Tumor_ref_ampliconInfo','-')]
-                    if tumor_vs_normal:
-                        data += [info.get('Tumor_var_ampliconInfo','-')]
+                        info.get('Normal_ref_plusAmplicons','-'),
+                        info.get('Normal_ref_minusAmplicons','-')]
+                data += [
+                    info.get('Tumor_var_ampliconInfo','-'),
+                    info.get('Tumor_ref_ampliconInfo','-')]
+                if tumor_vs_normal:
+                    data += [info.get('Tumor_var_ampliconInfo','-')]
                 data += [transcript]
+
                 output.write("\n" + "\t".join(data))
 
 
