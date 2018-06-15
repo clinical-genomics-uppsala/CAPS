@@ -47,15 +47,15 @@ def get_fastq_files(wildcards, samples, read_pair="fq1"):
     >>> wildcards.sample = "sample1"
     >>> wildcards.unit = "lane1"
     >>> get_fastq_files(wildcards, samples)
-    'sample1-lane1.R1.cutadapt.fastq.gz'
+    'sample1.lane1.R1.cutadapt.fastq.gz'
     >>> get_fastq_files(wildcards, samples, "fq2")
-    'sample1-lane1.R2.cutadapt.fastq.gz'
+    'sample1.lane1.R2.cutadapt.fastq.gz'
     >>> wildcards.sample = "sample2"
     >>> wildcards.unit = "lane2"
     >>> get_fastq_files(wildcards, samples)
-    'sample2-lane2.R1.trimmomatic_cutadapt.fastq.gz'
+    'sample2.lane2.R1.trimmomatic_cutadapt.fastq.gz'
     >>> get_fastq_files(wildcards, samples, "fq2")
-    'sample2-lane2.R2.trimmomatic_cutadapt.fastq.gz'
+    'sample2.lane2.R2.trimmomatic_cutadapt.fastq.gz'
     """
     trimming = samples.get("trimming",{}).get(wildcards.sample)
     if trimming is None or pd.isnull(trimming): #Write test for isnull

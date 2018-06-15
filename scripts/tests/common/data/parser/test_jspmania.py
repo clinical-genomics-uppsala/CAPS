@@ -432,7 +432,7 @@ class TestJSNPManiaMethods(unittest.TestCase):
         info = _update_deletion_data(info, extract_deletions("sample1", ref, deletion_5, self.nc_to_chr, 5, None))
         deletion_6 = "153\tNC_000017.10\t37855717\t8\t0.05228758169934641\t8(-3,0)\t6|0|2|0\t(-3,0):chr17:37855600-37855950:-:2#(-3,0):chr17:37855600-37855950:+:6"
         info = _update_deletion_data(info, extract_deletions("sample1", ref, deletion_6, self.nc_to_chr, 5, None))
-        self.assertEqual("17\t37855714\t37855717\tAAAA\t-\tcomments: sample=sample1 variantAlleleRatio=0.05228758169934641 alleleFreq=145,8 readDepth=153 Tumor_Del=6|0|2|0 Tumor_var_plusAmplicons=1 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=(-3,0):chr17:37855600-37855950:-:2#(-3,0):chr17:37855600-37855950:+:6 Tumor_ref_ampliconInfo=chr17:37855600-37855950:-:70#chr17:37855600-37855950:+:74",
+        self.assertEqual("17\t37855714\t37855717\tAAAA\t-\tcomments: sample=sample1 variantAlleleRatio=0.05228758169934641 alleleFreq=118,8 readDepth=153 Tumor_Del=19|0|16|0 Tumor_var_plusAmplicons=1 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=(-2,1):chr17:37855600-37855950:-:2#(-2,1):chr17:37855600-37855950:+:6 Tumor_ref_ampliconInfo=chr17:37855600-37855950:-:56#chr17:37855600-37855950:+:61",
             info['NC_000017.10#37855714#37855717##-'])
 
         def deletion_filter(variant_depth, ref_depth, columns): return int(variant_depth) + int(ref_depth) >= 20 and int(variant_depth)/int(columns[_column_converter_indel['depth']]) >= 0.01
@@ -556,7 +556,7 @@ class TestJSNPManiaMethods(unittest.TestCase):
                 except KeyError:
                     variants[nc] = {int(pos): {key: info}}
         info = generate_multi_bp_variants("sample1", self.nc_to_chr,variants,5)
-        self.assertEqual("17\t7576463\t7576464\tGC\tTA\tcomments: sample=sample1 variantAlleleRatio=0.0196078431372549 alleleFreq=46,1 readDepth=51 Tumor_A=- Tumor_G=- Tumor_C=- Tumor_T=- Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=chr17:7576368-7576661:-:1#chr17:7576369-7576661:+:1 Tumor_ref_ampliconInfo=chr17:7576368-7576661:-:8#chr17:7576369-7576661:+:24",info["NC_000017.10#7576463#7576464#GC#TA"])
+        self.assertEqual("17\t7576463\t7576464\tGC\tAA\tcomments: sample=sample1 variantAlleleRatio=0.0196078431372549 alleleFreq=46,1 readDepth=51 Tumor_A=- Tumor_G=- Tumor_C=- Tumor_T=- Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=chr17:7576369-7576661:+:2 Tumor_ref_ampliconInfo=chr17:7576368-7576661:-:8#chr17:7576369-7576661:+:24",info["NC_000017.10#7576463#7576464#GC#AA"])
 
 
 

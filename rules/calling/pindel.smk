@@ -27,19 +27,20 @@ rule pindel:
         prefix= "pindel/{sample}.indels",# lambda wildcards: "pindel/" + wildcards.sample + ".indels",
         extra= lambda wildcards: " -J " + config['pindel_exclude_regions'] + \
             " -x " + str(config['pindel_flags']['max_range_index']) + \
-            " -B " + str(config['pindel_flags']['balance_cutoff']) 
+            " -B " + str(config['pindel_flags']['balance_cutoff'])
     log:
         "logs/pindel/{sample}.log"
-    threads: 5 
+    threads: 5
     wrapper:
-        "addPoption/bio/pindel/call"
+        "0.24.0/bio/pindel/call"
 
 
 #ToDo Remember update wrapper after pull-request has been approved
 rule pindel_to_vcf:
     input:
         ref=config['reference_genome'],
-        pindel=["pindel/{sample}.indels_D", "pindel/{sample}.indels_SI"]
+        pindel="pindel/{sample}.indels_D"
+        #pindel=["pindel/{sample}.indels_D", "pindel/{sample}.indels_SI"] # Waiting for pull-request to be approved
     output:
         "pindel/{sample}.vcf"
     params:
@@ -49,5 +50,5 @@ rule pindel_to_vcf:
     log:
         "logs/pindel/{sample}.pindel2vcf.log"
     wrapper:
-       "file:///home/patsm159/workspace/snakemake-wrapper-uppsala/bio/pindel/pindel2vcf/wrapper.py"
-
+       "0.24.0/bio/pindel/pindel2vcf"
+       #"file:///home/patsm159/workspace/snakemake-wrapper-uppsala/bio/pindel/pindel2vcf/wrapper.py"

@@ -18,7 +18,7 @@ rule bwa_alignment:
         sort_order="coordinate",  # Can be 'queryname' or 'coordinate'.
         sort_extra="-@ 3"
     wrapper:
-        "file:///home/patsm159/workspace/merged-snakemakewrappers/bio/bwa/mem"#"0.17.4/bio/bwa/mem"
+        "0.17.4/bio/bwa/mem"
 
 #rule coordinate_sort_mapped_reads:
 #    input:
@@ -59,4 +59,4 @@ rule create_bam_index:
     params:
         ""
     wrapper:
-        "0.17.4/bio/samtools/index"
+        "0.24.0/bio/samtools/index"
