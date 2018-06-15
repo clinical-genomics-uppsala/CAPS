@@ -56,8 +56,14 @@ class TestJSNPManiaMethods(unittest.TestCase):
             variations.write("153\t118\t0.7712418300653595\tNC_000017.10\t37855716\tA\t118|0|0|0\tA\tC/G/T\t1.0\t61|0|57|0\t0|0|0|0\t0|0|0|0\t0|0|0|0\tchr17:37855600-37855950:-:56#chr17:37855600-37855950:+:61|0|0|0\n")
             variations.write("153\t145\t0.9477124183006536\tNC_000017.10\t37855717\tA\t145|0|0|0\tA\tC/G/T\t1.0\t74|0|71|0\t0|0|0|0\t0|0|0|0\t0|0|0|0\tchr17:37855600-37855950:-:70#chr17:37855600-37855950:+:74|0|0|0\n")
             variations.write("156\t156\t1.0\tNC_000017.10\t37855718\tA\t156|0|0|0\tA\tC/G/T\t1.0\t79|0|77|0\t0|0|0|0\t0|0|0|0\t0|0|0|0\tchr17:37855600-37855950:-:76#chr17:37855600-37855950:+:79|0|0|0\n")
-            #variations.write("1818\t1765\t0.9708470847084708\tNC_000002.11\t29420596\tC\t0|0|1765|0\tC\tA/G/T\t1.0\t0|0|0|0\t0|0|0|0\t261|638|491|375\t0|0|0|0\t0|0|chr2:29420443-29420678:-:154#chr2:29420443-29420676:+:118#chr2:29420549-29420694:-:975#chr2:29420550-29420694:+:516|0\n")
-            #variations.write("1822\t1766\t0.969264544456641\tNC_000002.11\t29420597\tA\t1766|3|0|0\tA\tG\t0.998304126625212\t262|639|489|376\t0|1|1|1\t0|0|0|0\t0|0|0|0\tchr2:29420443-29420678:-:154#chr2:29420443-29420676:+:115#chr2:29420549-29420694:-:974#chr2:29420550-29420694:+:521|chr2:29420549-29420694:-:2#chr2:29420550-29420694:+:1|0|0\n")
+            variations.write("60\t32\t0.5333333333333333\tNC_000017.10\t7576463\tG\t2|32|0|2\tG\tA/T\t0.9411764705882353\t2|0|0|0\t24|0|8|0\t0|0|0|0\t1|0|1|0\tchr17:7576369-7576661:+:2|chr17:7576368-7576661:-:8#chr17:7576369-7576661:+:24|0|chr17:7576368-7576661:-:1#chr17:7576369-7576661:+:1\n")
+            variations.write("51\t46\t0.9019607843137255\tNC_000017.10\t7576464\tC\t1|0|46|0\tC\tA\t0.9787234042553191\t0|0|1|0\t0|0|0|0\t35|0|11|0\t0|0|0|0\tchr17:7576368-7576661:-:1|0|chr17:7576368-7576661:-:11#chr17:7576369-7576661:+:35|0\n")
+            variations.write("30\t17\t0.5666666666666667\tNC_000015.9\t90632139\tT\t0|0|0|17\tT\tA/C/G\t1.0\t0|0|0|0\t0|0|0|0\t0|0|0|0\t0|5|0|12\t0|0|0|chr15:90631971-90632277:-:5#chr15:90631971-90632277:+:2\n")
+            variations.write("32\t23\t0.71875\tNC_000015.9\t90632140\tT\t0|0|0|23\tT\tA/C/G\t1.0\t0|0|0|0\t0|0|0|0\t0|0|0|0\t0|7|0|16\t0|0|0|chr15:90631971-90632277:-:7#chr15:90631971-90632277:+:2\n")
+            variations.write("34\t28\t0.8235294117647058\tNC_000015.9\t90632141\tT\t0|0|0|28\tT\tA/C/G\t1.0\t0|0|0|0\t0|0|0|0\t0|0|0|0\t0|9|0|19\t0|0|0|chr15:90631971-90632277:-:9#chr15:90631971-90632277:+:4\n")
+            variations.write("37\t33\t0.8918918918918919\tNC_000015.9\t90632142\tT\t0|0|0|33\tT\tA/C/G\t1.0\t0|0|0|0\t0|0|0|0\t0|0|0|0\t0|11|0|22\t0|0|0|chr15:90631971-90632277:-:11#chr15:90631971-90632277:+:5\n")
+            variations.write("35\t32\t0.9142857142857143\tNC_000015.9\t90632143\tT\t0|0|0|32\tT\tA/C/G\t1.0\t0|0|0|0\t0|0|0|0\t0|0|0|0\t0|11|0|21\t0|0|0|chr15:90631971-90632277:-:11#chr15:90631971-90632277:+:5\n")
+            variations.write("36\t36\t1.0\tNC_000015.9\t90632144\tT\t0|0|0|36\tT\tA/C/G\t1.0\t0|0|0|0\t0|0|0|0\t0|0|0|0\t0|13|0|23\t0|0|0|chr15:90631971-90632277:-:13#chr15:90631971-90632277:+:6\n")
         with open(os.path.join(self.tempdir,"deletions"),'w') as deletions:
             deletions.write("243\tNC_000007.13\t140508151\t15\t0.06172839506172839\t1(-2,0)|4(0,2)|1(-1,0)|4(0,1)|1(-1,2)|1(0,6)|1(0,5)|2(0,3)\t0|15|0|0\t(-1,0):chr7:140508026-140508255:-:1|(0,5):chr7:140508026-140508255:-:1|(-2,0):chr7:140508026-140508255:-:1|(0,3):chr7:140508026-140508255:-:1|(0,1):chr7:140508026-140508255:-:4|(0,2):chr7:140508026-140508255:-:4|(-1,2):chr7:140508026-140508255:-:1|(0,6):chr7:140508026-140508255:-:1\n")
             deletions.write("91\tNC_000007.13\t140499713\t2\t0.02197802197802198\t2(0,0)\t0|1|1|0\t0\n")
@@ -109,7 +115,14 @@ class TestJSNPManiaMethods(unittest.TestCase):
                 '105258892': {'reference': 'C', 'depth': 3532},
                 '105258893': {'reference': 'A', 'depth': 1},
                 '105258894': {'reference': 'T', 'depth': 6434}},
-            'NC_000015.9': {},
+            'NC_000015.9': {
+                '90632139': {'reference': 'T', 'depth': 17},
+                '90632140': {'reference': 'T', 'depth': 23},
+                '90632141': {'reference': 'T', 'depth': 28},
+                '90632142': {'reference': 'T', 'depth': 33},
+                '90632143': {'reference': 'T', 'depth': 32},
+                '90632144': {'reference': 'T', 'depth': 36}
+            },
             'NC_000017.10': {
                 '37855710': {'reference': 'G', 'depth': 156},
                 '37855711': {'reference': 'T', 'depth': 155},
@@ -119,7 +132,9 @@ class TestJSNPManiaMethods(unittest.TestCase):
                 '37855715': {'reference': 'A', 'depth': 93},
                 '37855716': {'reference': 'A', 'depth': 118},
                 '37855717': {'reference': 'A', 'depth': 145},
-                '37855718': {'reference': 'A', 'depth': 156}
+                '37855718': {'reference': 'A', 'depth': 156},
+                '7576463': {'reference': 'G', 'depth': 32},
+                '7576464': {'reference': 'C', 'depth': 46}
             },
             'NC_000019.9': {},
             'NC_000002.11': {'212543689': {'reference': 'C', 'depth': 288}},
@@ -183,7 +198,20 @@ class TestJSNPManiaMethods(unittest.TestCase):
                 '105258894': {'reference': 'T', 'depth': 6434,
                     'amp+': 3, 'amp-': 3, 'ampInfo': 'chr14:105258859-105258986:+:2731#chr14:105258855-105258982:-:1917#chr14:105258810-105258944:-:595#chr14:105258806-105258944:+:689#chr14:105258778-105259019:-:96#chr14:105258774-105259016:+:368'}
             },
-            'NC_000015.9': {},
+            'NC_000015.9': {
+                '90632139': {'reference': 'T', 'depth': 17,
+                    'amp+': 1 ,'amp-': 1,'ampInfo': 'chr15:90631971-90632277:-:5#chr15:90631971-90632277:+:2'},
+                '90632140': {'reference': 'T', 'depth': 23,
+                    'amp+': 1 ,'amp-': 1,'ampInfo': 'chr15:90631971-90632277:-:7#chr15:90631971-90632277:+:2'},
+                '90632141': {'reference': 'T', 'depth': 28,
+                    'amp+': 1 ,'amp-': 1,'ampInfo': 'chr15:90631971-90632277:-:9#chr15:90631971-90632277:+:4'},
+                '90632142': {'reference': 'T', 'depth': 33,
+                    'amp+': 1 ,'amp-': 1,'ampInfo': 'chr15:90631971-90632277:-:11#chr15:90631971-90632277:+:5'},
+                '90632143': {'reference': 'T', 'depth': 32,
+                    'amp+': 1 ,'amp-': 1,'ampInfo': 'chr15:90631971-90632277:-:11#chr15:90631971-90632277:+:5'},
+                '90632144': {'reference': 'T', 'depth': 36,
+                    'amp+': 1,'amp-': 1,'ampInfo': 'chr15:90631971-90632277:-:13#chr15:90631971-90632277:+:6'}
+            },
             'NC_000017.10': {
                 '37855710': {'reference': 'G', 'depth': 156,
                     'amp+': 1, 'amp-': 1, 'ampInfo': 'chr17:37855600-37855950:-:75#chr17:37855600-37855950:+:81'},
@@ -202,7 +230,11 @@ class TestJSNPManiaMethods(unittest.TestCase):
                 '37855717': {'reference': 'A', 'depth': 145,
                     'amp+': 1, 'amp-': 1, 'ampInfo': 'chr17:37855600-37855950:-:70#chr17:37855600-37855950:+:74'},
                 '37855718': {'reference': 'A', 'depth': 156,
-                    'amp+': 1, 'amp-': 1, 'ampInfo': 'chr17:37855600-37855950:-:76#chr17:37855600-37855950:+:79'}
+                    'amp+': 1, 'amp-': 1, 'ampInfo': 'chr17:37855600-37855950:-:76#chr17:37855600-37855950:+:79'},
+                '7576463': {'reference': 'G', 'depth': 32,
+                    'amp+': 1, 'amp-': 1, 'ampInfo': 'chr17:7576368-7576661:-:8#chr17:7576369-7576661:+:24'},
+                '7576464': {'reference': 'C', 'depth': 46,
+                    'amp+': 1, 'amp-': 1, 'ampInfo': 'chr17:7576368-7576661:-:11#chr17:7576369-7576661:+:35'}
             },
             'NC_000019.9': {},
             'NC_000002.11': {'212543689': {'reference': 'C', 'depth': 288,
@@ -350,11 +382,19 @@ class TestJSNPManiaMethods(unittest.TestCase):
         ref = deepcopy(self.ref)
         with open(os.path.join(self.tempdir, 'variations'),'r') as ref_lines:
             for line in ref_lines:
-                ref = extract_ref_variant_info(ref,line,1)
+                if "NC_000015.9\t90632139\tT" in line or \
+                    "NC_000015.9\t90632140\tT" in line or \
+                    "NC_000015.9\t90632141\tT" in line or \
+                    "NC_000015.9\t90632142\tT" in line or \
+                    "NC_000015.9\t90632143\tT" in line or \
+                    "NC_000015.9\t90632144\tT" in line:
+                    ref = extract_ref_variant_info(ref,line,5)
+                else:
+                    ref = extract_ref_variant_info(ref,line,1)
 
         self.maxDiff = None
 
-        def deletion_filter(variant_depth, columns): return int(columns[_column_converter_indel['depth']]) >= 20 and int(variant_depth)/int(columns[_column_converter_indel['depth']]) >= 0.01
+        def deletion_filter(variant_depth, ref_depth, columns): return int(variant_depth) + int(ref_depth) >= 20 and int(variant_depth)/int(columns[_column_converter_indel['depth']]) >= 0.01
         deletion = "243\tNC_000007.13\t140508151\t15\t0.06172839506172839\t1(-2,0)|4(0,2)|1(-1,0)|4(0,1)|1(-1,2)|1(0,6)|1(0,5)|2(0,3)\t0|15|0|0\t(-1,0):chr7:140508026-140508255:-:1|(0,5):chr7:140508026-140508255:-:1|(-2,0):chr7:140508026-140508255:-:1|(0,3):chr7:140508026-140508255:-:1|(0,1):chr7:140508026-140508255:-:4|(0,2):chr7:140508026-140508255:-:4|(-1,2):chr7:140508026-140508255:-:1|(0,6):chr7:140508026-140508255:-:1"
         info = extract_deletions("sample1", ref, deletion, self.nc_to_chr, 0, deletion_filter)
         self.assertIn('NC_000007.13#140508151#140508153##-', info.keys())
@@ -366,7 +406,7 @@ class TestJSNPManiaMethods(unittest.TestCase):
         self.assertEqual("7\t140508151\t140508153\tCAA\t-\tcomments: sample=sample1 variantAlleleRatio=0.01646090534979424 alleleFreq=221,4 readDepth=243 Tumor_Del=0|15|0|0 Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=2 Tumor_var_ampliconInfo=(0,2):chr7:140508026-140508255:-:4 Tumor_ref_ampliconInfo=chr7:140508000-140508412:+:26#chr7:140508001-140508412:-:17#chr7:140508026-140508255:-:172",info['NC_000007.13#140508151#140508153##-'])
         self.assertEqual("7\t140508151\t140508152\tCA\t-\tcomments: sample=sample1 variantAlleleRatio=0.01646090534979424 alleleFreq=221,4 readDepth=243 Tumor_Del=0|15|0|0 Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=2 Tumor_var_ampliconInfo=(0,1):chr7:140508026-140508255:-:4 Tumor_ref_ampliconInfo=chr7:140508000-140508412:+:26#chr7:140508001-140508412:-:17#chr7:140508026-140508255:-:172",info['NC_000007.13#140508151#140508152##-'])
 
-        def deletion_filter(variant_depth, columns): return int(columns[_column_converter_indel['depth']]) >= 20 and int(variant_depth)/int(columns[_column_converter_indel['depth']]) >= 0.02
+        def deletion_filter(variant_depth, ref_depth, columns): return int(variant_depth) + int(ref_depth) >= 20 and int(variant_depth)/int(columns[_column_converter_indel['depth']]) >= 0.02
         info = extract_deletions("sample1", ref, deletion, self.nc_to_chr, 5, deletion_filter)
         self.assertEqual(0, len(info.keys()))
         deletion = "91\tNC_000007.13\t140499713\t2\t0.02197802197802198\t2(0,0)\t0|1|1|0\t0"
@@ -394,6 +434,26 @@ class TestJSNPManiaMethods(unittest.TestCase):
         info = _update_deletion_data(info, extract_deletions("sample1", ref, deletion_6, self.nc_to_chr, 5, None))
         self.assertEqual("17\t37855714\t37855717\tAAAA\t-\tcomments: sample=sample1 variantAlleleRatio=0.05228758169934641 alleleFreq=145,8 readDepth=153 Tumor_Del=6|0|2|0 Tumor_var_plusAmplicons=1 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=(-3,0):chr17:37855600-37855950:-:2#(-3,0):chr17:37855600-37855950:+:6 Tumor_ref_ampliconInfo=chr17:37855600-37855950:-:70#chr17:37855600-37855950:+:74",
             info['NC_000017.10#37855714#37855717##-'])
+
+        def deletion_filter(variant_depth, ref_depth, columns): return int(variant_depth) + int(ref_depth) >= 20 and int(variant_depth)/int(columns[_column_converter_indel['depth']]) >= 0.01
+        deletion_7 = "30\tNC_000015.9\t90632139\t13\t0.43333333333333335\t2(0,2)|3(0,1)|4(0,0)|3(0,4)|1(0,3)\t0|6|0|7\t(0,4):chr15:90631971-90632277:-:2#(0,4):chr15:90631971-90632277:+:1|(0,0):chr15:90631971-90632277:-:1|(0,1):chr15:90631971-90632277:-:2#(0,1):chr15:90631971-90632277:+:1|(0,2):chr15:90631971-90632277:-:1#(0,2):chr15:90631971-90632277:+:1"
+        deletion_8 = "32\tNC_000015.9\t90632140\t9\t0.28125\t2(-1,1)|3(-1,0)|3(-1,3)|1(-1,2)\t0|5|0|4\t(-1,1):chr15:90631971-90632277:-:1#(-1,1):chr15:90631971-90632277:+:1|(-1,0):chr15:90631971-90632277:-:2#(-1,0):chr15:90631971-90632277:+:1|(-1,3):chr15:90631971-90632277:-:2#(-1,3):chr15:90631971-90632277:+:1"
+        deletion_9 = "34\tNC_000015.9\t90632141\t6\t0.17647058823529413\t2(-2,0)|1(-2,1)|3(-2,2)\t0|3|0|3\t(-2,0):chr15:90631971-90632277:-:1#(-2,0):chr15:90631971-90632277:+:1|(-2,2):chr15:90631971-90632277:-:2#(-2,2):chr15:90631971-90632277:+:1"
+        deletion_10 = "37\tNC_000015.9\t90632142\t4\t0.10810810810810811\t3(-3,1)|1(-3,0)\t0|2|0|2\t(-3,1):chr15:90631971-90632277:-:2#(-3,1):chr15:90631971-90632277:+:1"
+        info = _update_deletion_data(info, extract_deletions("sample1", ref, deletion_7, self.nc_to_chr, 5, deletion_filter))
+        info = _update_deletion_data(info, extract_deletions("sample1", ref, deletion_8, self.nc_to_chr, 5, deletion_filter))
+        info = _update_deletion_data(info, extract_deletions("sample1", ref, deletion_9, self.nc_to_chr, 5, deletion_filter))
+        info = _update_deletion_data(info, extract_deletions("sample1", ref, deletion_10, self.nc_to_chr, 5, deletion_filter))
+        self.assertEqual("15\t90632139\t90632139\tT\t-\tcomments: sample=sample1 variantAlleleRatio=0.13333333333333333 alleleFreq=17,4 readDepth=30 Tumor_Del=0|6|0|7 Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=0 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=(0,0):chr15:90631971-90632277:-:1 Tumor_ref_ampliconInfo=chr15:90631971-90632277:-:5#chr15:90631971-90632277:+:2",
+            info['NC_000015.9#90632139#90632139##-'])
+        self.assertEqual("15\t90632139\t90632142\tTTTT\t-\tcomments: sample=sample1 variantAlleleRatio=0.03125 alleleFreq=23,1 readDepth=32 Tumor_Del=0|5|0|4 Tumor_var_plusAmplicons=- Tumor_var_minusAmplicons=- Tumor_ref_plusAmplicons=0 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=- Tumor_ref_ampliconInfo=chr15:90631971-90632277:-:7#chr15:90631971-90632277:+:2",
+            info['NC_000015.9#90632139#90632142##-'])
+        self.assertEqual("15\t90632139\t90632143\tTTTTT\t-\tcomments: sample=sample1 variantAlleleRatio=0.1 alleleFreq=17,3 readDepth=30 Tumor_Del=0|6|0|7 Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=0 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=(0,4):chr15:90631971-90632277:-:2#(0,4):chr15:90631971-90632277:+:1 Tumor_ref_ampliconInfo=chr15:90631971-90632277:-:5#chr15:90631971-90632277:+:2",
+            info['NC_000015.9#90632139#90632143##-'])
+        self.assertEqual("15\t90632139\t90632141\tTTT\t-\tcomments: sample=sample1 variantAlleleRatio=0.0625 alleleFreq=23,2 readDepth=32 Tumor_Del=0|5|0|4 Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=0 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=(-1,1):chr15:90631971-90632277:-:1#(-1,1):chr15:90631971-90632277:+:1 Tumor_ref_ampliconInfo=chr15:90631971-90632277:-:7#chr15:90631971-90632277:+:2",
+            info['NC_000015.9#90632139#90632141##-'])
+        self.assertEqual("15\t90632139\t90632140\tTT\t-\tcomments: sample=sample1 variantAlleleRatio=0.1 alleleFreq=17,3 readDepth=30 Tumor_Del=0|6|0|7 Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=0 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=(0,1):chr15:90631971-90632277:-:2#(0,1):chr15:90631971-90632277:+:1 Tumor_ref_ampliconInfo=chr15:90631971-90632277:-:5#chr15:90631971-90632277:+:2",
+            info['NC_000015.9#90632139#90632140##-'])
 
 
     def test_count_amplicons(self):
@@ -453,10 +513,13 @@ class TestJSNPManiaMethods(unittest.TestCase):
         variant_4 = "1148\t795\t0.6925087108013938\tNC_000010.10\t123256345\tT\t353|0|0|795\tT\tA\t0.6925087108013938\t0|182|171|0\t0|0|0|0\t0|0|0|0\t23|374|374|24\t0|0|0|chr10:123256234-123256344:+:1#chr10:123256234-123256346:-:587"
         variant_5 = "670\t567\t0.8462686567164179\tNC_000010.10\t123256346\tA\t567|0|0|103\tA\tT\t0.8462686567164179\t1|292|274|0\t0|0|0|0\t0|0|0|0\t0|57|45|1\tchr10:123256234-123256346:-:564|0|0|chr10:123256234-123256346:-:3"
         variant_6 = "1412\t700\t0.5042492917847026\tNC_000010.10\t123239112\tG\t712|700|0|0\tG\tA\t0.5042492917847026\t170|83|19|428\t213|72|25|402\t0|0|0|0\t0|0|0|0\tchr10:123239059-123239249:-:36#chr10:123239055-123239245:+:340#chr10:123238910-123239122:+:258#chr10:123238910-123239121:-:64|chr10:123239059-123239249:-:40#chr10:123239055-123239245:+:406#chr10:123238910-123239122:+:192#chr10:123238910-123239121:-:47|0|0"
+        variant_7 = "60\t32\t0.5333333333333333\tNC_000017.10\t7576463\tG\t2|32|0|2\tG\tA/T\t0.9411764705882353\t2|0|0|0\t24|0|8|0\t0|0|0|0\t1|0|1|0\tchr17:7576369-7576661:+:2|chr17:7576368-7576661:-:8#chr17:7576369-7576661:+:24|0|chr17:7576368-7576661:-:1#chr17:7576369-7576661:+:1\n"
+        variant_8 = "51\t46\t0.9019607843137255\tNC_000017.10\t7576464\tC\t1|0|46|0\tC\tA\t0.9787234042553191\t0|0|1|0\t0|0|0|0\t35|0|11|0\t0|0|0|0\tchr17:7576368-7576661:-:1|0|chr17:7576368-7576661:-:11#chr17:7576369-7576661:+:35|0\n"
 
-        for line in [variant_1, variant_2, variant_3, variant_4, variant_5, variant_6]:
+        for line in [variant_1, variant_2, variant_3, variant_4, variant_5, variant_6, variant_7, variant_8]:
             alleles = extract_major_snv_allele('sample1', ref, line, self.nc_to_chr, 20, allele_filter)
-            self.assertEqual(1, len(alleles.keys()))
+            #print(str(alleles) + "\n\n___________\n\n")
+            #self.assertEqual(1, len(alleles.keys()))
             for key, info in alleles.items():
                 (nc, pos, pos, ref_base, var_base) = key.split("#")
                 try:
@@ -468,11 +531,34 @@ class TestJSNPManiaMethods(unittest.TestCase):
                     variants[nc] = {int(pos): {key: info}}
         self.maxDiff = None
         info = generate_multi_bp_variants("sample1", self.nc_to_chr,variants,20)
-        self.assertEqual(4,len(info.keys()))
+        self.assertEqual(5,len(info.keys()))
         self.assertEqual("14\t105258892\t105258893\tCA\tTG\tcomments: sample=sample1 variantAlleleRatio=0.4528856568157202 alleleFreq=3532,2927 readDepth=6463 Tumor_A=- Tumor_G=- Tumor_C=- Tumor_T=- Tumor_var_plusAmplicons=3 Tumor_var_minusAmplicons=3 Tumor_ref_plusAmplicons=3 Tumor_ref_minusAmplicons=3 Tumor_var_ampliconInfo=chr14:105258859-105258986:+:1193#chr14:105258855-105258982:-:916#chr14:105258810-105258944:-:274#chr14:105258806-105258944:+:323#chr14:105258778-105259019:-:47#chr14:105258774-105259016:+:145 Tumor_ref_ampliconInfo=chr14:105258859-105258986:+:1544#chr14:105258855-105258982:-:1010#chr14:105258810-105258944:-:324#chr14:105258806-105258944:+:363#chr14:105258778-105259019:-:52#chr14:105258774-105259016:+:228",info["NC_000014.8#105258892#105258893#CA#TG"])
         self.assertEqual("10\t123256344\t123256345\tTT\tAA\tcomments: sample=sample1 variantAlleleRatio=0.0609613130128957 alleleFreq=1601,104 readDepth=1706 Tumor_A=- Tumor_G=- Tumor_C=- Tumor_T=- Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=0 Tumor_ref_ampliconInfo=chr10:123256234-123256344:+:416#chr10:123256234-123256346:-:588",info["NC_000010.10#123256344#123256345#TT#AA"])
         self.assertEqual("10\t123256344\t123256346\tTTA\tAAT\tcomments: sample=sample1 variantAlleleRatio=0.0609613130128957 alleleFreq=1601,104 readDepth=1706 Tumor_A=- Tumor_G=- Tumor_C=- Tumor_T=- Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=0 Tumor_ref_ampliconInfo=chr10:123256234-123256344:+:416#chr10:123256234-123256346:-:588",info["NC_000010.10#123256344#123256346#TTA#AAT"])
         self.assertEqual("10\t123256345\t123256346\tTA\tAT\tcomments: sample=sample1 variantAlleleRatio=0.1537313432835821 alleleFreq=567,103 readDepth=670 Tumor_A=- Tumor_G=- Tumor_C=- Tumor_T=- Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=0 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=0 Tumor_ref_ampliconInfo=chr10:123256234-123256344:+:1#chr10:123256234-123256346:-:587",info["NC_000010.10#123256345#123256346#TA#AT"])
+
+        with open(os.path.join(self.tempdir, 'variations'),'r') as ref_lines:
+            for line in ref_lines:
+                ref = extract_ref_variant_info(ref,line,5)
+        variants = dict()
+        variants = dict()
+        for line in [variant_1, variant_2, variant_3, variant_4, variant_5, variant_6, variant_7, variant_8]:
+            alleles = extract_major_snv_allele('sample1', ref, line, self.nc_to_chr, 5, allele_filter)
+            #print(str(alleles) + "\n\n___________\n\n")
+            #self.assertEqual(1, len(alleles.keys()))
+            for key, info in alleles.items():
+                (nc, pos, pos, ref_base, var_base) = key.split("#")
+                try:
+                    if int(pos) in variants[nc]:
+                        variants[nc][int(pos)][key] = info
+                    else:
+                        variants[nc][int(pos)] = {key: info}
+                except KeyError:
+                    variants[nc] = {int(pos): {key: info}}
+        info = generate_multi_bp_variants("sample1", self.nc_to_chr,variants,5)
+        self.assertEqual("17\t7576463\t7576464\tGC\tTA\tcomments: sample=sample1 variantAlleleRatio=0.0196078431372549 alleleFreq=46,1 readDepth=51 Tumor_A=- Tumor_G=- Tumor_C=- Tumor_T=- Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=chr17:7576368-7576661:-:1#chr17:7576369-7576661:+:1 Tumor_ref_ampliconInfo=chr17:7576368-7576661:-:8#chr17:7576369-7576661:+:24",info["NC_000017.10#7576463#7576464#GC#TA"])
+
+
 
     def test_extract_egfr(self):
         from scripts.lib.common.data.parser.jsnpmania import extract_egfr, g719_filter, t790m_filter

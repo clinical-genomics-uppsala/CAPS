@@ -13,7 +13,7 @@ def overlap_region(columns, regions, headermap):
         return False
 
 def is_exonic(columns, headermap):
-    return 'exonic' in columns[headermap['Type']]
+    return columns[headermap['Type']].startswith('exonic')
 
 def is_splicing(columns, headermap):
     return 'splicing' in columns[headermap['Type']]
@@ -33,7 +33,7 @@ def check_key_exists(key, data):
 def is_pindel_line(columns, headermap):
     return '+' in columns[headermap['Strands_Ins']] or '+' in columns[headermap['Strands_Del']]
 
-def check_num_valid_ammplicons(validate_levels, columns, headermap):
+def contains_valid_information(validate_levels, columns, headermap, ampliconmapped):
     if is_pindel_line(columns, headermap):
         return True
     else:
@@ -50,29 +50,15 @@ def check_num_valid_ammplicons(validate_levels, columns, headermap):
         except:
             ref_plus = 0
         try:
-            ref_minus = int(columns[headermap['#reference_+_amplicons']])
+            ref_minus = int(columns[headermap['#reference_-_amplicons']])
         except:
             ref_minus = 0
-        return validate_levels(amp_ref_plus, amp_ref_min, amp_var_plus, amp_var_min)
-
-def contains_valid_amplicons(validate_levels, columns, headermap):
-    if is_pindel_line(columns, headermap):
-        return True
-    else:
         try:
-            var_plus = int(columns[headermap['#variant_+_amplicons']])
+            ref = columns[headermap['Reference_base']]
         except:
-            var_plus = 0
+            ref = "-"
         try:
-            var_minus = int(columns[headermap['#variant_-_amplicons']])
+            var = columns[headermap['Variant_base']]
         except:
-            var_minus = 0
-        try:
-            ref_plus = int(columns[headermap['#reference_+_amplicons']])
-        except:
-            ref_plus = 0
-        try:
-            ref_minus = int(columns[headermap['#reference_+_amplicons']])
-        except:
-            ref_minus = 0
-        return validate_levels(ref_plus, ref_minus, var_plus, var_minus)
+            var = "-"
+        return validate_levels(ref_plus, ref_minus, var_plus, var_minus, ref, var, ampliconmapped)

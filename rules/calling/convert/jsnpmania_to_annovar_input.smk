@@ -13,7 +13,7 @@ rule jsnpmania_to_annovar_input:
     params:
         nc_to_chr_file = config['nc_to_chr_file'],
         min_allele_ratio = lambda wildcards: config["filter_settings"][samples["sample_source"][wildcards.sample]]['min_allele_ratio'],
-        min_read_depth = lambda wildcards: config["filter_settings"][samples["sample_source"][wildcards.sample]]['min_read_depth'],
+        min_read_depth = lambda wildcards: config["filter_settings"][samples["sample_source"][wildcards.sample]]['min_read_depth_snpmania'],
         amplicon_min_depth = lambda wildcards: config["filter_settings"][samples["sample_source"][wildcards.sample]]['amplicon_min_depth']
     log:
         "logs/jsnpmania/{sample}.jsnpmania_t_annovar.log"

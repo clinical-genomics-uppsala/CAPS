@@ -155,7 +155,6 @@ def convert_to_annovar_input(sample, output_file, input_vcf_file, pindel_deletio
                             var_reads = int(insertions[key]['fwd']) +  int(insertions[key]['rve'])
                             ref_reads = int(insertions[key]['depth'])
                         else:
-                            print(key +": not found")
                             continue
                     else:
                         print("Unhandled type: "  + str(record.INFO["SVTYPE"]) + " " +   + str(record))

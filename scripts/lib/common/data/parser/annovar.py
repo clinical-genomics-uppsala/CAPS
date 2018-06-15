@@ -188,7 +188,6 @@ def process_annovar_multianno_file(output_file, multianno_file, tumor_vs_normal 
                         info.get('Normal_C','-'),
                         info.get('Normal_T','-')
                     ]
-                #if amplicon_mapped:
                 data += [
                     info.get('Tumor_var_plusAmplicons','-'),
                     info.get('Tumor_var_minusAmplicons','-'),
@@ -204,7 +203,6 @@ def process_annovar_multianno_file(output_file, multianno_file, tumor_vs_normal 
                 if tumor_vs_normal:
                     data += [info.get('Tumor_var_ampliconInfo','-')]
                 data += [transcript]
-
                 output.write("\n" + "\t".join(data))
 
 
