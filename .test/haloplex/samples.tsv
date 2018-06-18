@@ -1,3 +1,3 @@
-sample	experiment	panel_type	trimming	adapters	amplicon_file	snpseq_file	hotspot	tissue
-sample1	test	haloplex	cutadapt	adapters_1	design.selection.bed	design.ampregion.SNPseq	../hotspot.tsv	colon
-sample2	test	haloplex	cutadapt	adapters_1	design.selection.bed	design.ampregion.SNPseq	../hotspot.tsv	lung
+sample	experiment	panel_type	trimming	adapters	amplicon_file	snpseq_file	hotspot	tissue	sample_source
+sample1	test	haloplex	cutadapt	adapters_1	design.selection.bed	design.ampregion.SNPseq	../hotspot.tsv	colon	ffpe
+sample2	test	haloplex	cutadapt	adapters_1	design.selection.bed	design.ampregion.SNPseq	../hotspot.tsv	lung	plasma

@@ -33,9 +33,10 @@ script:
   # run the workflow
   # put a test case into the subfolder .test (e.g., use https://github.com/snakemake-workflows/ngs-test-data as a submodule)
   - python -m scripts.lib.common.utils
-  - source activate snakemake
-  - pip install biopython pyvcf
-  - snakemake --use-conda --directory .test/swift
   - python -m scripts.tests.common.data.parser.test_jspmania
   - python -m scripts.tests.common.data.parser.test_pindel
+  - source activate snakemake
+  - pip install biopython pyvcf
+  - snakemake --use-conda --directory .test/swift -s Snakefile
+  - snakemake --use-conda --directory .test/haloplex -s Snakefile
   #- snakemake --use-conda --directory .test/haloplex # container are missing some dependencies, should be run locally.

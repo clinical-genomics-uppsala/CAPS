@@ -44,7 +44,12 @@ _column_converter_multibp_variants = {
     'aa_change': 7,
     'transcript': 8}
 
-def valid_amplicon_nonhotspot(ref_plus, ref_minus, var_plus, var_minus):
+def valid_indel(ref_plus, ref_minus, var_plus, var_minus, ref, var, ampliconmapped):
+    return "-" == ref or "-" == var
+
+def valid_amplicon_nonhotspot(ref_plus, ref_minus, var_plus, var_minus, ref, var, ampliconmapped):
+    if not ampliconmapped:
+        return True
     if (ref_plus + ref_minus) >= 3:
         if (var_plus + var_minus) >= 2:
             return True
@@ -57,7 +62,9 @@ def valid_amplicon_nonhotspot(ref_plus, ref_minus, var_plus, var_minus):
     return False
 
 
-def valid_amplicon_hotspot(ref_plus, ref_minus, var_plus, var_minus):
+def valid_amplicon_hotspot(ref_plus, ref_minus, var_plus, var_minus, ref, var, ampliconmapped):
+    if not ampliconmapped:
+        return True
     if (var_plus == 0 and var_minus == 0):
         return False
     else:
@@ -129,7 +136,7 @@ def parse_hotspot_line(line):
                     'acc_num': columns[_column_converter_hotspot['acc_num']],
                     'bwa': None,
                     'pindel': None,
-                    'rd': ['NA'] * (int(stop) - int(start) + 1) if not columns[_column_converter_hotspot['report']] == 'indel' else 'NA',
+                    'read_depth': ['NA'] * (int(stop) - int(start) + 1)
                 }
             }
 
@@ -150,34 +157,13 @@ def read_hotspot_file(input_file):  #ToDo make chromosom conversion
             parse_hotspot_line,
             [hotspot_updater, indel_updater]
         )
-        #for hotspotline in hotspot_lines:
-        #    data = parse_hotspot_line(hotspot_line)
-        #    if not data is None:
-        #        for key, value in data.items():
-        #            if key in hotspot:
-        #                raise Exception("hotspot key {} already imported!!!".format(key))
-        #            else:
-        #                hotspot_data[key] = value
-        #                if "intronic" in value['exon']:
-        #                    if key in intronic_data:
-        #                        raise Exception("intronic hotspot key {} already imported!!!".format(key))
-        #                    else:
-        #                        intronic_data[key] = value
     return (hotspot_data, intronic_data)
-
-#def extract_hotspot_pindel_info(info, column_mapper, transcripts, multibp_data):
-#    """
-#        param: info: list with pindel variants
-#    """
-#    if info is None:
-#        return info
-#    for variant in info:
 
 def get_read_level(read_levels, rd):
     try:
         for (level, depth_status, analyzable) in read_levels:
             rd = int(rd)
-            if rd > int(level):
+            if rd >= int(level):
                 return depth_status, analyzable
     except:
         pass
@@ -222,18 +208,19 @@ def get_mutation_type(ref, var, insertion, deletion, mut_type):
         return "2-indel"
     return mut_type
 
-def no_variant_found(sample, info, key, read_levels, annovar_mapper, mutation_type):
+def no_variant_found(sample, info, key, read_levels, annovar_mapper, ampliconmapped, mutation_type):
     variants =[]
     (entry_chr, entry_start, entry_end) = key
     for position in range(0, int(entry_end) - int(entry_start) + 1):
         found = level = read_depth = "NA"
-        if isinstance(info['rd'], list):
-            depth = info['rd'][position]
+        if isinstance(info['read_depth'], list):
+            depth = info['read_depth'][position]
             try:
-                if depth == "-":
+                if depth == "NA":
                     found = "not in design"
                     level = "-"
                     read_depth = "-"
+                    depth = "-"
                 else:
                     (level, found) = get_read_level(read_levels, depth)
                     if found == "yes":
@@ -284,8 +271,8 @@ def no_variant_found(sample, info, key, read_levels, annovar_mapper, mutation_ty
             "-",
             "-",
             entry_chr,
-            entry_start,
-            entry_end,
+            str(int(entry_start) + position),
+            str(int(entry_start) + position),
             "-",
             "-",
             "-"])
@@ -298,11 +285,11 @@ def extract_hotspot_snv_info(info, read_levels, annovar_mapper, transcripts, amp
             for variant in info['bwa']:
                 if not bwa_and_pindel_overlap(variant, info, annovar_mapper):
                     (aa, cds, acc_num, exon, exonic_type, comment) = get_transcript_info(variant, annovar_mapper, transcripts)
-                    (found, level) = get_read_level(read_levels, info['read_depth'][0])
+                    (found, level) = get_read_level(read_levels, variant[12])
                     ref_plus, ref_minus, var_plus, var_minus, ref_all, var_all = get_amplicon_info(variant, annovar_mapper, amplicon_mapped)
 
                     # Make sure that amplicon mapped data contain the required number of amplicons
-                    if amplicon_mapped and not valid_amplicon_hotspot(ref_plus, ref_minus, var_plus, var_minus):
+                    if not valid_amplicon_hotspot(ref_plus, ref_minus, var_plus, var_minus, None, None, amplicon_mapped):
                         found = "no"
 
                     # Use hotspot data if no transcript info can be extracted from annovar data
@@ -311,8 +298,9 @@ def extract_hotspot_snv_info(info, read_levels, annovar_mapper, transcripts, amp
                     if mutation_type is None:
                         mutation_type = get_mutation_type(variant[annovar_mapper['Reference_base']],variant[annovar_mapper['Variant_base']],
                                         variant[annovar_mapper['Strands_Ins']],variant[annovar_mapper['Strands_Del']],mutation_type)
-
                     comment = merge_comment(info['comment'],comment)
+                    if comment is None:
+                        comment = "-"
 
                     variants.append(
                         [
@@ -362,8 +350,7 @@ def extract_hotspot_snv_info(info, read_levels, annovar_mapper, transcripts, amp
     except KeyError as e:
         if str(e) != "bwa":
             raise e
-    return None#print("Error " + str(e))
-        #return None
+    return None
 
 def extract_hotspot_pindel_info(info, read_levels, annovar_mapper, transcripts, amplicon_mapped, mutation_type=None):
     try:
@@ -375,7 +362,8 @@ def extract_hotspot_pindel_info(info, read_levels, annovar_mapper, transcripts, 
                 ref_plus, ref_minus, var_plus, var_minus, ref_all, var_all = get_amplicon_info(variant,annovar_mapper, amplicon_mapped)
 
                 # Make sure that amplicon mapped data contain the required number of amplicons
-                if amplicon_mapped and not valid_amplicon_hotspot(ref_plus, ref_minus, var_plus, var_minus):
+                #Should probalby be removed!!!
+                if not valid_amplicon_hotspot(ref_plus, ref_minus, var_plus, var_minus, None, None, amplicon_mapped):
                     found = "no"
                 # Use hotspot data if no transcript info can be extracted from annovar data
                 if exon == "-":
@@ -433,8 +421,6 @@ def extract_hotspot_pindel_info(info, read_levels, annovar_mapper, transcripts, 
     except KeyError as e:
         if str(e) != "pindel":
             raise e
-    #    else:
-    #        print("Error " + str(e))
     return None
 
 @skip_header
@@ -458,15 +444,7 @@ def read_blacklist(input_file): #ToDo make chromosom conversion
             blacklist_lines,
             parse_blacklist_line,
             [blaclist_updater])
-        #for blacklist_line in blacklist_lines:
-        #    data = parse_blacklist_line(blacklist_line)
-        #    if not data is None:
-        #        for key, value in data.items():
-        #            if key in blacklist_data:
-        #                raise Exception("blacklist key {} already imported!!!".format(key))
-        #            else:
-        #                blacklist_data[key] = value
-    return blacklist_data
+        return blacklist_data
 
 @skip_header
 @remove_new_line
@@ -486,15 +464,7 @@ def read_maintranscripts(input_file):
             maintranscript_lines,
             parse_transcript_line,
             [transcript_updater])
-        #for maintranscript_line in maintranscript_lines:
-        #    data = parse_maintranscript_line(maintranscript_line)
-        #    if not data is None:
-        #        for key, value in data.items():
-        #            if key in maintranscript_data:
-        #                raise Exception("maintranscript key {} already imported!!!".format(key))
-        #            else:
-        #                maintranscript_data[key] = value
-    return maintranscript_data
+        return maintranscript_data
 
 @skip_header
 @remove_new_line
@@ -514,14 +484,6 @@ def parse_multi_bp_variant_line(line):
 def read_multibpvariants(input_file):
     multibp_variant_data = RejectingDict()#{}
     with open(input_file) as multibp_variant_lines:
-        #for multibp_variant_line in multibp_variant_lines:
-        #    data = parse_multi_bp_variant_line(multibp_variant_line)
-        #    if not data is None:
-        #        for key, value in data.items():
-        #            if key in multibp_variant_data:
-        #                raise Exception("multibp variant key {} already imported!!!".format(key))
-        #            else:
-        #                multibp_variant_data[key] = value
         def multibp_updater(key,value):
             multibp_variant_data[key] = value
         process_file(

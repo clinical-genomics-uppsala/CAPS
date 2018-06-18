@@ -6,8 +6,10 @@ rule queryname_sort_reads:
       "mapped/{sample}.sorted.bam"
   output:
       bam = temp("mapped/{sample}.queryname_sorted.bam")
+  params:
+      remove_secondary_alignment = True
   wrapper:
-      "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/sort/queryname/wrapper.py"
+      "master/bio/sort/queryname"
 
 rule amplicon_mapping:
   input:
@@ -20,7 +22,7 @@ rule amplicon_mapping:
       genome_ref = config['reference_genome'],
       design_file =lambda wildcards: samples['amplicon_file'][wildcards.sample]
   wrapper:
-      "https://raw.githubusercontent.com/clinical-genomics-uppsala/snakemake-wrappers/master/bio/amplicon_mapping/wrapper.py"
+      "master/bio/amplicon_mapping"
 
 rule coordinate_sort_amplicon_mapped_reads:
     input:

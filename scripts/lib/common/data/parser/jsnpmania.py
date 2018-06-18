@@ -87,7 +87,6 @@ def convert_jsnpmania_to_annvovar_output(sample_name, output, jsnpmania_variants
             if not line.startswith("#"):
                 line = line.rstrip()
                 columns = line.split("\t")
-                print(str(columns))
                 chr_to_nc[columns[0]] = columns[1]
     process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, chr_to_nc, min_allele_ratio, min_read_depth, amplicon_min_depth)
 
@@ -177,10 +176,10 @@ def process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_i
         # Process jSNPmania insertions.
         variants = dict()
         with open(jsnpmania_deletions,'r') as j_deletions:
-            def deletions_filter(variant_depth, columns): return int(columns[_column_converter_indel['depth']]) >= min_read_depth and int(variant_depth)/int(columns[_column_converter_indel['depth']]) >= min_allele_ratio
+            def deletions_filter(variant_depth, ref_depth, columns): return ref_depth + variant_depth >= min_read_depth and int(variant_depth)/int(columns[_column_converter_indel['depth']]) >= min_allele_ratio
             for line in j_deletions:
                 line = line.rstrip()
-                if not line.startswith("#") and not line.startswith("\n") != 0:
+                if not line.startswith("#") and not line.startswith("\n"):
                     alleles = extract_deletions(sample_name, reference, line, nc_to_chr, amplicon_min_depth, deletions_filter)
                     for key, info in alleles.items():
                         (nc, start, stop, ref, var) = key.split("#")
@@ -383,17 +382,18 @@ def _create_multi_bp_variant(sample, chr_name, variants, amplicon_min_depth=0):
         Returns:
             ('CHR#START#STOP#REF#VAR', Annovar_input_line,)
     """
+    from collections import OrderedDict
     positions = iter(sorted(variants.keys()))
     start_position = next(positions)
-    (key, best_vaf) = _get_major_vaf(variants[start_position])
+    #Sorting is done to be able to emulate sera result
+    (key, best_vaf) = _get_major_vaf(OrderedDict(sorted(variants[start_position].items(), key=lambda t: t[0], reverse=False )))
     (chr_nc, start, stop, new_ref, new_var ) = key.split("#")
     info = variants[start_position][key]
     first_info = info
 
     for last_position in positions:
         #Sorting is done to be able to emulate sera result
-        from collections import OrderedDict
-        (key, vaf) = _get_major_vaf(OrderedDict(sorted(variants[last_position].items(), key=lambda t: t[0], reverse=True)))
+        (key, vaf) = _get_major_vaf(OrderedDict(sorted(variants[last_position].items(), key=lambda t: t[0], reverse=False)))
         (chr_nc, start, stop, next_ref, next_var ) = key.split("#")
         new_ref +=  next_ref
         new_var += next_var
@@ -441,7 +441,6 @@ def extract_deletions(sample, ref, line, nc_to_chr, amplicon_min_depth=0, deleti
             }
     """
     columns = re.split(r"\t", line.rstrip())
-
     def var_data(field): return columns[_column_converter_indel[field]]
     ref_data = ref[var_data('nc_number')][var_data('position')]
     position = int(var_data('position'))
@@ -451,7 +450,7 @@ def extract_deletions(sample, ref, line, nc_to_chr, amplicon_min_depth=0, deleti
     for deletion in deletions:
         if deletion != '0':
             depth, variant = re.search(r"^(\d+)\(([0-9,-]+)\)$", deletion).groups()
-            if deletion_filter is None or deletion_filter(depth ,columns):
+            if deletion_filter is None or deletion_filter(int(depth), int(ref_data['depth']) ,columns):
                 from_bp, to_bp = map(int,variant.split(","))
                 deleted_bases = "".join([ref[nc_number][str(position + p)]['reference'] for p in range(from_bp,to_bp + 1)])
                 allele_ratio = int(depth)/int(var_data('depth'))
@@ -462,7 +461,7 @@ def extract_deletions(sample, ref, line, nc_to_chr, amplicon_min_depth=0, deleti
                     deleted_bases,
                     '-',
                     "comments: sample=" + sample +
-                    " variantAlleleRatio=" + str(allele_ratio) +
+                    " variantAlleleRatio=" + str(allele_ratio).rstrip('0') +
                     " alleleFreq=" + str(ref_data['depth']) + "," + depth +
                     " readDepth=" + var_data('depth') +
                     " Tumor_Del=" + var_data('tumor_ind')])
@@ -508,7 +507,7 @@ def _update_deletion_data(variants, deletions):
         if key in variants:
             existing_variant_info = extract_info(variants[key])
             new_variant_info = extract_info(info)
-            if float(new_variant_info['variantAlleleRatio']) > float(existing_variant_info['variantAlleleRatio']):
+            if int(new_variant_info['alleleFreq'].split(",")[1])/int(new_variant_info['readDepth']) > float(existing_variant_info['variantAlleleRatio']):
                 variants[key] = info
         else:
             variants[key] = info
@@ -586,6 +585,7 @@ def _count_amplicons(amplicon_information, min_depth=0):
             (int,int) --> (number of plus strand amplicons, number of minus strand amplicons)
     """
     plus_strand_amplicons, minus_strand_amplicons = 0, 0
+
     for amplicon in amplicon_information.split("#"):
         strand, depth = amplicon.split(":")[-2:]
         if int(depth) >= min_depth:

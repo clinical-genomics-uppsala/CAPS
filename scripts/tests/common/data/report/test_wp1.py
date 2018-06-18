@@ -28,18 +28,18 @@ class TestWP1ReportsMethods(unittest.TestCase):
     def test_filter_mutations(self):
         from scripts.lib.common.data.report.wp1 import generate_filtered_mutations
         sample = "18-215"
-        hotspot = '/snakemake-workflows/resources/Mutations_Lung_20171219.csv'
-        snpmania = '/snakemake-workflows/resources/18-215.ampliconmapped.variations'
-        pindel = '/snakemake-workflows/resources/annovarOutput'
-        multibp = '/snakemake-workflows/resources/MultipleBp_variations.csv'
-        chr_to_nc = '/snakemake-workflows/resources/reference.hg19.Info'
-        output = '/snakemake-workflows/resources/output'
+        hotspot = '/snakemake/resources/Mutations_Lung_20171219.csv'
+        snpmania = '/snakemake/resources/18-215.ampliconmapped.variations'
+        pindel = ['/snakemake/resources/annovarOutput']
+        multibp = '/snakemake/resources/MultipleBp_variations.csv'
+        chr_to_nc = '/snakemake/resources/reference.chr_to_nc.hg19.info'
+        output = '/snakemake/resources/output'
         min_read_depth = 30
         min_vaf = 0.01
         read_depth_classes = [(300 ,"ok","yes"), (30 ,"low","yes"),(0 ,"lowk","not analyzable")]
         max_1000genome = 0.02
-        blacklist = '/snakemake-workflows/resources/blacklist_variantClusterAllvarPindel_20151110.txt'
-        transcript = '/snakemake-workflows/resources/mainTranscripts.txt'
+        blacklist = '/snakemake/resources/blacklist_variantClusterAllvarPindel_20151110.txt'
+        transcript = '/snakemake/resources/mainTranscripts.txt'
         generate_filtered_mutations(sample, output, hotspot, snpmania, pindel, multibp, chr_to_nc, min_read_depth, min_vaf, read_depth_classes, max_1000genome, True, blacklist, transcript)
 
 

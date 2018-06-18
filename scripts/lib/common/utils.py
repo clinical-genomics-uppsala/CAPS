@@ -47,23 +47,23 @@ def get_fastq_files(wildcards, samples, read_pair="fq1"):
     >>> wildcards.sample = "sample1"
     >>> wildcards.unit = "lane1"
     >>> get_fastq_files(wildcards, samples)
-    'sample1-lane1.R1.cutadapt.fastq.gz'
+    'sample1.lane1.R1.cutadapt.fastq.gz'
     >>> get_fastq_files(wildcards, samples, "fq2")
-    'sample1-lane1.R2.cutadapt.fastq.gz'
+    'sample1.lane1.R2.cutadapt.fastq.gz'
     >>> wildcards.sample = "sample2"
     >>> wildcards.unit = "lane2"
     >>> get_fastq_files(wildcards, samples)
-    'sample2-lane2.R1.trimmomatic_cutadapt.fastq.gz'
+    'sample2.lane2.R1.trimmomatic_cutadapt.fastq.gz'
     >>> get_fastq_files(wildcards, samples, "fq2")
-    'sample2-lane2.R2.trimmomatic_cutadapt.fastq.gz'
+    'sample2.lane2.R2.trimmomatic_cutadapt.fastq.gz'
     """
     trimming = samples.get("trimming",{}).get(wildcards.sample)
     if trimming is None or pd.isnull(trimming): #Write test for isnull
         return samples[read_pair][wildcards.sample]
     else:
-        return wildcards.sample + "-" + wildcards.unit + "." + constants.trimming[trimming][read_pair]
+        return wildcards.sample + "." + wildcards.unit + "." + constants.trimming[trimming][read_pair]
 
-def get_bam_file(wildcards, samples):
+def get_bam_file(wildcards, samples, use_default=False):
     """
     Return the expected bam file path.
 
@@ -86,14 +86,14 @@ def get_bam_file(wildcards, samples):
     'sample2.sorted.bam'
     """
     panel_type = samples.get("panel_type",{}).get(wildcards.sample)
-    if panel_type is None or pd.isnull(panel_type): #Write test for isnull
+    if panel_type is None or pd.isnull(panel_type) or use_default: #Write test for isnull
         return wildcards.sample + "." + constants.bam_file_ending['default']
     else:
         return wildcards.sample + "." + constants.bam_file_ending[panel_type]
 
 
 def get_now():
-    return datetime.now().strftime('%Y-%m-%d')
+    return datetime.now().strftime('%Y%m%d')
 
 if __name__ == "__main__":
     import doctest

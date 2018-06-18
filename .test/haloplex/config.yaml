@@ -90,3 +90,17 @@ filter_settings:
     min_read_depth: 20
     amplicon_min_depth: 5
     max_1000genome_ratio: 0.02
+
+pindel_flags:
+  max_range_index: 2
+  balance_cutoff: 100
+
+annovar_pindel_flags:
+  plasma:
+    min_read_depth: 20
+    min_allele_ratio: 0.001
+    read_method: min
+  ffpe:
+    min_read_depth: 20
+    min_allele_ratio: 0.01
+    read_method: min

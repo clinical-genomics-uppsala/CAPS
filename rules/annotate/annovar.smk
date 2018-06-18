@@ -23,9 +23,17 @@ rule run_annovar_table:
 
 from scripts.lib.common.data.parser.annovar import process_annovar_multianno_file
 
+def field_converter(value):
+    if value == "yes":
+        return True
+    elif value == "no":
+         False
+    else:
+        raise Exception("Unhandled field value: " + value)
+
 def get_sample_value(field, sample, converter, default):
-    if field in samples and sample in sample[field]:
-        return converter(sample[field][sample])
+    if field in samples and sample in samples[field]:
+        return converter(samples[field][sample])
     else:
         return default
 
@@ -35,8 +43,8 @@ rule create_annovar_output:
     output:
         "annovar_output/{sample}.singleSample.annovarOutput"
     params:
-        tumor_normal = lambda wildcards: get_sample_value('tumor_normal', wildcards.sample, lambda value: True, False),
-        amplicon_mapped = lambda wildcards: get_sample_value('amplicon_mapped', wildcards.sample, lambda value: True, False)
+        tumor_normal = lambda wildcards: get_sample_value('tumor_normal', wildcards.sample, converter=field_converter),
+        amplicon_mapped = lambda wildcards: get_sample_value('amplicon_mapped', wildcards.sample, converter=field_converter)
     log:
         "logs/annovar/{sample}.table_annovar.log"
     run:
@@ -72,8 +80,8 @@ rule create_pindel_annovar_output:
     output:
         "pindel_annovar_output/{sample}.pindel.singleSample.annovarOutput"
     params:
-        tumor_normal = lambda wildcards: get_sample_value('tumor_normal', wildcards.sample, lambda value: True, False),
-        amplicon_mapped = lambda wildcards: get_sample_value('amplicon_mapped', wildcards.sample, lambda value: True, False)
+        tumor_normal = lambda wildcards: get_sample_value('tumor_normal', wildcards.sample, converter=field_converter),
+        amplicon_mapped = lambda wildcards: get_sample_value('amplicon_mapped', wildcards.sample, converter=field_converter)
     log:
         "logs/pindel_annovar/{sample}.table_annovar.log"
     run:
