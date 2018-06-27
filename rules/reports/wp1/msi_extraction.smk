@@ -7,14 +7,14 @@ rule extract_msi_markers:
     input:
         "reports/{sample}.filteredMutations.tsv"
     output:
-        "reports/extracted_sample_info/{sample}.msiMarkers.tsv"
+        "reports/extracted_sample_info/msi/{sample}.msiMarkers.tsv"
     params:
         tgfbr2_1bp = 0.01,
         tgfbr2_2bp = 0.01,
         acvr2a_1bp = 0.01,
         acvr2a_2bp = 0.01
     log:
-        "logs/reports/extracted_sample_info/{sample}.msiMarkers.log"
+        "logs/reports/extracted_sample_info/msi//{sample}.msiMarkers.log"
     run:
         extract_msi_markers(
             input[0],
@@ -34,7 +34,7 @@ def extract_colon_samples():
 
 rule combine_msi_markers:
     input:
-        expand("reports/extracted_sample_info/{sample}.msiMarkers.tsv", sample=extract_colon_samples())
+        expand("reports/extracted_sample_info/msi/{sample}.msiMarkers.tsv", sample=extract_colon_samples())
     output:
         "reports/all.msiMarkers.tsv"
     run:
