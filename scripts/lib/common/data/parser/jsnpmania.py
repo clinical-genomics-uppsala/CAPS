@@ -3,6 +3,8 @@
 
 import logging
 import re
+from scripts.lib.common.data.parser.common import create_chr_mapper
+
 
 logger = logging.getLogger(__name__).addHandler(logging.NullHandler())
 
@@ -81,13 +83,7 @@ def extract_egfr(input_file,output_file,min_depth,sample,tissue,experiment,filte
 
 
 def convert_jsnpmania_to_annvovar_output(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, path_nc_to_chr, min_allele_ratio, min_read_depth, amplicon_min_depth):
-    chr_to_nc = dict()
-    with open(path_nc_to_chr,'r') as nc_to_chr_file:
-        for line in nc_to_chr_file:
-            if not line.startswith("#"):
-                line = line.rstrip()
-                columns = line.split("\t")
-                chr_to_nc[columns[0]] = columns[1]
+    chr_to_nc = create_chr_mapper(path_nc_to_chr)
     process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, chr_to_nc, min_allele_ratio, min_read_depth, amplicon_min_depth)
 
 def process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, nc_to_chr, min_allele_ratio, min_read_depth, amplicon_min_depth):
