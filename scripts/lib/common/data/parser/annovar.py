@@ -124,27 +124,6 @@ def parse_multianno_line(line, headermap):
         line[headermap['Func.refGene']].replace("cRNA_exonic;","")
         return (line, gene, transcript, info)
 
-#def parse_annovar_output_line(line, headermap):
-#    """
-#        >>> heade = "#Sample\\tChr\\tStart\\tEnd\\tReference_base\\tVariant_base\\tGene\\tType\\tExonic_type\\tVariant_allele_ratio\\t#reference_alleles\\t#_variant_alleles\\tRead_depth\\tRatio_in_1000Genome\\tdbSNP_id\\tClinically_flagged_dbSNP\\tESP_6500\\tCosmic\\tClinVar_CLNDBN\\tClinVar_CLINSIG S#trands_A\\tStrands_G\\tStrands_C\\tStrands_T\\tStrands_Ins\\tStrands_Del\\t#variant_+_amplicons\\t#variant_-_amplicons\\t#reference_+_amplicons\\t#reference_-_amplicons\\tVariant_ampliconinfo\\tReference_ampliconinfo\\tTranscripts"
-#        >>> line = "21\\t44527557\\t44527557\\tT\\tC\\tsplicing\\tU2AF1\\tNM_006758:exon2:c.44+4A>G,NM_001025203:exon2:c.44+4A>G\\t-\\t-\\trs372157069\\trs372157069\\t-\\t-\\t-\\tcomments: sample=sample1 variantAlleleRatio=0.0117647058823529 alleleFreq=84,1 readDepth=85 Tumor_A=0|0|0|0 Tumor_G=0|0|0|0 Tumor_C=1|0|0|0 Tumor_T=71|0|13|0 Tumor_var_plusAmplicons=0 Tumor_var_minusAmplicons=0 Tumor_ref_plusAmplicons=1 Tumor_ref_minusAmplicons=1 Tumor_var_ampliconInfo=chr21:44527551-44527782:+:1 T#umor_ref_ampliconInfo=chr21:44527547-44527778:-:13#chr21:44527551-44527782:+:65"
-#        >>> parse_multianno_line(line,headermap)
-#        ('U2AF1', 'U2AF1:NM_006758:exon2:c.44+4A>G,U2AF1:NM_001025203:exon2:c.44+4A>G', {'sample': 'sample1', 'variantAlleleRatio': '0.0117647058823529', 'alleleFreq': '84,1', 'readDepth': '85', 'Tumor_A': '0|0|0|0', 'Tumor_G': '0|0|0|0', 'Tumor_C': '1|0|0|0', 'Tumor_T': '71|0|13|0', 'Tumor_var_plusAmplicons': '0', 'Tumor_var_minusAmplicons': '0', 'Tumor_ref_plusAmplicons': '1', 'Tumor_ref_minusAmplicons': '1', 'Tumor_var_ampliconInfo': 'chr21:44527551-44527782:+:1', 'Tumor_ref_ampliconInfo': 'chr21:44527547-44527778:-:13#chr21:44527551-44527782:+:65'})
-#    """
-#    if not line.startswith("Chr"):
-#        line = line.rstrip().split("\t")
-#        # Split and remote comments part
-#        comments = line[-1].split(" ")[1:]
-#        info = dict(map(lambda x: tuple(x.split("=")),comments))
-#        (gene, transcript) = extract_gene_info(
-#                                line[headermap['Gene.refGene']],
-#                                line[headermap['Func.refGene']],
-#                                line[headermap['GeneDetail.refGene']],
-#                                line[headermap['AAChange.refGene']])
-#        line[headermap['Func.refGene']].replace("cRNA_exonic;","")
-#        return (gene, transcript, info)
-
-
 def process_annovar_multianno_file(output_file, multianno_file, tumor_vs_normal = False, amplicon_mapped = False):
     with open(multianno_file, 'r') as multianno_lines:
         with open(output_file, 'w') as output:
@@ -204,6 +183,26 @@ def process_annovar_multianno_file(output_file, multianno_file, tumor_vs_normal 
                     data += [info.get('Tumor_var_ampliconInfo','-')]
                 data += [transcript]
                 output.write("\n" + "\t".join(data))
+
+
+def filter_annovar_output(input_file, output_file, filters):
+    with open(input_file, 'r') as input_data:
+        with open(output_file, 'w') as output_data:
+            for line in input_data:
+                columns = line.split("\t")
+                if evaluate_filters(columns,filters):
+                    output_data.write(line)
+
+
+def evaluate_filters(columns, filters):
+    if isinstance(filters, (list,tuple)):
+        head, *tail = filters
+        if isinstance(head, (list,tuple)):
+            return evaluate_filters(columns,head) or evaluate_filters(columns,tail)
+        else:
+            return head(columns) and evaluate_filters(columns,tail)
+    else:
+        return filters(columns)
 
 
 if __name__ == "__main__":
