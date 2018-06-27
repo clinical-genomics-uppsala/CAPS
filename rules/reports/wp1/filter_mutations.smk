@@ -1,7 +1,7 @@
 # vim: syntax=python tabstop=4 expandtab
 # coding: utf-8
 
-from scripts.lib.common.data.report.wp1 import generate_filtered_mutations
+from scripts.lib.common.data.report.wp1 import generate_filtered_mutations, filtered_mutations_to_vcf
 
 
 def field_converter(value):
@@ -53,3 +53,38 @@ rule filter_mutations:
             params.amplicon_mapped,
             params.blacklist,
             params.transcript)
+
+rule filter_mutations_to_vcf:
+  input:
+    "reports/{sample}.filteredMutations.tsv"
+  output:
+    "reports/{sample}.vcf"
+  params:
+    ampregion_file = lambda wildcards: samples["snpseq_file"][wildcards.sample],
+    chr_to_nc = config["chr_to_nc_file"]
+  log:
+      "logs/reports/wp1/{sample}.filter_mutations_to_vcf.log"
+  run:
+    filtered_mutations_to_vcf(
+      input[0],
+      output[0],
+      params.ampregion_file,
+      params.chr_to_nc)
+
+rule filter_mutations_to_vcf_vaf0_05:
+  input:
+    "reports/{sample}.filteredMutations.tsv"
+  output:
+    "reports/{sample}.vaf0.05.vcf"
+  params:
+    ampregion_file = lambda wildcards: samples["snpseq_file"][wildcards.sample],
+    chr_to_nc = config["chr_to_nc_file"]
+  log:
+      "logs/reports/wp1/{sample}.filter_mutations_to_vcf_vaf0_05.log"
+  run:
+    filtered_mutations_to_vcf(
+      input[0],
+      output[0],
+      params.ampregion_file,
+      params.chr_to_nc,
+      min_vaf=0.05)

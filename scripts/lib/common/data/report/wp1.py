@@ -7,6 +7,7 @@ from scripts.lib.common.data.filters.annovar import is_splicing, is_nonsynonymou
 from scripts.lib.common.data.filters.annovar import check_key_exists,contains_valid_information
 from scripts.lib.common.data.filters.annovar import is_pindel_line
 from scripts.lib.common.data.filters.wp1 import and_condition, or_condition, evalute_else, gene_name, insertion_var, vaf_above_or_equal, base_in_ref_or_var, evaluate_tuple
+from scripts.lib.common.data.parser.common import create_chr_mapper, import_ampregion_seq
 
 def create_filtered_mutations_header():
     return "\t".join([
@@ -296,6 +297,87 @@ def generate_filtered_mutations(sample, output_file, hotspot_file, snpmania_vari
         except KeyError as e:
             if not e.args[0] == 'region_all':
                 raise e
+
+def filtered_mutations_to_vcf(filtered_mutations_file, output_file, ampregion_file, nc2chr, min_vaf=0,print_all=False):
+    vcf_header = "\n".join(
+        [
+            "##fileformat=VCFv4.2",
+            "##reference=hg19",
+            "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tSAMPLE"
+        ]
+        )
+    nc2chr = create_chr_mapper(nc2chr, False)
+    regions = import_ampregion_seq(ampregion_file)
+    with open(filtered_mutations_file, 'r') as input_data:
+        with open(output_file, 'w') as output_data:
+            output_data.write(vcf_header)
+            header_map = {c[1]: c[0] for c in enumerate(input_data.readline().lstrip("#").split("\t"))}
+            for line in input_data:
+                line = line.rstrip("\n").rstrip("\r\n")
+                if not line.startswith("#") and not len(line) == 0 and not line.lower().startswith("Sample"):
+                    columns = line.split("\t")
+                    if print_all or (columns[header_map['Variant_allele_ratio']] != '-' and float(columns[header_map['Variant_allele_ratio']]) > min_vaf):
+                        id = "NA"
+                        qual = "."
+                        info = "."
+                        filter_settings = "."
+
+                        dbSnp = columns[header_map['dbSNP_id']]
+                        cosmic = columns[header_map['Cosmic']]
+                        if dbSnp is "-":
+                            if cosmic is "-":
+                                id = "."
+                            else:
+                                cosmic = cosmic.split(";")
+                                cosmic = cosmic[0].split("=")
+                                id = cosmic[1]
+                        else:
+                            id = dbSnp
+                            if not cosmic is "-":
+                                cosmic = cosmic.split(";")
+                                cosmic = cosmic[0].split("=")
+                                id = id + ";" + cosmic[1]
+                        columns[header_map['Start']] = int(columns[header_map['Start']])
+                        columns[header_map['End']] = int(columns[header_map['End']])
+                        ref_seq = ""
+                        var_seq = ""
+                        if columns[header_map['Reference_base']] == "-":
+                            try:
+                                for s in regions[columns[header_map['Chr']]].keys():
+                                    if s <= columns[header_map['Start']]:
+                                        for e in regions[columns[header_map['Chr']]][s].keys():
+                                            if e >= columns[header_map['End']]:
+                                                rSeq = regions[columns[header_map['Chr']]][s][e][(columns[header_map['Start']] - s):(columns[header_map['Start']] - s + 1)]
+                                                vSeq = rSeq + columns[header_map['Variant_base']]
+
+                            except KeyError:
+                                pass
+                        elif columns[header_map['Variant_base']] == "-":
+                            columns[header_map['Start']] -= 1
+                            try:
+                                for s in regions[columns[header_map['Chr']]].keys():
+                                    if s <= columns[header_map['Start']]:
+                                        for e in regions[columns[header_map['Chr']]][s].keys():
+                                            if e >= columns[header_map['End']]:
+                                                vSeq = rSeq = regions[columns[header_map['Chr']]][s][e][(columns[header_map['Start']] - s):(columns[header_map['Start']] - s + 1)]
+                                                rSeq = rSeq + columns[header_map['Reference_base']]
+
+                            except KeyError:
+                                pass
+                        else:
+                            rSeq = columns[header_map['Reference_base']]
+                            vSeq = columns[header_map['Variant_base']]
+
+                        output_data.write("\n" + "\t".join([
+                            nc2chr[columns[header_map['Chr']]],
+                            str(columns[header_map['Start']]),
+                            id,
+                            rSeq,
+                            vSeq,
+                            qual,
+                            filter_settings,
+                            info,
+                            "GT:DP:AD\t0/1:" + columns[header_map['Total_read_depth']] + ":" + columns[header_map['Reference_read_depth']] + "," + columns[header_map['Variant_read_depth']]]))
 
 if __name__ == "__main__":
     import doctest
