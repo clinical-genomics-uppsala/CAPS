@@ -20,15 +20,6 @@ rule bwa_alignment:
     wrapper:
         "0.17.4/bio/bwa/mem"
 
-#rule coordinate_sort_mapped_reads:
-#    input:
-#        "mapped/{sample}.{unit}.unsorted.bam"#"mapped1/{sample}.{unit}.unsorted.bam"
-#    output:
-#        bam = temp("mapped/{sample,[A-Za-z0-9-_]+}.{unit}.coord_sorted.bam")
-#    threads: 3
-#    wrapper:
-#        "0.19.3/bio/samtools/sort"
-
 def get_units(wildcards,units):
     return [wildcards.sample + "." + unit for unit in units.loc[wildcards.sample].index]
 

@@ -34,13 +34,10 @@ rule pindel:
     wrapper:
         "0.24.0/bio/pindel/call"
 
-
-#ToDo Remember update wrapper after pull-request has been approved
 rule pindel_to_vcf:
     input:
         ref=config['reference_genome'],
-        pindel="pindel/{sample}.indels_D"
-        #pindel=["pindel/{sample}.indels_D", "pindel/{sample}.indels_SI"] # Waiting for pull-request to be approved
+        pindel=["pindel/{sample}.indels_D", "pindel/{sample}.indels_SI"] # Waiting for pull-request to be approved
     output:
         "pindel/{sample}.vcf"
     params:
@@ -50,5 +47,4 @@ rule pindel_to_vcf:
     log:
         "logs/pindel/{sample}.pindel2vcf.log"
     wrapper:
-       "0.24.0/bio/pindel/pindel2vcf"
-       #"file:///home/patsm159/workspace/snakemake-wrapper-uppsala/bio/pindel/pindel2vcf/wrapper.py"
+       "master/bio/pindel/pindel2vcf"
