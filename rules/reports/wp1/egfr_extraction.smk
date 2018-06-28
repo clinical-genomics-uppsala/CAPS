@@ -60,7 +60,7 @@ rule combine_egfr_t790m:
         "reports/EGFR_T790M.allSamples.tsv"
     run:
         if len(input) > 0:
-            shell("""cat {input} | awk 'BEGIN{print "#Run\tSample\tTumour\tVaf\tRef_RD\tVar_RD\tTot_RD\t#Ref_amp\t#Var_amp\tChr\tPos\tRef\tVar\tCDS_change\tAA_change\tRef_amp\tVar_amp"} {if($1!~/#Run/){print $0}}' > {output}""")
+            shell("""cat {input} | awk 'BEGIN{{print("#Run\tSample\tTumour\tVaf\tRef_RD\tVar_RD\tTot_RD\t#Ref_amp\t#Var_amp\tChr\tPos\tRef\tVar\tCDS_change\tAA_change\tRef_amp\tVar_amp")}} {{if($1!~/#Run/){{print($0)}}}}' > {output}""")
         else:
             shell("touch {output}")
 
@@ -71,6 +71,6 @@ rule combine_egfr_g719:
         "reports/EGFR_G719.allSamples.tsv"
     run:
         if len(input) > 0:
-            shell("""cat {input} | awk 'BEGIN{print "#Run\tSample\tTumour\tVaf\tRef_RD\tVar_RD\tTot_RD\t#Ref_amp\t#Var_amp\tChr\tPos\tRef\tVar\tCDS_change\tAA_change\tRef_amp\tVar_amp"} {if($1!~/#Run/){print $0}}' > {output}""")
+            shell("""cat {input} | awk 'BEGIN{{print("#Run\tSample\tTumour\tVaf\tRef_RD\tVar_RD\tTot_RD\t#Ref_amp\t#Var_amp\tChr\tPos\tRef\tVar\tCDS_change\tAA_change\tRef_amp\tVar_amp")}} {{if($1!~/#Run/){{print($0)}}}}' > {output}""")
         else:
             shell("touch {output}")
