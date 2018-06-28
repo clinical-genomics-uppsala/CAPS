@@ -67,6 +67,7 @@ def extract_egfr(input_file,output_file,min_depth,sample,tissue,experiment,filte
                                 sample,
                                 tissue,
                                 str(int(allele_depth[_ref_position[var_base]])/(int(allele_depth[_ref_position[var_base]])+int(allele_depth[_ref_position[ref_base]]))),
+                                allele_depth[_ref_position[ref_base]],
                                 allele_depth[_ref_position[var_base]],
                                 str(int(allele_depth[_ref_position[ref_base]]) + int(allele_depth[_ref_position[var_base]])),
                                 str(ref_amplicons),
