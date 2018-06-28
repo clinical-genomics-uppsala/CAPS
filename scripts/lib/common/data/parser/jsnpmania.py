@@ -42,7 +42,7 @@ def extract_egfr(input_file,output_file,min_depth,sample,tissue,experiment,filte
     keys = filter.keys()
     with open(output_file, 'w') as output:
         with open(input_file, 'r') as lines:
-            output.write("#Run\tSample\tTumour\tVaf\tRef_RD\tVar_RD\tTot_RD\t#Ref_amp\t#Var_amp\tChr\tPos\tRef\tVar\tCDS_change\tAA_change\tRef_amp\tVar_amp")
+            output.write("#Run\tSample\tTumour\tVaf\tRef_RD\tVar_RD\tTot_RD\t#Ref_amp\t#Var_amp\tChr\tPos\tRef\tVar\tCDS_change\tAA_change\tRef_amp\tVar_amp\n")
             for line in lines:
                 if not line.startswith("#"):
                     columns = line.rstrip("\n").rstrip("\r").split("\t")
@@ -62,7 +62,8 @@ def extract_egfr(input_file,output_file,min_depth,sample,tissue,experiment,filte
                                 info = var.split(":")
                                 if int(info[-1]) >= min_depth:
                                     var_amplicons+=1
-                            output.write("\n" + "\t".join([experiment,
+                            output.write("\t".join([
+                                experiment,
                                 sample,
                                 tissue,
                                 str(int(allele_depth[_ref_position[var_base]])/(int(allele_depth[_ref_position[var_base]])+int(allele_depth[_ref_position[ref_base]]))),
@@ -79,7 +80,7 @@ def extract_egfr(input_file,output_file,min_depth,sample,tissue,experiment,filte
                                 filter[position]['aa'],
                                 amplicons[_ref_position[ref_base]],
                                 amplicons[_ref_position[var_base]]
-                                ]))
+                                ]) + "\n")
 
 
 def convert_jsnpmania_to_annvovar_output(sample_name, output, jsnpmania_variants, jsnpmania_insertion, jsnpmania_deletions, path_nc_to_chr, min_allele_ratio, min_read_depth, amplicon_min_depth):

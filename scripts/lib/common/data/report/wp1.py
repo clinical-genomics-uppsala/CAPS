@@ -88,7 +88,7 @@ def extract_msi_markers(input_file, output_file, tgfbr2_1bp = 0.01,tgfbr2_2bp = 
             for line in mutations:
                 columns = line.rstrip("\n").rstrip("\r").split("\t")
                 if filter_rows(columns, mapper):
-                    output.write("\n" + line)
+                    output.write("\n" + "\t".join(columns))
 
 
 def generate_filtered_mutations(sample, output_file, hotspot_file, snpmania_variants_file, annovar_files, multibp_file, chr_to_nc_file, min_read_depth, min_vaf, read_depth_classes, genome1000_vaf, ampliconmapped, blacklist_file, transcript_file):
