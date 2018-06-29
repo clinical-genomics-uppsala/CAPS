@@ -1,3 +1,4 @@
+#ToDo remove version found in wp1 parser
 def create_chr_mapper(mapper_file,  chr_to_nc=True):
     """
         First and second column of input file should be of the following
@@ -20,6 +21,46 @@ def create_chr_mapper(mapper_file,  chr_to_nc=True):
                 else:
                     chr_mapper[columns[1]] = columns[0]
     return chr_mapper
+
+_column_bed_file = {'chr': 0, 'start': 1, 'end': 2, 'name': 3, 'score': 4, 'strand': 5}
+
+def region_data_structure_generator(data, columns, mapper,start_position_modifier=1):
+    chrom = columns[mapper['chr']]
+    start = str(int(columns[mapper['start']]) + start_position_modifier) #int(columns[mapper['start']]) + start_position_modifier
+    end = columns[mapper['end']] #int(columns[mapper['end']])
+    name = columns[mapper['name']]
+    if not chrom in data:
+        data[chrom] = {}
+        data[chrom][start] = {}
+        data[chrom][start][end] = {}
+        data[chrom][start][end]['gene'] = name
+        data[chrom][start][end]['totDepth'] = 0
+        data[chrom][start][end]['covBases'] = 0
+    else:
+        if not start in data[chrom]:
+            data[chrom][start] = {}
+            data[chrom][start][end] = {}
+            data[chrom][start][end]['gene'] = name
+            data[chrom][start][end]['totDepth'] = 0
+            data[chrom][start][end]['covBases'] = 0
+        else:
+            if not end in data[chrom][start]:
+                data[chrom][start][end] = {}
+                data[chrom][start][end]['gene'] = name
+                data[chrom][start][end]['totDepth'] = 0
+                data[chrom][start][end]['covBases'] = 0
+    return data
+
+def import_bed_file(input_file, chr_to_nc, region_data_structure_generator):
+    data = dict()
+    with open(input_file, 'r') as lines:
+        for line in lines:
+            if line.startswith("chr"):
+                columns = line.strip('\n').rstrip('\r').split("\t")
+                columns[_column_bed_file['chr']] = chr_to_nc[columns[_column_bed_file['chr']].replace("chr","")]
+                data = region_data_structure_generator(data,columns,_column_bed_file)
+    return data
+
 
 _column_converter_ampregion = {
     'chr': 1,

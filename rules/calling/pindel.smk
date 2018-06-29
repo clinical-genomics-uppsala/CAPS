@@ -47,4 +47,4 @@ rule pindel_to_vcf:
     log:
         "logs/pindel/{sample}.pindel2vcf.log"
     wrapper:
-       "master/bio/pindel/pindel2vcf"
+       "0.26.1/bio/pindel/pindel2vcf"

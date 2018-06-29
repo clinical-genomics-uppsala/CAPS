@@ -1,13 +1,13 @@
 from scripts.lib.common.data.parser.wp1 import read_hotspot_file, read_blacklist, read_maintranscripts, read_multibpvariants, parse_reference_info, get_transcript_info,get_amplicon_info, extract_hotspot_pindel_info, extract_hotspot_snv_info
 from scripts.lib.common.data.parser.wp1 import valid_indel, valid_amplicon_nonhotspot, valid_amplicon_hotspot, get_read_level, merge_comment, no_variant_found
-from scripts.lib.common.data.parser.jsnpmania import _column_converter_snv
+from scripts.lib.common.data.parser.jsnpmania import _column_converter_snv, extract_ref_variant_info, _column_converter_snv
 from scripts.lib.common.data.parser.annovar import generate_headermap
 from scripts.lib.common.data.filters.annovar import depth_and_vaf, overlap_region, is_exonic
 from scripts.lib.common.data.filters.annovar import is_splicing, is_nonsynonymous, in_1000g
 from scripts.lib.common.data.filters.annovar import check_key_exists,contains_valid_information
 from scripts.lib.common.data.filters.annovar import is_pindel_line
 from scripts.lib.common.data.filters.wp1 import and_condition, or_condition, evalute_else, gene_name, insertion_var, vaf_above_or_equal, base_in_ref_or_var, evaluate_tuple
-from scripts.lib.common.data.parser.common import create_chr_mapper, import_ampregion_seq
+from scripts.lib.common.data.parser.common import create_chr_mapper, import_ampregion_seq, import_bed_file, region_data_structure_generator, _column_bed_file
 
 def create_filtered_mutations_header():
     return "\t".join([
@@ -378,6 +378,69 @@ def filtered_mutations_to_vcf(filtered_mutations_file, output_file, ampregion_fi
                             filter_settings,
                             info,
                             "GT:DP:AD\t0/1:" + columns[header_map['Total_read_depth']] + ":" + columns[header_map['Reference_read_depth']] + "," + columns[header_map['Variant_read_depth']]]))
+
+
+def calc_amplication(sample, tumourType, output, snpmania_variations_file, amplification_regions_file, background_regions_file, chr_to_nc):
+    def add_data(data,chromosome,pos,rd):
+        if chromosome in data:
+            for start in data[chromosome]:
+                if pos > start:
+                    for end in data[chromosome][start]:
+                        if pos <= end:
+                            data[chromosome][start][end]['totDepth'] += rd
+                            data[chromosome][start][end]['covBases'] += 1
+        return data
+    chr_to_nc_data = create_chr_mapper(chr_to_nc)
+    amplification_regions = import_bed_file(amplification_regions_file, chr_to_nc_data, region_data_structure_generator)
+    background_regions = import_bed_file(background_regions_file, chr_to_nc_data, region_data_structure_generator)
+    with open(snpmania_variations_file, 'r') as snpmania_var_data:
+        for line in snpmania_var_data:
+            line = line.rstrip()
+            if not line.startswith("#") and not line.startswith("\n"):
+                # Populate referebce dictionary
+                columns = line.split("\t")
+                pos = columns[_column_converter_snv['position']]#int(columns[_column_converter_snv['position']])
+                chromosome = columns[_column_converter_snv['nc_number']]
+                depth = int(columns[_column_converter_snv['depth']])
+                if chromosome in amplification_regions:
+                    amplification_regions = add_data(amplification_regions, chromosome, pos, depth)
+                else:
+                    background_regions = add_data(background_regions, chromosome, pos, depth)
+    import pprint
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(background_regions)
+    with open(output,'w') as output:
+        backTotDepth = 0
+        backCovBases = 0
+
+        for chromosome in background_regions:
+            for start in background_regions[chromosome]:
+                for end, data in background_regions[chromosome][start].items():
+                    backTotDepth += data['totDepth']
+                    backCovBases += data['covBases']
+        backRdBase = 0
+        if float(backCovBases > 0):
+            backRdBase = float(backTotDepth) / float(backCovBases)
+        for chromosome in amplification_regions:
+            for start in amplification_regions[chromosome]:
+                for end, data in amplification_regions[chromosome][start].items():
+                    ampRdBase = 0
+                    if data['covBases'] > 0:
+                        ampRdBase = float(data['totDepth']) / float (data['covBases'])
+                    amplification = 0
+                    if backRdBase > 0:
+                        amplification = float(ampRdBase) / float(backRdBase)
+                    else:
+                        amplification = "NA"
+                    output.write("\t".join([
+                        sample,
+                        tumourType,
+                        chromosome,
+                        str(start),
+                        str(end),
+                        data['gene'],
+                        str(amplification)]) + "\n")
+
 
 if __name__ == "__main__":
     import doctest
