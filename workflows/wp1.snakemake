@@ -31,4 +31,6 @@ include: "../rules/reports/wp1/msi_extraction.smk"
 
 include: "../rules/reports/wp1/egfr_extraction.smk"
 
+include: "../rules/reports/wp1/snp_extraction.smk"
+
 include: "../rules/reports/wp1/calc_amplification.smk"
