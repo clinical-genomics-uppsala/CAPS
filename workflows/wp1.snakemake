@@ -30,3 +30,5 @@ include: "../rules/reports/wp1/filter_mutations.smk"
 include: "../rules/reports/wp1/msi_extraction.smk"
 
 include: "../rules/reports/wp1/egfr_extraction.smk"
+
+include: "../rules/reports/wp1/calc_amplification.smk"
