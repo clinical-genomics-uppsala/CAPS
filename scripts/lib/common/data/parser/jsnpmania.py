@@ -199,6 +199,53 @@ def process_jsnpmania_files(sample_name, output, jsnpmania_variants, jsnpmania_i
                 for key, info in variants[nc][pos].items():
                     output_file.write("\n" + info)
 
+def position_filter(positions):
+    return lambda columns: positions.get(int(columns[_column_converter_snv['position']]), None)
+
+def extract_snp_file(input_file,output_file,filters,sample,experiment, tumor):
+    with open(input_file,'r') as input_data:
+        with open(output_file, 'w') as output_data:
+            for line in input_data:
+                if line.startswith("#"):
+                    output_data.write(line)
+                else:
+                    columns = line.rstrip("\r\n").rstrip("\n").split("\t")
+                    for f in filters:
+                        result = f(columns)
+                        if result is not None:
+                            variant_bases = int(columns[_column_converter_snv['alleles_depth']].split("|")[_ref_position[result["var"]]])
+                            ref_bases = int(columns[_column_converter_snv['alleles_depth']].split("|")[_ref_position[result["ref"]]])
+                            ref_amplicons = 0
+                            var_amplicons = 0
+                            amplicons = columns[_column_converter_snv['amplicon_information']].split("|")
+                            for a in amplicons[_ref_position[result["ref"]]].split("#"):
+                                num = int(a.split(":")[-1])
+                                if num >= 5:
+                                    ref_amplicons += 1
+                            for a in amplicons[_ref_position[result["var"]]].split("#"):
+                                num = int(a.split(":")[-1])
+                                if num >= 5:
+                                    var_amplicons += 1
+                            output_data.write("\t".join([
+                                experiment,
+                                sample,
+                                tumor,
+                                str(variant_bases/(ref_bases+variant_bases)),
+                                str(ref_bases),
+                                str(variant_bases),
+                                str((ref_bases+variant_bases)),
+                                str(ref_amplicons),
+                                str(var_amplicons),
+                                columns[_column_converter_snv['nc_number']],
+                                columns[_column_converter_snv['position']],
+                                result["ref"],
+                                result["var"],
+                                result['rs'],
+                                amplicons[_ref_position[result["ref"]]],
+                                amplicons[_ref_position[result["var"]]]
+                            ])+ "\n")
+
+                            break
 
 def extract_ref_variant_info(ref, line, amplicon_min_depth=0):
     """
