@@ -36,7 +36,8 @@ script:
   - python -m scripts.tests.common.data.parser.test_jspmania
   - python -m scripts.tests.common.data.parser.test_pindel
   - source activate snakemake
-  - pip install biopython pyvcf
+  - pip install biopython pyvcf pytools
   - snakemake --use-conda --directory .test/swift -s Snakefile
   - snakemake --use-conda --directory .test/haloplex -s Snakefile
+  - snakemake --use-conda --directory .test/split -s Snakefile
   #- snakemake --use-conda --directory .test/haloplex # container are missing some dependencies, should be run locally.

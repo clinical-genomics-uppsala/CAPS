@@ -9,16 +9,3 @@ coverage_html
 log
 resources
 .test
-!.test/*.tsv
-!.test/*.fa
-!.test/*.sam
-!.test/*.info
-!.test/haloplex/*.fa
-!.test/haloplex/*.yaml
-!.test/haloplex/*.SNPseq
-!.test/haloplex/*.bed
-!.test/haloplex/*.tsv
-!.test/haloplex/*.fa
-!.test/haloplex/*.yaml
-!.test/haloplex/*.SNPseq
-!.test/haloplex/*.tsv

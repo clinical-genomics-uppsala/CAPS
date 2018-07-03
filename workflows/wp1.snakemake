@@ -1,5 +1,8 @@
 wildcard_constraints:
-    unit="[A-Za-z0-9]+"
+    unit="[A-Za-z0-9]+",
+    sample="[A-Za-z0-9]+",
+    read="[R12]+",
+    part="[0-9]+"
 
 accel_amplicon_prefix="https://raw.githubusercontent.com/clinical-genomics-uppsala/accel_amplicon_trimming/update-naming"
 
