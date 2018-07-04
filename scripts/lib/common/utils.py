@@ -61,7 +61,10 @@ def get_fastq_files(wildcards, samples, read_pair="fq1"):
     if trimming is None or pd.isnull(trimming): #Write test for isnull
         return samples[read_pair][wildcards.sample]
     else:
-        return wildcards.sample + "." + wildcards.unit + "." + constants.trimming[trimming][read_pair]
+        try:
+            return wildcards.sample + "." + wildcards.unit + "." + wildcards.part + "." + constants.trimming[trimming][read_pair]
+        except AttributeError:
+            return wildcards.sample + "." + wildcards.unit + "." + constants.trimming[trimming][read_pair]
 
 def get_bam_file(wildcards, samples, use_default=False):
     """
