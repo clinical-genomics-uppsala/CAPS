@@ -10,6 +10,7 @@ path_jsnpmania: /snakemake-workflows/resources/jSNPmania-0.0.7-SNAPSHOT-amplicon
 path_jsnpmania_header: ../Convert2SNPManiaHeader.sam
 
 num_fastq_split: 3
+cgu_accel_num_fastq_split: 3
 
 annovar:
   build_version: hg19
@@ -63,11 +64,11 @@ cutadapt:
     second_pair_adapter: AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT
 
 pindel_flags:
-  swift:
+  plasma:
     min_read_depth: 20
     min_allele_ratio: 0.001
     read_method: min
-  haloplex:
+  ffpe:
     min_read_depth: 5
     min_allele_ratio: 0.01
     read_method: min
@@ -83,15 +84,23 @@ files:
 jsnpmania_flags: "-a 1 -q 0 -e 0 -am"
 
 mutations_flags:
-  swift: "-minRD 30,300 -minVaf 0.001"
-  haloplex: "-minRD 30,300 -minVaf 0.01"
+  plasma: "-minRD 30,300 -minVaf 0.001"
+  ffpe: "-minRD 30,300 -minVaf 0.01"
 
 filter_settings:
-  haloplex:
+  ffpe:
     min_allele_ratio: 0.01
-    min_read_depth: 20
+    min_read_depth_snpmania: 20
+    min_read_depth: 30
     amplicon_min_depth: 5
     max_1000genome_ratio: 0.02
+  plasma:
+    min_allele_ratio: 0.001
+    min_read_depth: 30
+    min_read_depth_snpmania: 20
+    amplicon_min_depth: 5
+    max_1000genome_ratio: 0.02
+
 
 pindel_flags:
   max_range_index: 2

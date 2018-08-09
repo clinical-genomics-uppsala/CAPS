@@ -47,7 +47,7 @@ reference_genome_name: hg19.chr21.fa
 reference_genome_date: 200902
 
 
-accel_panels:
+cgu_accel_panels:
   panel1:
     5p_primer_file: 5p_primers.fa
     3p_primer_file: 3p_primers.fa
@@ -61,14 +61,20 @@ cutadapt:
     second_pair_adapter: AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT
 
 pindel_flags:
-  swift:
+  max_range_index: 2
+  balance_cutoff: 100
+
+
+annovar_pindel_flags:
+  plasma:
     min_read_depth: 20
     min_allele_ratio: 0.001
     read_method: min
-  haloplex:
+  ffpe:
     min_read_depth: 5
     min_allele_ratio: 0.01
     read_method: min
+
 files:
   transcripts_mappers: ../transcripts.tsv
   multibp_variants_mappers: ../multibp.tsv
@@ -81,13 +87,20 @@ files:
 jsnpmania_flags: "-a 1 -q 0 -e 0 -am"
 
 mutations_flags:
-  swift: "-minRD 30,300 -minVaf 0.001"
-  haloplex: "-minRD 30,300 -minVaf 0.01"
+  plasma: "-minRD 30,300 -minVaf 0.001"
+  ffpe: "-minRD 30,300 -minVaf 0.01"
 
 filter_settings:
-  haloplex:
+  ffpe:
     min_allele_ratio: 0.01
-    min_read_depth: 20
+    min_read_depth_snpmania: 20
+    min_read_depth: 30
+    amplicon_min_depth: 5
+    max_1000genome_ratio: 0.02
+  plasma:
+    min_allele_ratio: 0.001
+    min_read_depth: 30
+    min_read_depth_snpmania: 20
     amplicon_min_depth: 5
     max_1000genome_ratio: 0.02
 

@@ -22,7 +22,7 @@ def generate_file_output_pindel():
 
 qc_files = [("fastqc", ".html"),("fastqc" ,".zip")]
 def generate_file_output_qc():
-    return [f[0] + "/" + str(row.Index[0]) + "-" + str(row.Index[1]) + f[1]
+    return [f[0] + "/" + str(row.Index[0]) + "." + str(row.Index[1]) + f[1]
         for row in units.itertuples()
             for f in qc_files]
 
@@ -39,6 +39,6 @@ def generate_filtered_mutations():
     return [os.path.join("reports", str(row.Index) + ".filteredMutations.tsv") for row in samples.itertuples()]
 rule all:
     input:
-        generate_file_output_qc() + generate_filtered_mutations()
+        generate_file_output_qc() + generate_pindel_file_output_annovar_input()
 
 include: "workflows/wp1.snakemake"
