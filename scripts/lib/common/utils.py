@@ -28,7 +28,7 @@ def reverse_complement(sequence):
 def get_fastq(wildcards, units, read_pair='fq1'):
     return units.loc[(path.split(wildcards.sample)[-1], wildcards.unit), [read_pair]].dropna()[0]
 
-def get_fastq_files(wildcards, samples, read_pair="fq1"):
+def get_fastq_files(wildcards, samples, read_pair='fq1'):
     """
     Return the expected fastq file path.
 

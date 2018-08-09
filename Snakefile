@@ -39,6 +39,6 @@ def generate_filtered_mutations():
     return [os.path.join("reports", str(row.Index) + ".filteredMutations.tsv") for row in samples.itertuples()]
 rule all:
     input:
-        generate_file_output_qc() + generate_pindel_file_output_annovar_input()
+        generate_file_output_qc() + generate_filtered_mutations()
 
 include: "workflows/wp1.snakemake"

@@ -33,7 +33,10 @@ sample2    adapters_1   sample2.R1.fastq   sample2.R2.fastq
 from scripts.lib.common.utils import get_fastq, sample_id, reverse_complement
 from pytools.persistent_dict import PersistentDict
 
-storage = PersistentDict("mystorage")
+storage = PersistentDict("caps_mystorage")
+
+def _cgu_get_num_splits(config):
+    return int(config.get("num_fastq_split",1))
 
 rule extract_fastq_files:
    input:
@@ -63,21 +66,20 @@ rule split_fastq_file:
       "trimmed/.temp/{sample}.{unit}.{read}.fastq",
       "trimmed/.temp/{sample}.{unit}.{read}.var"
    output:
-      temp(['trimmed/.temp/{sample}.{unit}.%02d.{read}.fastq' % num for num in range(0,int(config.get("num_fastq_split",1)))])
+      temp(['trimmed/.temp/{sample}.{unit}.%02d.{read}.fastq' % num for num in range(0,_cgu_get_num_splits(config))])
    params:
       output_prefix=lambda wildcards: "trimmed/.temp/" + wildcards.sample + "." + wildcards.unit + ".",
       output_suffix=lambda wildcards: "." + wildcards.read + ".fastq"
    run:
-     num_reads = int(storage.fetch(wildcards.sample + "." + wildcards.unit + "." + wildcards.read + ".var"))
-     num_split = int(config.get("num_fastq_split",1))
      import math
+     num_reads = int(storage.fetch(wildcards.sample + "." + wildcards.unit + "." + wildcards.read + ".var"))
+     num_split = _cgu_get_num_splits(config)
      lines_per_file = 4*math.ceil(num_reads / num_split)
+     number_of_generated_files = num_split - math.ceil(4*num_reads/lines_per_file)
      shell("split -d -l {lines_per_file} {input[0]} {params.output_prefix} --additional-suffix={params.output_suffix}")
-     if num_reads < lines_per_file*num_split:
-        number_of_generated_files = num_split - math.ceil(num_reads/num_split)
-        if num_split > number_of_generated_files:
-            for i in range(number_of_generated_files,num_split):
-                shell("touch {params.output_prefix}%02d{params.output_suffix}" % i)
+     if number_of_generated_files < num_split and num_split > 1:
+         for part in range(number_of_generated_files,num_split):
+             shell("touch " + params.output_prefix + ("%02d" % part)  + params.output_suffix)
 
 
 rule cutadapt:
@@ -91,14 +93,13 @@ rule cutadapt:
    params:
        " --minimum-length 1",
        lambda wildcards: " -a " + config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["first_pair_adapter"],
-       lambda wildcards: " -A " + reverse_complement(config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["first_pair_adapter"])
+       lambda wildcards: " -A " + reverse_complement(config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["second_pair_adapter"])
    wrapper:
        "0.17.4/bio/cutadapt/pe"
 
 rule cutadapt_split:
   input:
-      ["trimmed/.temp/{sample}.{unit}.{part}.R1.fastq",
-       "trimmed/.temp/{sample}.{unit}.{part}.R2.fastq"]
+      ["trimmed/.temp/{sample}.{unit}.{part}.R1.fastq", "trimmed/.temp/{sample}.{unit}.{part}.R2.fastq"]
   output:
       fastq1="trimmed/{sample}.{unit}.{part}.R1.cutadapt.fastq.gz",
       fastq2="trimmed/{sample}.{unit}.{part}.R2.cutadapt.fastq.gz",
@@ -106,7 +107,7 @@ rule cutadapt_split:
   params:
       " --minimum-length 1",
       lambda wildcards: " -a " + config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["first_pair_adapter"],
-      lambda wildcards: " -A " + reverse_complement(config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["first_pair_adapter"])
+      lambda wildcards: " -A " + reverse_complement(config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["second_pair_adapter"])
   wrapper:
       "0.17.4/bio/cutadapt/pe"
 
