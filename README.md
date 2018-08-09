@@ -43,6 +43,9 @@ or
 
 See the [Snakemake documentation](https://snakemake.readthedocs.io) for further details.
 
+
+snakemake  -j 128 --cluster-config cluster.json --cluster "sbatch -A wp1 -p core -n {cluster.n} -t 24:00:00 --output=logs/slurm/slurm_%j.out" --directory /projects/wp1/nobackup/workspace/ -s Snakefile --verbose --wrapper-prefix git+file:///home/patsm159/workspace/merged-snakemakewrappers --latency-wait 30 --restart-times 10
+
 ## Testing
 
 Tests cases are in the subfolder `.test`. They should be executed via continuous integration with Travis CI.
