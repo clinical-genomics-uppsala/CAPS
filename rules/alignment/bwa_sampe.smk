@@ -41,7 +41,6 @@ def get_units(wildcards, units):
     return [wildcards.sample + "." + unit for unit in units.loc[wildcards.sample].index]
 
 def get_bam_files(units, config):
-  # Need to check if it's a accel panel
   num_splits = config.get("cgu_accel_num_fastq_split", config.get("num_fastq_split", 1))
   if num_splits > 1:
     return [ unit + ".%02d" % part for part in range(0,num_splits) for unit in units]

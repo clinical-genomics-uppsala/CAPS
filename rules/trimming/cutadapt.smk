@@ -49,7 +49,6 @@ rule extract_fastq_files:
       else:
          shell("cat {input} > {output}")
 
-
 rule count_lines_in_fastq:
     input:
       "trimmed/.temp/{sample}.{unit}.{read}.fastq"
@@ -62,24 +61,24 @@ rule count_lines_in_fastq:
       shell("echo 'reads: '" + str(lines) + "'' > "  + output[0])
 
 rule split_fastq_file:
-   input:
+    input:
       "trimmed/.temp/{sample}.{unit}.{read}.fastq",
       "trimmed/.temp/{sample}.{unit}.{read}.var"
-   output:
+    output:
       temp(['trimmed/.temp/{sample}.{unit}.%02d.{read}.fastq' % num for num in range(0,_cgu_get_num_splits(config))])
-   params:
+    params:
       output_prefix=lambda wildcards: "trimmed/.temp/" + wildcards.sample + "." + wildcards.unit + ".",
       output_suffix=lambda wildcards: "." + wildcards.read + ".fastq"
-   run:
-     import math
-     num_reads = int(storage.fetch(wildcards.sample + "." + wildcards.unit + "." + wildcards.read + ".var"))
-     num_split = _cgu_get_num_splits(config)
-     lines_per_file = 4*math.ceil(num_reads / num_split)
-     number_of_generated_files = num_split - math.ceil(4*num_reads/lines_per_file)
-     shell("split -d -l {lines_per_file} {input[0]} {params.output_prefix} --additional-suffix={params.output_suffix}")
-     if number_of_generated_files < num_split and num_split > 1:
-         for part in range(number_of_generated_files,num_split):
-             shell("touch " + params.output_prefix + ("%02d" % part)  + params.output_suffix)
+    run:
+      import math
+      num_reads = int(storage.fetch(wildcards.sample + "." + wildcards.unit + "." + wildcards.read + ".var"))
+      num_split = _cgu_get_num_splits(config)
+      lines_per_file = 4*math.ceil(num_reads / num_split)
+      shell("split -d -l {lines_per_file} {input[0]} {params.output_prefix} --additional-suffix={params.output_suffix}")
+      num_files_generated = math.floor(num_reads / lines_per_file)
+      while num_files_generated < num_split:
+        shell("touch {params.output_prefix}%02d{params.output_suffix}" % num_split)
+        num_split -= 1
 
 
 rule cutadapt:
