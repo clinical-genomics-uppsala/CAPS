@@ -22,7 +22,7 @@ def generate_file_output_pindel():
 
 qc_files = [("fastqc", ".html"),("fastqc" ,".zip")]
 def generate_file_output_qc():
-    return [f[0] + "/" + str(row.Index[0]) + "-" + str(row.Index[1]) + f[1]
+    return [f[0] + "/" + str(row.Index[0]) + "." + str(row.Index[1]) + f[1]
         for row in units.itertuples()
             for f in qc_files]
 

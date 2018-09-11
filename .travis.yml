@@ -17,10 +17,7 @@ install:
   - conda config --add channels conda-forge
   - conda config --add channels bioconda
   # create snakemake env
-  - conda install biopython
   - conda install pytest
-  - conda install pandas
-  - conda install pyvcf
   - conda create -q -n snakemake snakemake python=$TRAVIS_PYTHON_VERSION
   # add additional stuff to setup below
   - conda create -q -n bioconda bwa==0.7.15
@@ -28,16 +25,16 @@ install:
   - bwa index .test/data/ref/chr21.fa
   - conda install samtools
   - samtools faidx .test/data/ref/chr21.fa
-
+  - source activate snakemake
+  - pip install pandas pyvcf pytools biopython
 script:
   # run the workflow
   # put a test case into the subfolder .test (e.g., use https://github.com/snakemake-workflows/ngs-test-data as a submodule)
+  - source activate snakemake
   - python -m scripts.lib.common.utils
   - python -m scripts.tests.common.data.parser.test_jspmania
   - python -m scripts.tests.common.data.parser.test_pindel
-  - source activate snakemake
-  - pip install biopython pyvcf pytools
   - snakemake --use-conda --directory .test/swift -s Snakefile
   - snakemake --use-conda --directory .test/haloplex -s Snakefile
-  - snakemake --use-conda --directory .test/split -s Snakefile
-  #- snakemake --use-conda --directory .test/haloplex # container are missing some dependencies, should be run locally.
+  - snakemake --use-conda --directory .test/split -s Snakefile --latency-wait 10 --verbose --restart-times 1
+  

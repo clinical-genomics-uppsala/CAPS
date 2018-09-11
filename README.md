@@ -43,6 +43,12 @@ or
 
 See the [Snakemake documentation](https://snakemake.readthedocs.io) for further details.
 
+
+snakemake  -j 128 --cluster-config cluster.json --cluster "sbatch -A wp1 -p core -n {cluster.n} -t 24:00:00 --output=logs/slurm/slurm_%j.out" --directory /projects/wp1/nobackup/workspace/ -s Snakefile --verbose --wrapper-prefix git+file:///home/patsm159/workspace/merged-snakemakewrappers --latency-wait 30 --restart-times 10
+
+SINGULARITYENV_PREPEND_PATH="$PATH:/bianca/bin" singularity exec -B /var/run/munge/:/run/munge -B /usr/bin/:/bianca/bin/ -B /usr/lib64,/etc/slurm,/etc/passwd ../singularity/caps.simg snakemake -j 128 --cluster-config /proj/sens2017561/nobackup/wharf/patriksm/patriksm-sens2017561/CAPS/cluster.json --cluster "sbatch -A sens2017561 -n {cluster.n} -t 24:00:00 --output=logs/slurm/slurm_%j.out" -s /proj/sens2017561/nobackup/wharf/patriksm/patriksm-sens2017561/CAPS/Snakefile --verbose --wrapper-prefix git+file:///castor/project/proj_nobackup/wharf/patriksm/patriksm-sens2017561/snakemake-wrappers-source --verbose --js jobscript_mod.sh
+ 1000  cd /proj/sens2017561/nobackup/wharf/patriksm/patriksm-sens2017561/
+
 ## Testing
 
 Tests cases are in the subfolder `.test`. They should be executed via continuous integration with Travis CI.

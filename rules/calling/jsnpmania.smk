@@ -18,4 +18,4 @@ rule run_jsnpmania:
     log:
         "logs/jsnpmania/{sample}.jsnpmania.log"
     wrapper:
-        "master/bio/jsnpmania"
+        "master/bio/jsnpmania"#"master/bio/jsnpmania"

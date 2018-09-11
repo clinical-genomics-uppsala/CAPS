@@ -5,7 +5,7 @@ from scripts.lib.common.utils import get_fastq_files, get_now
 
 rule bwa_alignment:
     input:
-        reads=lambda wildcards: ["trimmed/" + get_fastq_files(wildcards,samples,"fq1"), "trimmed/" + get_fastq_files(wildcards,samples,"fq2")]
+        reads=lambda wildcards: ["trimmed/" + get_fastq_files(wildcards,samples,'fq1'), "trimmed/" + get_fastq_files(wildcards,samples,'fq2')]
     output:
         "mapped/{sample}.{unit}.coord_sorted.bam"
     log:
@@ -22,7 +22,7 @@ rule bwa_alignment:
 
 rule bwa_alignment_split:
     input:
-        reads=lambda wildcards: ["trimmed/" + get_fastq_files(wildcards,samples,"fq1"), "trimmed/" + get_fastq_files(wildcards,samples,"fq2")]
+        reads=lambda wildcards: ["trimmed/" + get_fastq_files(wildcards,samples,'fq1'), "trimmed/" + get_fastq_files(wildcards,samples,'fq2')]
     output:
         "mapped/{sample}.{unit}.{part}.coord_sorted.bam"
     log:
@@ -41,8 +41,8 @@ def get_units(wildcards, units):
     return [wildcards.sample + "." + unit for unit in units.loc[wildcards.sample].index]
 
 def get_bam_files(units, config):
-  num_splits = config.get("num_fastq_split", 0)
-  if num_splits > 0:
+  num_splits = config.get("cgu_accel_num_fastq_split", config.get("num_fastq_split", 1))
+  if num_splits > 1:
     return [ unit + ".%02d" % part for part in range(0,num_splits) for unit in units]
   else:
     return units
