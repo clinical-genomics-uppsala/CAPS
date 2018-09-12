@@ -4,9 +4,9 @@ wildcard_constraints:
     read="[R12]+",
     part="[0-9]+"
 
-accel_amplicon_prefix="https://raw.githubusercontent.com/clinical-genomics-uppsala/accel_amplicon_trimming/update-naming"
+#accel_amplicon_prefix="https://raw.githubusercontent.com/clinical-genomics-uppsala/accel_amplicon_trimming/update-naming"
 
-#accel_amplicon_prefix="/home/patsm159/workspace/accel_amplicon_trimming"
+accel_amplicon_prefix="/accel_amplicon_trimming"
 
 include: "../rules/qc/fastqc.smk"
 
