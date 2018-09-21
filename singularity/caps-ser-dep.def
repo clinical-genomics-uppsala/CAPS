@@ -25,7 +25,7 @@ Include: yum wget
     ## Copy Accel Amplicon trimming workflow
     git clone --depth 1 https://github.com/clinical-genomics-uppsala/accel_amplicon_trimming.git -b master /accel_amplicon_trimming
     ## Copy Cancer analysis pipeline
-    git clone --depth 1 https://github.com/clinical-genomics-uppsala/CAPS.git /pipeline
+    git clone --depth 1 https://github.com/clinical-genomics-uppsala/CAPS.git -b singularity-dev /pipeline
     
     ## Need to downgrade python due to cython and compiled files for datrie
     conda install python=3.6.0
