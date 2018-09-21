@@ -1,12 +1,10 @@
-[root@centostestserver build]# vi caps.def
-
 BootStrap: yum
 OSVersion: 7
 MirrorURL: http://mirror.centos.org/centos-%{OSVERSION}/%{OSVERSION}/os/$basearch/
 Include: yum wget
 
 %environment
-    PATH=/opt/conda/bin:$PATH
+    PATH=/opt/conda/bin:/usr/bin:$PATH
     export PATH="/usr/local/jSNPmania-0.0.7-SNAPSHOT-amplicons_v4:$PATH"
     export PATH="/usr/local/AmpliconAlignment:$PATH"
     export PYTHONPATH="/pipeline"
@@ -27,8 +25,8 @@ Include: yum wget
     ## Copy Accel Amplicon trimming workflow
     git clone --depth 1 https://github.com/clinical-genomics-uppsala/accel_amplicon_trimming.git -b master /accel_amplicon_trimming
     ## Copy Cancer analysis pipeline
-    git clone --depth 1 https://github.com/clinical-genomics-uppsala/CAPS.git -b dev /pipeline
-
+    git clone --depth 1 https://github.com/clinical-genomics-uppsala/CAPS.git /pipeline
+    
     ## Need to downgrade python due to cython and compiled files for datrie
     conda install python=3.6.0
     ### Install software needed by CAPS
@@ -65,3 +63,5 @@ Include: yum wget
 
 %apprun snakemake
     exec snakemake "$@" --wrapper-prefix git+file:///snakemake-wrappers
+
+
