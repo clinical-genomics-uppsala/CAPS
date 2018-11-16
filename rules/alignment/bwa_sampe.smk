@@ -7,7 +7,7 @@ rule bwa_alignment:
     input:
         reads=lambda wildcards: ["trimmed/" + get_fastq_files(wildcards,samples,'fq1'), "trimmed/" + get_fastq_files(wildcards,samples,'fq2')]
     output:
-        "mapped/{sample}.{unit}.coord_sorted.bam"
+        "mapped/{sample}.{unit}.bam"
     log:
         "logs/bwa_mem/{sample}.{unit}.log"
     threads: 3
@@ -18,13 +18,13 @@ rule bwa_alignment:
         sort_order="coordinate",  # Can be 'queryname' or 'coordinate'.
         sort_extra="-@ 3"
     wrapper:
-        "0.17.4/bio/bwa/mem"
+        "0.27.1/bio/bwa/mem"
 
-rule bwa_alignment_split:
+rule bwa_alignment_part:
     input:
         reads=lambda wildcards: ["trimmed/" + get_fastq_files(wildcards,samples,'fq1'), "trimmed/" + get_fastq_files(wildcards,samples,'fq2')]
     output:
-        "mapped/{sample}.{unit}.{part}.coord_sorted.bam"
+        "mapped/{sample}.{unit}.{part}.bam"
     log:
         "logs/bwa_mem/{sample}.{unit}.{part}.log"
     threads: 3
@@ -35,7 +35,7 @@ rule bwa_alignment_split:
         sort_order="coordinate",  # Can be 'queryname' or 'coordinate'.
         sort_extra="-@ 3"
     wrapper:
-        "0.17.4/bio/bwa/mem"
+        "0.27.1/bio/bwa/mem"
 
 def get_units(wildcards, units):
     return [wildcards.sample + "." + unit for unit in units.loc[wildcards.sample].index]
@@ -43,18 +43,18 @@ def get_units(wildcards, units):
 def get_bam_files(units, config):
   num_splits = config.get("cgu_accel_num_fastq_split", config.get("num_fastq_split", 1))
   if num_splits > 1:
-    return [ unit + ".%02d" % part for part in range(0,num_splits) for unit in units]
+    return [ unit + ".%04d" % part for part in range(0,num_splits) for unit in units]
   else:
     return units
 
 rule merge_bam_files:
     input:
-        lambda wildcards: expand("mapped/{sample_unit}.coord_sorted.bam", sample_unit=get_bam_files(get_units(wildcards,units),config))
+        lambda wildcards: expand("mapped/{sample_unit}.bam", sample_unit=get_bam_files(get_units(wildcards,units),config))
     output:
         "mapped/{sample}.merged.bam"
     threads: 8
     wrapper:
-        "0.19.3/bio/samtools/merge"
+        "bio/samtools/merge"
 
 rule coordinate_sort_mapped_reads_merged:
     input:
@@ -63,7 +63,7 @@ rule coordinate_sort_mapped_reads_merged:
         bam = "mapped/{sample}.sorted.bam"
     threads: 3
     wrapper:
-        "0.19.3/bio/samtools/sort"
+        "0.27.1/bio/samtools/sort"
 
 rule create_bam_index:
     input:
@@ -73,4 +73,4 @@ rule create_bam_index:
     params:
         ""
     wrapper:
-        "0.24.0/bio/samtools/index"
+        "0.27.1/bio/samtools/index"

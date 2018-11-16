@@ -14,4 +14,4 @@ rule fastqc:
         "logs/fastqc/{sample}.{unit}.log"
     threads: 1
     wrapper:
-        "0.19.3/bio/fastqc"
+        "0.27.1//bio/fastqc"

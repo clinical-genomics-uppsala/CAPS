@@ -7,6 +7,10 @@ trimming = {
         'fq1': "R1.trimmomatic_cutadapt.fastq.gz",
         'fq2': "R2.trimmomatic_cutadapt.fastq.gz"
     },
+    'headcrop_r2': {
+        'fq1': "R1.fastq.gz",
+        'fq2': "R2.headcrop.fastq.gz"
+    },
 }
 
 bam_file_ending= {

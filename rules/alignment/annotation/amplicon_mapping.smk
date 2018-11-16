@@ -41,4 +41,4 @@ rule create_bam_index_for_amplicon_mapped_bam:
     params:
         ""
     wrapper:
-        "0.17.4/bio/samtools/index"
+        "0.27.1/bio/samtools/index"

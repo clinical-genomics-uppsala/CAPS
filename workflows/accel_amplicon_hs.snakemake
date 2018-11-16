@@ -1,0 +1,26 @@
+wildcard_constraints:
+    unit="[A-Za-z0-9]+",
+    sample="[A-Za-z0-9-]+",
+    read="[R12]+",
+    part="[0-9]+"
+
+singularity: "/projects/wp1/nobackup/workspace/accel_amplicon_hs.simg"
+
+from pytools.persistent_dict import PersistentDict
+storage = PersistentDict("caps_mystorage")
+
+include: "../rules/fastq/split_fastq.smk"
+include: "../rules/fastq/import_read.smk"
+include: "../rules/fastq/extract_umis.smk"
+include: "../rules/trimming/headcrop.smk"
+
+
+include: "../rules/alignment/bwa_sampe.smk"
+
+include: "../rules/alignment/trimming/primerclip.smk"
+
+include: "../rules/alignment/annotation/umi_r2_head.smk"
+
+include: "../rules/alignment/umi/collapse_reads.smk"
+
+include: "../rules/calling/lofreq.smk"

@@ -32,7 +32,7 @@ rule pindel:
         "logs/pindel/{sample}.log"
     threads: 5
     wrapper:
-        "0.24.0/bio/pindel/call"
+        "0.27.1//bio/pindel/call"
 
 rule pindel_to_vcf:
     input:
@@ -47,4 +47,4 @@ rule pindel_to_vcf:
     log:
         "logs/pindel/{sample}.pindel2vcf.log"
     wrapper:
-       "0.26.1/bio/pindel/pindel2vcf"
+       "0.27.1//bio/pindel/pindel2vcf"
