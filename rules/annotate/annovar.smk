@@ -15,11 +15,8 @@ rule run_annovar_table:
         build_version = config['annovar']['build_version']
     log:
         "logs/annovar/{sample}.table_annovar.log"
-    shell:
-        "perl {params.table_annovar} {input} {params.database} " + \
-        "-protocol {params.protocols} -operation {params.operations} " +  \
-        "-nastring \"-\" -otherinfo -buildver {params.build_version} " +  \
-        "-remove -arg {params.arguments} 2> {log}"
+    run:
+        shell("perl {params.table_annovar} {input} {params.database} -protocol {params.protocols} -operation {params.operations} -nastring \"-\" -otherinfo -buildver {params.build_version} -remove -arg {params.arguments} 2> {log}")
 
 from scripts.lib.common.data.parser.annovar import process_annovar_multianno_file
 
@@ -68,11 +65,8 @@ rule run_annovar_pindel_table:
         build_version = config['annovar']['build_version']
     log:
         "logs/pindel_annovar/{sample}.table_annovar.log"
-    shell:
-        "perl {params.table_annovar} {input} {params.database} " + \
-        "-protocol {params.protocols} -operation {params.operations} " +  \
-        "-nastring \"-\" -otherinfo -buildver {params.build_version} " +  \
-        "-remove -arg {params.arguments} 2> {log}"
+    run:
+      shell("perl {params.table_annovar} {input} {params.database} -protocol {params.protocols} -operation {params.operations} -nastring \"-\" -otherinfo -buildver {params.build_version} -remove -arg {params.arguments} 2> {log}")
 
 rule create_pindel_annovar_output:
     input:
