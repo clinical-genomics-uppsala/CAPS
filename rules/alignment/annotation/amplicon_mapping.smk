@@ -29,7 +29,6 @@ rule coordinate_sort_amplicon_mapped_reads:
         "mapped/{sample}.amplicon_annotated.bam"
     output:
         bam = "mapped/{sample}.amplicon_annotated.sorted.bam"
-    threads: 3
     wrapper:
         "0.19.3/bio/samtools/sort"
 
@@ -41,4 +40,4 @@ rule create_bam_index_for_amplicon_mapped_bam:
     params:
         ""
     wrapper:
-        "0.17.4/bio/samtools/index"
+        "0.27.1/bio/samtools/index"
