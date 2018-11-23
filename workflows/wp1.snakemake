@@ -10,7 +10,7 @@ include: "../rules/fastq/split_fastq.smk"
 
 include: "../rules/fastq/import_read.smk"
 
-#accel_amplicon_prefix="https://raw.githubusercontent.com/clinical-genomics-uppsala/accel_amplicon_trimming/update-naming"
+accel_amplicon_prefix="https://raw.githubusercontent.com/clinical-genomics-uppsala/accel_amplicon_trimming/update-spliting"
 
 #accel_amplicon_prefix="/accel_amplicon_trimming"
 
@@ -18,7 +18,7 @@ include: "../rules/qc/fastqc.smk"
 
 include: "../rules/trimming/cutadapt.smk"
 
-#include: accel_amplicon_prefix + "/rules/accel_amplicon.smk"
+include: accel_amplicon_prefix + "/rules/accel_amplicon.smk"
 
 include: "../rules/alignment/bwa_sampe.smk"
 

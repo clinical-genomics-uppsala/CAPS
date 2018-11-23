@@ -9,3 +9,4 @@ coverage_html
 log
 resources
 .test
+venv

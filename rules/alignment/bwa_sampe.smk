@@ -7,23 +7,6 @@ rule bwa_alignment:
     input:
         reads=lambda wildcards: ["trimmed/" + get_fastq_files(wildcards,samples,'fq1'), "trimmed/" + get_fastq_files(wildcards,samples,'fq2')]
     output:
-        "mapped/{sample}.{unit}.bam"
-    log:
-        "logs/bwa_mem/{sample}.{unit}.log"
-    threads: 3
-    params:
-        index=config['reference_genome'],
-        extra=lambda wildcards: r"-M -R '@RG\tID:" + get_now() + "_" + wildcards.sample + r"\tSM:" + wildcards.sample + r"\tPL:illumina'",
-        sort="samtools",             # Can be 'none', 'samtools' or 'picard'.
-        sort_order="coordinate",  # Can be 'queryname' or 'coordinate'.
-        sort_extra="-@ 3"
-    wrapper:
-        "0.27.1/bio/bwa/mem"
-
-rule bwa_alignment_part:
-    input:
-        reads=lambda wildcards: ["trimmed/" + get_fastq_files(wildcards,samples,'fq1'), "trimmed/" + get_fastq_files(wildcards,samples,'fq2')]
-    output:
         "mapped/{sample}.{unit}.{part}.bam"
     log:
         "logs/bwa_mem/{sample}.{unit}.{part}.log"
@@ -45,7 +28,7 @@ def get_bam_files(units, config):
   if num_splits > 1:
     return [ unit + ".%04d" % part for part in range(0,num_splits) for unit in units]
   else:
-    return units
+    return [ unit + ".0000" for unit in units]
 
 rule merge_bam_files:
     input:
@@ -54,11 +37,11 @@ rule merge_bam_files:
         "mapped/{sample}.merged.bam"
     threads: 8
     wrapper:
-        "bio/samtools/merge"
+        "0.27.1/bio/samtools/merge"
 
 rule coordinate_sort_mapped_reads_merged:
     input:
-        "mapped/{sample}.merged.bam"#"mapped1/{sample}.{unit}.unsorted.bam"
+        "mapped/{sample}.merged.bam" #"mapped1/{sample}.{unit}.unsorted.bam"
     output:
         bam = "mapped/{sample}.sorted.bam"
     threads: 3
