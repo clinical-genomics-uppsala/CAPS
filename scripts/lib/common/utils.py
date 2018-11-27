@@ -66,6 +66,13 @@ def get_fastq_files(wildcards, samples, read_pair='fq1'):
         except AttributeError:
             return wildcards.sample + "." + wildcards.unit + "." + constants.trimming[trimming][read_pair]
 
+def get_split_and_unit_part_files(wildcards, units, config):
+    num_splits = config.get("cgu_accel_num_fastq_split", config.get("num_fastq_split", 1))
+    if num_splits > 1:
+        return [ unit + ".%04d" % part for part in range(0,num_splits) for unit in units.loc[wildcards.sample].index]
+    else:
+        return [ unit + ".0000" for unit in units.loc[wildcards.sample].index]
+
 def get_bam_file(wildcards, samples, use_default=False):
     """
     Return the expected bam file path.
@@ -93,6 +100,7 @@ def get_bam_file(wildcards, samples, use_default=False):
         return wildcards.sample + "." + constants.bam_file_ending['default']
     else:
         return wildcards.sample + "." + constants.bam_file_ending[panel_type]
+
 
 
 def get_now():

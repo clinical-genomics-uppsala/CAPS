@@ -1,9 +1,21 @@
 # vim: syntax=python tabstop=4 expandtab
 # coding: utf-8
 
+_amplicon_mapping_input = "mapped/{sample}.sorted.bam"
+try:
+    _amplicon_mapping_input = amplicon_mapping_input
+except:
+    pass
+
+_amplicon_mapping_output = "mapped/{sample}.amplicon_annotated.sorted.bam"
+try:
+    _amplicon_mapping_output = amplicon_mapping_output
+except:
+      pass
+
 rule queryname_sort_reads:
   input:
-      "mapped/{sample}.sorted.bam"
+      _amplicon_mapping_input
   output:
       bam = temp("mapped/{sample}.queryname_sorted.bam")
   params:
@@ -28,15 +40,15 @@ rule coordinate_sort_amplicon_mapped_reads:
     input:
         "mapped/{sample}.amplicon_annotated.bam"
     output:
-        bam = "mapped/{sample}.amplicon_annotated.sorted.bam"
+        _amplicon_mapping_output
     wrapper:
         "0.19.3/bio/samtools/sort"
 
 rule create_bam_index_for_amplicon_mapped_bam:
     input:
-        "mapped/{sample}.amplicon_annotated.sorted.bam"
+        _amplicon_mapping_output
     output:
-        "mapped/{sample}.amplicon_annotated.sorted.bam.bai"
+        _amplicon_mapping_output + ".bai"
     params:
         ""
     wrapper:

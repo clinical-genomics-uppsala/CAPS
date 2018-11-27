@@ -6,11 +6,29 @@ pindel_types = ["D", "SI"]
 
 from scripts.lib.common.utils import get_bam_file
 
+_pindel_input = "mapped/{sample}.sorted.bam"
+try:
+    _pindel_input = pindel_input
+except:
+    pass
+
+_pindel_output = "pindel/{{sample}}.indels_{type}"
+try:
+    _pindel_output = pindel_output
+except:
+    pass
+
+_pindel_vcf_output = "pindel/{sample}.vcf"
+try:
+    _pindel_vcf_output = pindel_vcf_output
+except:
+    pass
+
 rule create_pindel_config:
     input:
-        lambda wildcards: "mapped/" + get_bam_file(wildcards, samples, True)
+        _pindel_input
     output:
-        "pindel/{sample}.config.txt"
+        temp("pindel/{sample}.config.txt")
     shell:
         "echo -e \"{input}\t300\t{wildcards.sample}\" > {output}"
 
@@ -18,11 +36,11 @@ rule pindel:
     input:
         ref=config['reference_genome'],
         #samples=lambda wildcards: "mapped/" + get_bam_file(wildcards, samples, True),
-        samples="mapped/{sample}.sorted.bam",
+        samples=_pindel_input,
         config="pindel/{sample}.config.txt",
-        index=lambda wildcards: "mapped/" + get_bam_file(wildcards, samples,True) + ".bai"
+        index=_pindel_input + ".bai"
     output:
-        expand("pindel/{{sample}}.indels_{type}", type=pindel_types)
+        expand(_pindel_output, type=pindel_types)
     params:
         prefix= "pindel/{sample}.indels",# lambda wildcards: "pindel/" + wildcards.sample + ".indels",
         extra= lambda wildcards: " -J " + config['pindel_exclude_regions'] + \
@@ -37,9 +55,9 @@ rule pindel:
 rule pindel_to_vcf:
     input:
         ref=config['reference_genome'],
-        pindel=["pindel/{sample}.indels_D", "pindel/{sample}.indels_SI"] # Waiting for pull-request to be approved
+        pindel=expand(_pindel_output, type=pindel_types) # Waiting for pull-request to be approved
     output:
-        "pindel/{sample}.vcf"
+        _pindel_vcf_output
     params:
         refname=config['reference_genome_name'],
         refdate=config['reference_genome_date'],

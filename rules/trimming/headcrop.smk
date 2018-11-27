@@ -3,23 +3,23 @@
 
 from scripts.lib.common.utils import get_fastq
 
-#rule headcrop_read:
-#   input:
-#      lambda wildcards: get_fastq(wildcards,units, 'fq1' if wildcards.read == "R1" else 'fq2')
-#   output:
-#      temp("trimmed/{sample}.{unit}.{read}.headcrop.fastq.gz")
-#   params:
-#      trimmer=["HEADCROP:10"],
-#      extra=""
-#   threads: 8
-#   wrapper:
-#      "0.27.1/bio/trimmomatic/se"
+_headcrop_read_input = "trimmed/{sample}.{unit}.{part}.{read}.fastq.gz"
+try:
+    _headcrop_read_input = headcrop_read_input
+except:
+    pass
 
-rule headcrop_read_part:
+_headcrop_read_output = temp("trimmed/{sample}.{unit}.{part}.{read}.headcrop.fastq.gz")
+try:
+    _headcrop_read_output = headcrop_read_output
+except:
+    pass
+
+rule headcrop_read:
    input:
-        "trimmed/{sample}.{unit}.{part}.{read}.fastq.gz"
+        _headcrop_read_input
    output:
-      temp("trimmed/{sample}.{unit}.{part}.{read}.headcrop.fastq.gz")
+        _headcrop_read_output
    log:
       "logs/trimming/{sample}.{unit}.{part}.{read}.headcrop.trimmomatic.txt"
    params:
