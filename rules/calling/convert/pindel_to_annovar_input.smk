@@ -3,13 +3,31 @@
 
 from scripts.lib.common.data.parser.pindel import convert_to_annovar_input
 
+_pindel_to_annovar_d_input = "pindel/{sample}.indels_D"
+try:
+    _pindel_to_annovar_d_input = pindel_to_annovar_d_input
+except:
+    pass
+
+_pindel_to_annovar_i_input = "pindel/{sample}.indels_SI"
+try:
+    _pindel_to_annovar_i_input = pindel_to_annovar_i_input
+except:
+    pass
+
+_pindel_to_annovar_i_output = "annovar/{sample}.pindelFiltered.annovarInput"
+try:
+    _pindel_to_annovar_i_output = pindel_to_annovar_i_output
+except:
+    pass
+
 rule pindel_to_annovar_input:
     input:
-        pindel_deletions="pindel/{sample}.indels_D",
-        pindel_insertions="pindel/{sample}.indels_SI",
+        pindel_deletions=_pindel_to_annovar_d_input,
+        pindel_insertions=_pindel_to_annovar_i_input,
         vcf="pindel/{sample}.vcf"
     output:
-        "pindel_annovar/{sample}.pindel.filtered.annovarInput"
+        _pindel_to_annovar_i_output
     params:
         min_read_depth = lambda wildcards: config["annovar_pindel_flags"][samples["sample_source"][wildcards.sample]]['min_read_depth'],
         min_allele_ratio = lambda wildcards: config["annovar_pindel_flags"][samples["sample_source"][wildcards.sample]]['min_allele_ratio'],

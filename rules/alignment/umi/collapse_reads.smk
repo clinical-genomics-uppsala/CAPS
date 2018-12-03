@@ -1,9 +1,21 @@
 # vim: syntax=python tabstop=4 expandtab
 # coding: utf-8
 
+def collapse_reads_input():
+    try:
+      return collapse_reads_input
+    except:
+      return "mapped/{sample}.{unit}.{part}.primerclip.umi.bam"
+
+def collapse_reads_output():
+    try:
+      return collapse_reads_output
+    except:
+      return "mapped/consensus/{sample}.consensus.bam"
+
 rule umi_cr_revertsam:
     input:
-        "mapped/{sample}.{unit}.{part}.primerclip.umi.bam"
+        collapse_reads_input()
     output:
         temp("mapped/consensus/{sample}.{unit}.{part}.sanitised.bam")
     params:
@@ -128,7 +140,7 @@ rule replace_rg_concensus_collapse:
     input:
         "mapped/consensus/{sample}.consensus.m3.primerclip.sam"
     output:
-        "mapped/consensus/{sample}.consensus.bam"
+        collapse_reads_output()
     log:
         "logs/picard/replace_rg/{sample}.log"
     params:

@@ -21,7 +21,7 @@ def get_sample_value(field, sample, converter=None, default=False):
 rule filter_mutations:
     input:
         snpmania = 'jsnpmania/{sample}.variations',
-        annovar = ['pindel_annovar_output/{sample}.pindel.singleSample.annovarOutput', 'annovar_output/{sample}.singleSample.annovarOutput']
+        annovar = ['annovar_output/{sample}.pindelFiltered.singleSample.annovarOutput', 'annovar_output/{sample}.jsnpmania.singleSample.annovarOutput']
     output:
         "reports/{sample}.filteredMutations.tsv"
     params:

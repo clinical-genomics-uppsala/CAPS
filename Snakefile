@@ -33,7 +33,7 @@ def generate_file_output_annovar_input():
     return [os.path.join("annovar", str(row.Index) + ".annovarInput") for row in samples.itertuples()]
 
 def generate_pindel_file_output_annovar_input():
-    return [os.path.join("pindel_annovar", str(row.Index) + ".pindel.filtered.annovarInput") for row in samples.itertuples()]
+    return [os.path.join("annovar", str(row.Index) + ".pindelFiltered.annovarInput") for row in samples.itertuples()]
 
 def generate_filtered_mutations():
     return [os.path.join("reports", str(row.Index) + ".filteredMutations.tsv") for row in samples.itertuples()]

@@ -35,31 +35,30 @@ from pytools.persistent_dict import PersistentDict
 
 storage = PersistentDict("caps_mystorage")
 
-#def _cgu_get_num_splits(config):
-#    return int(config.get("num_fastq_split",1))
+_cutadapt_input = ["trimmed/{sample}.{unit}.{part}.R1.fastq", "trimmed/{sample}.{unit}.{part}.R2.fastq"]
+try:
+    _cutadapt_input = cutadapt_input
+except:
+    pass
 
+_cutadapt_fastq1_output = "trimmed/{sample}.{unit}.{part}.R1.cutadapt.fastq.gz"
+try:
+    _cutadapt_fastq1_output = cutadapt_fastq1_output
+except:
+    pass
 
-#rule cutadapt:
-#   input:
-#       [lambda wildcards: get_fastq(wildcards,units,'fq1'),
-#        lambda wildcards: get_fastq(wildcards,units,'fq2')]
-#   output:
-#       fastq1="trimmed/{sample}.{unit}.R1.cutadapt.fastq.gz",
-#       fastq2="trimmed/{sample}.{unit}.R2.cutadapt.fastq.gz",
-#       qc = "logs/trimmed/{sample}.{unit}.cutadapt.qc.txt"
-#   params:
-#       " --minimum-length 1",
-#       lambda wildcards: " -a " + config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["first_pair_adapter"],
-#       lambda wildcards: " -A " + reverse_complement(config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["second_pair_adapter"])
-#   wrapper:
-#       "0.17.4/bio/cutadapt/pe"
+_cutadapt_fastq2_output = "trimmed/{sample}.{unit}.{part}.R2.cutadapt.fastq.gz"
+try:
+    _cutadapt_fastq2_output = cutadapt_fastq2_output
+except:
+    pass
 
 rule cutadapt:
   input:
-      ["trimmed/{sample}.{unit}.{part}.R1.fastq", "trimmed/{sample}.{unit}.{part}.R2.fastq"]
+      _cutadapt_input
   output:
-      fastq1="trimmed/{sample}.{unit}.{part}.R1.cutadapt.fastq.gz",
-      fastq2="trimmed/{sample}.{unit}.{part}.R2.cutadapt.fastq.gz",
+      fastq1=_cutadapt_fastq1_output,
+      fastq2=_cutadapt_fastq2_output,
       qc = "logs/trimmed/{sample}.{unit}.{part}.cutadapt.qc.txt"
   params:
       " --minimum-length 1",
@@ -67,9 +66,3 @@ rule cutadapt:
       lambda wildcards: " -A " + reverse_complement(config["cutadapt"][samples['adapters'][sample_id(wildcards)]]["second_pair_adapter"])
   wrapper:
       "0.17.4/bio/cutadapt/pe"
-
-#rule merge_cutadapt
-#  input:
-#    lambda wildcards: ["trimmed/" + wildcards.sample + "." + wildcards.unit + "." + p + "." + wildcards.read
-#  output:
-#    fastq1="trimmed/.temp/{sample}_{unit}_R1/{sample}.{unit}.{read}.cutadapt.fastq.gz"

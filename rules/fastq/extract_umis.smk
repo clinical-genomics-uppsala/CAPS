@@ -3,11 +3,23 @@
 
 from scripts.lib.common.utils import get_fastq
 
-rule extract_UMIs_head_part:
+_extract_umis_head_input = "trimmed/{sample}.{unit}.{part}.{read}.fastq.gz"
+try:
+    _extract_umis_head_input = extract_umis_head_input
+except:
+    pass
+
+_extract_umis_head_output = temp("umi/{sample}.{unit}.{part}.{read}.UMIs.fastq")
+try:
+    _extract_umis_head_output = extract_umis_head_output
+except:
+    pass
+
+rule extract_UMIs_head:
    input:
-      "trimmed/{sample}.{unit}.{part}.{read}.fastq.gz"
+      _extract_umis_head_input
    output:
-      temp("umi/{sample}.{unit}.{part}.{read}.UMIs.fastq")
+      _extract_umis_head_output
    log:
       "logs/umi/{sample}.{unit}.{part}.{read}.UMI.head.txt"
    params:

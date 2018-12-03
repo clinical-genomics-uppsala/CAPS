@@ -1,23 +1,31 @@
 # vim: syntax=python tabstop=4 expandtab
 # coding: utf-8
 
-#rule annotate_bam_with_umis:
-#    input:
-#        bam="mapped/{sample}.{unit}.primerclip.bam",
-#        umi="umi/{sample}.{unit}.R2.UMIs.fastq"
-#    output:
-#        bam="mapped/{sample}.{unit}.primerclip.umi.bam"
-#    log:
-#        "logs/umis/{sample}.{unit}.fgbioAnnoBam.txt"
-#    wrapper:
-#        "fgbio/bio/fgbio/annotatebamwithumis"
+
+_umi_r2_head_input_bam = "mapped/{sample}.sorted.bam"
+try:
+    _umi_r2_head_input_bam = umi_r2_head_input_bam
+except:
+    pass
+
+_umi_r2_head_input_umi = "mapped/{sample}.sorted.bam"
+try:
+  _umi_r2_head_input_umi = umi_r2_head_input_umi
+except:
+    pass
+
+_umi_r2_head_output = "mapped/{sample}.amplicon_annotated.sorted.bam
+try:
+    _umi_r2_head_output = umi_r2_head_output
+except:
+    pass
 
 rule annotate_bam_with_umis_part:
     input:
-        bam="mapped/{sample}.{unit}.{part}.primerclip.bam",
-        umi="umi/{sample}.{unit}.{part}.R2.UMIs.fastq"
+        bam=_umi_r2_head_input_bam,
+        umi=_umi_r2_head_input_umi
     output:
-        bam="mapped/{sample}.{unit}.{part}.primerclip.umi.bam"
+        bam=_umi_r2_head_output
     log:
         "logs/umis/{sample}.{unit}.{part}.fgbioAnnoBam.txt"
     wrapper:

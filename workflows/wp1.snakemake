@@ -10,7 +10,7 @@ include: "../rules/fastq/split_fastq.smk"
 
 include: "../rules/fastq/import_read.smk"
 
-accel_amplicon_prefix="https://raw.githubusercontent.com/clinical-genomics-uppsala/accel_amplicon_trimming/update-spliting"
+accel_amplicon_prefix="https://raw.githubusercontent.com/clinical-genomics-uppsala/accel_amplicon_trimming/master"
 
 #accel_amplicon_prefix="/accel_amplicon_trimming"
 
@@ -20,7 +20,9 @@ include: "../rules/trimming/cutadapt.smk"
 
 include: accel_amplicon_prefix + "/rules/accel_amplicon.smk"
 
-include: "../rules/alignment/bwa_sampe.smk"
+include: "../rules/alignment/bwa_mem.smk"
+
+include: "../rules/alignment/merge_bam.smk"
 
 include: "../rules/alignment/annotation/amplicon_mapping.smk"
 
@@ -32,6 +34,10 @@ include: "../rules/calling/convert/jsnpmania_to_annovar_input.smk"
 
 include: "../rules/calling/convert/pindel_to_annovar_input.smk"
 
+include: "../rules/annotate/annovar.smk"
+
+annovar_input = "pindel_annovar/{sample}.pindel.filtered.annovarInput"
+annovar_output = "pindel_annovar_output/{sample}.pindel.singleSample.annovarOutput"
 include: "../rules/annotate/annovar.smk"
 
 include: "../rules/reports/wp1/filter_mutations.smk"

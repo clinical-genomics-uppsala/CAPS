@@ -6,9 +6,21 @@ from scripts.lib.common.utils import get_fastq
 def _cgu_get_num_splits(config):
     return int(config.get("num_fastq_split",1))
 
+_split_fastq_input = lambda wildcards: get_fastq(wildcards,units, 'fq1' if wildcards.read == "R1" else 'fq2')
+try:
+    _split_fastq_input = split_fastq_input
+except:
+    pass
+
+_split_fastq_output = "trimmed/{sample}.{unit}.{part}.{read}.fastq.gz"
+try:
+    _split_fastq_output = split_fastq_output
+except:
+    pass
+
 rule count_lines_in_fastq:
     input:
-      lambda wildcards: get_fastq(wildcards,units, 'fq1' if wildcards.read == "R1" else 'fq2')
+        _split_fastq_input
     output:
       temp("trimmed/{sample}.{unit}.{read}.var")
     run:
@@ -41,6 +53,6 @@ rule compress_split_fastq:
     input:
         "trimmed/{sample}.{unit}.{part}.{read}.fastq"
     output:
-        "trimmed/{sample}.{unit}.{part}.{read}.fastq.gz"
+        _split_fastq_output
     run:
         shell("gzip -c {input} > {output}")

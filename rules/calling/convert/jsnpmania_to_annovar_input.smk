@@ -3,13 +3,38 @@
 
 from scripts.lib.common.data.parser.jsnpmania import convert_jsnpmania_to_annvovar_output
 
+
+_jsnpmania_to_annovar_input_variations_input = "jsnpmania/{sample}.variations"
+try:
+    _jsnpmania_to_annovar_input_variations_input = jsnpmania_to_annovar_input_variations_input
+except:
+    pass
+
+_jsnpmania_to_annovar_input_deletions_input = "jsnpmania/{sample}.deletions"
+try:
+    _jsnpmania_to_annovar_input_deletions_input = jsnpmania_to_annovar_input_deletions_input
+except:
+    pass
+
+_jsnpmania_to_annovar_input_inseriton_input = "jsnpmania/{sample}.insertions"
+try:
+    _jsnpmania_to_annovar_input_inseriton_input = jsnpmania_to_annovar_input_inseriton_input
+except:
+    pass
+
+_jsnpmania_to_annovar_input_output = "annovar/{sample}.jsnpmania.annovarInput"
+try:
+    _jsnpmania_to_annovar_input_output = jsnpmania_to_annovar_input_output
+except:
+    pass
+
 rule jsnpmania_to_annovar_input:
     input:
-        jsnpmania_variants="jsnpmania/{sample}.variations",
-        jsnpmania_insertions="jsnpmania/{sample}.insertions",
-        jsnpmania_deletions="jsnpmania/{sample}.deletions"
+        jsnpmania_variants=_jsnpmania_to_annovar_input_variations_input,
+        jsnpmania_insertions=_jsnpmania_to_annovar_input_inseriton_input,
+        jsnpmania_deletions=_jsnpmania_to_annovar_input_deletions_input
     output:
-        "annovar/{sample}.annovarInput"
+        _jsnpmania_to_annovar_input_output
     params:
         nc_to_chr_file = config['nc_to_chr_file'],
         min_allele_ratio = lambda wildcards: config["filter_settings"][samples["sample_source"][wildcards.sample]]['min_allele_ratio'],
